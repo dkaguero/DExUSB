@@ -1,0 +1,200 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2"/>
+<meta name="description" content="Sistema de gesti&oacute;n de datos de ubicaci&oacute;n y laborales del personal egresado de la Universidad Sim�n Bolivar." />
+<title>Control de Egresados USB</title>
+<link rel="stylesheet" type="text/css" href="censo/css/menu.css" />
+<link rel="shortcut icon" href="censo/favicon.ico" type="image/ico" />
+<link rel="stylesheet" type="text/css" href="censo/css/estilo.css" />
+<link rel="stylesheet" type="text/css" href="censo/css/form.css" />
+<link rel="stylesheet" type="text/css" href="censo/css/pag.css" />	
+
+
+<style type="text/css">
+a:link {
+	text-decoration: none;
+	color: #FFF;
+}a:visited {
+	text-decoration: none;
+	color: #FFF;
+}a:hover {
+	text-decoration: underline;
+	color: #FFF;
+}a:active {
+	text-decoration: none;
+	color: #C6FAFD;
+}body,td,th {
+	color: #000;
+	font-family: Tahoma, Geneva, sans-serif;
+}body {
+	background-image: url(censo/img/bgp.jpg);
+}
+
+        *{ font-family: Trebuchet MS; }
+        .div_NOSCRIPT
+        {
+            border: solid 2px red;
+            background-color: #FFC;
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+
+<body>
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=notify.php?&v=1">
+    </noscript>
+
+<table align="center">
+<tr>
+    <td>
+    <div align="center">
+          </div>
+    <p align="center">&nbsp;</p>
+    <p align="center">&nbsp;</p>
+    </div>
+    <div align="center">
+          </div></td>
+</tr>
+<tr>
+  <td width="0" height="0">
+  <div align="center" style="width:640px; height:480px; background-image:url(censo/img/Inisesion.jpg); 
+  position:relative; border-radius: 8px;
+-moz-border-radius: 8px;
+-webkit-border-radius: 8px;
+-ms-border-radius: 8px; border:#09F 1px;">
+      <p><br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+				
+               <!--este link es necesario para los tooltips -->
+<!--	 include the Tools  -->
+          <script src="../lib/js/jquery.tools.min.js"></script>
+<!--    aqui termina   -->
+
+<script language="javascript" type="text/javascript">
+
+    //*** Este Codigo permite Validar que sea un campo Numerico
+    function Solo_Numerico1(ci2){
+        Numer=parseInt(ci2);
+        if (isNaN(Numer)){
+            return "";
+        }
+        return Numer;
+    }
+    function ValNumero2(Control){
+        Control.value=Solo_Numerico1(Control.value);
+    }
+    //*** Fin del Codigo para Validar que sea un campo Numerico
+
+</script>
+<form id="sesionstart" name="sesionstart" method="post" action="">
+<table width="343" cellspacing="0" cellpadding="2">
+    <tr>
+      <td height="26" colspan="3" align="center"><img src="censo/img/data.png" width="306" height="26" /></td>
+    </tr>
+    <tr>
+      <td width="117"><div align="right">Nro de C&eacute;dula:</div></td>
+      <td width="195" align="left">
+      <input type="hidden" name="tipoform" value="1"/>
+        <label for="ci"></label>
+        <input type="text" name="ci2" id="ci" title="Ej: 18234567" onkeyUp="return ValNumero2(this);"/>
+      </td>
+      <td width="5" rowspan="2"></td>
+    </tr>
+    <tr>
+      <td><div align="right">Contrase&ntilde;a:</div></td>
+      <td align="left"><input type="password" name="password" id="password"/></td>
+    </tr>
+    <tr>
+      <td></td>
+      
+      <td colspan="2" align="left" valign="middle"><input name="iniciar" type="submit" id="iniciar"  value="Iniciar Sesi&oacute;n"/></td>
+    </tr>
+    
+    <tr>
+      <td width="117" height="0" align="left" valign="top" >&nbsp;</td>
+      <td width="195" height="0" align="left" valign="top" ><a href="./php/regusb.php" style="text-shadow: black 0.1em 0.1em 0.2em">Reg&iacute;strese aqu&iacute;</a></td>
+      <td align="left" valign="top" >&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="117" height="0" align="left" valign="top" >
+      </td>
+      <td width="195" height="0" align="left" valign="top" ><a href="./php/recuperacion.php" style="text-shadow: black 0.1em 0.1em 0.2em">&iquest;Olvido su contrase&ntilde;a?</a></td>
+      <td align="left" valign="top" >&nbsp;</td>
+    </tr>
+  </table>
+  </p>
+</div></td></tr>
+<tr>
+<td width="641" align="center" valign="middle"><style type="text/css" media="screen">
+<!--
+#footer2{
+clear: left;
+width: auto;
+background-image:url(censo/img/bgdiv.png);
+color: #60676e;
+text-align: center;
+padding: 4px 0;
+a:link {
+color: #ffffff;
+text-decoration: none;
+}a:hover {
+color: #ffffff;
+}}#footer2 a{
+color: #5296db;
+}#hiper a{
+    color: #056399;}
+--></style>
+
+
+<div id="footer2">
+  <hr align="center"  style="border: 1px solid #e6eef6; "/>
+  <p><font face="Arial, Helvetica, sans-serif" size="-2"><span><strong>SARTENEJAS,</strong> Baruta, Edif. de Comunicaciones, piso 2, oficina 207, Telf: (0212) 906.31.57 Ext. 6828/6805 Fax: (0212) 906.31.59    <br />
+    Apartado postal 89000, Zip Code 1080-A.
+   <a href="http://www.dex.usb.ve/#">www.dex.usb.ve</a> Correos Electr&oacute;nicos: <a href="mailto:usbcenso@gmail.com">usbcenso@gmail.com</a> / <a href="mailto:ueseg@usb.ve">ueseg@usb.ve</a>  
+   <br />
+    <strong>LITORAL:</strong> </span></font><font face="Arial, Helvetica, sans-serif" size="-2"><span> Camur&iacute; Grande. Edif. de Laboratorios Pesados,Piso 2,&nbsp;Ofic. LPD-209, <br />
+    Tel&eacute;fonos: (0212) 906.91.65 Extensiones: 9168/9172. </span></font></p>
+</div>
+
+<div align="center">
+  <script type="text/javascript">
+swfobject.registerObject("FlashID");
+  </script>
+  <script type="text/javascript">
+var MenuBar1 = new Spry.Widget.MenuBar("MenuBar1", {imgRight:"../../SpryAssets/SpryMenuBarRightHover.gif"});
+  </script> 
+</div>
+</td>
+</tr>
+</table>
+    
+ <!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://argus.sl.usb.ve/" : "http://argus.sl.usb.ve/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 4);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://argus.sl.usb.ve/piwik.php?idsite=4" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->   
+</body>
+</html> 

@@ -1,0 +1,346 @@
+/* 
+    Document   : Estilos visuales de algunos elementos del sistema
+    Created on : 26/07/2011, 09:46:15 AM
+    Author     : Pedro
+    Description:
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+a:link {
+	text-decoration: none;
+	color: #5296db;
+}
+a:visited {
+	text-decoration: none;
+	color: #5296db;
+}
+a:hover {
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
+body 
+{
+	background-image: url(../img/bgp.jpg);
+	background-attachment: fixed; background-repeat:no-repeat
+}
+
+body,td,th {
+	font-family: "Century Gothic", Arial, Verdana;
+	font-size: 12px;
+	color: #333;
+}
+
+#bordesolido{ 
+   	border: 1px solid #aaaaaa; 
+	}
+
+#wrap { 
+/* Margin:0 auto 0 auto; */
+/* Width:852px; */
+/* Text-align:center;*/
+    border: 1px solid #e6eef6;
+}
+
+/* Estilo de DIV principal para todas las paginas. */
+#wrap2 { 
+margin:0 auto 0 auto; 
+width:875px; 
+text-align:right;
+/*background-image:url(../img/bgdiv.png);*/
+/*background-color:#FFF;*/
+background-image:url(../img/found.png);
+ }
+ 
+/* Estilo del menú principal */
+#Menu2 { 
+/*margin:0 auto 0 auto; */
+width:163px; 
+height: auto;
+text-align:left;
+float:left;
+}
+
+/* ESTE CODIGO PERSONALIZA LOS INPUT DE LOS FORMULARIOS (BORDES CURVOS) */
+input{
+border-radius: 8px;
+-moz-border-radius: 8px;
+-webkit-border-radius: 8px;
+-ms-border-radius: 8px;
+border : 1px solid #CCC;
+font-family : "Century Gothic", Arial, Verdana;
+font-size : 12px;
+padding-left : 5px;
+padding-right : 5px;
+text-shadow: #fff 0px 1px 1px;
+filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7E9F3', endColorstr='#ffffff');
+}
+
+#selectboxid{
+border-radius: 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+-ms-border-radius: 5px;
+border : 1px solid #CCC;
+font-family : "Verdana", Arial, Verdana;
+font-size : 11px;
+padding-left : 1px;
+padding-right : 1px;
+width:180px
+}
+
+#selectboxSMALL{
+border-radius: 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+-ms-border-radius: 5px;
+border : 1px solid #CCC;
+font-size : 11px;
+padding-left : 1px;
+padding-right : 1px;
+width:100px
+}
+
+/* AQUI TERMINA PERSONALIZACION DE FORMULARIOS (BORDES CURVOS)*/
+
+/* RESALTA EL CAMPO DE TEXTO SELECCIONADO */
+input:focus {
+  border: 1px solid #0456a2;
+  background: #F0FCFF;
+}
+
+#TablaFind { 
+width:auto; 
+}
+
+#DatosPern { 
+width:710px; 
+float:left;
+text-align:left;
+}
+
+div#DatosPern fieldset
+{
+	    margin: 10px;
+        margin-right: 0px;
+        margin-top: 0px;
+       	border: 1px solid #e6eef6;
+}
+
+div#formularios fieldset
+{       
+       	border: 1px solid #e6eef6;
+		padding: .2em;	
+}
+
+#DatosEgre { 
+clear:both;
+}
+
+#footer2{
+clear: left;
+width: 875px;
+background-color:transparent;
+color: #60676e;
+text-align: center;
+padding: 4px 0;
+}
+
+#footer a{
+color: #5296db;
+}
+
+#hiper a{
+color: #056399;
+}
+
+body{
+margin:0;
+padding:0;
+line-height: 1.5em;
+}
+
+#maincontainer{
+width: 840px; /*Width of main container*/
+margin: 0 auto; /*Center container on page*/
+}
+
+#topsection h1{
+margin: 0;
+padding-top: 15px;
+}
+
+#contentwrapper{
+float: left;
+width: 100%;
+}
+
+.innertube{
+margin: 10px; /*Márgenes de DIV interior dentro de cada columna (para proporcionar relleno)*/
+margin-top: 0;
+}
+
+#upload_button:hover{
+	color:#FFFFFF;
+}
+/*aqui termina*/
+/*estilo para funcion mostrar archivos*/
+div#container
+{
+    border: 1px solid #e6eef6;
+}
+
+div#container h1
+{
+	background-color: #4b75b3;
+	margin: 0px;
+	padding: 8px;
+	font-family: "Arial";
+	font-weight: normal;
+	border: 1px solid #3564a9;
+}
+
+div#container fieldset
+{
+	margin: 30px;
+	border: 1px solid #98b9d0;
+}
+
+ul#menu
+{
+	list-style-type: none;
+	margin: 4px;
+	padding: 0px;
+}
+
+ul#menu li
+{
+	float: left;
+	margin: 4px;
+}
+
+ul#menu li.active
+{
+	background-color: #98b9d0;
+	border-left: 1px solid #3564a9;
+	border-top: 1px solid #3564a9;
+	border-bottom: 1px solid #e6eef6;
+	border-right: 1px solid #e6eef6;
+}
+
+ul#menu li a
+{
+	text-decoration: none;
+	font-size: 10px;
+	padding: 2px;
+	color: #3564a9;
+}
+
+ul#files
+{
+	list-style-type: none;
+	margin: 40px 0px 0px 0px;
+	padding: 0px;
+}
+
+ul#files li
+{
+	background-color: #fff7c0;
+	border-bottom: 1px solid #efefef;
+	padding: 2px;
+	margin-bottom: 1px;
+}
+
+ul#files li a
+{
+	text-decoration: none;
+	color: #3564a9;
+	padding: 2px 25px;
+	background-position: left;
+	background-repeat: no-repeat;
+}
+
+ul#files li.Documentos a
+{
+	background-image: url('../lib/images/file_acrobat.gif');
+}
+
+ul#files li.Imagenes a
+{
+	background-image: url('../lib/images/picture.jpg');
+}
+
+p.error
+{
+	background-color: #fff7c0;
+	border-bottom: 1px solid #efefef;
+	font-weight: bold;
+	color: #ff0000;
+	padding: 6px;
+}
+/* aqui termina */
+
+
+/* CSS PARA LOS TOOLTIP
+.apple_overlay {
+	
+	/* initially overlay is hidden 
+	display:none;
+	
+	/* growing background image 
+	background-image:url(../img/white.png);
+	/* 
+		width after the growing animation finishes
+		height is automatically calculated	
+		
+	width:640px;		
+	
+	/* some padding to layout nested elements nicely 
+	padding:35px;
+
+	/* a little styling 
+	font-size:11px;
+}
+
+/* default close button positioned on upper right corner 
+.apple_overlay .close {
+	background-image:url(../img/close.png);
+	position:absolute; right:5px; top:5px;
+	cursor:pointer;
+	height:35px;
+	width:35px;
+}
+
+/* Estilos del Tooltip
+.tooltip {
+	background-color:#000;
+	border:1px solid #fff;
+	padding:10px 15px;
+	width:150px;
+	display:none;
+	color:#fff;
+	text-align:left;
+	font-size:11px;
+	/* outline radius for mozilla/firefox only 
+	border-radius: 0 0 10px #000;
+	-moz-box-shadow:0 0 10px #000;
+	-webkit-box-shadow:0 0 10px #000;
+}
+
+/*aqui termina 	CSS PARA LOS TOOLTIPS*/
+#divp1{
+position:absolute;
+top:50px;
+left:50px;
+z-index:1;
+}
+
+#divp2{
+position:absolute;
+top:50px; /* la misma posicion del anterior para que se sobreponga */
+left:50px;
+z-index:2; /* esto es el nivel de profundidad de la capa, pero a veces no funciona proba con darle un valor mas grande como 100*/
+}
