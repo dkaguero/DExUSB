@@ -260,7 +260,7 @@ No se movió ningún HTML ni ninguna imagen para «ordenar» antes de Git. Las p
 
 | Qué hay | Para qué está |
 | --- | --- |
-| HTML en la raíz | Las 22 páginas publicadas: portada, menú del decanato, feria, noticias y las seis copias de los botones |
+| HTML en la raíz | 25 archivos. Veintitrés son páginas del sitio y dos, `emprendeUSB.html` y `feriaEmpleo.html`, solo redirigen. Entre las páginas nuevas de esta ronda están `ceseg.html`, `feriaVirtual.html` y `sedeLitoral.html` |
 | `cursos/` | Tema de 2024: CSS, JavaScript, imágenes, íconos, PDF y el afiche `feriaEmpleo.jpg`. Unos 12,6 MB |
 | `cfcg/` | Tema que usa `cfcgServicio.html`. Incluye una copia del tema de cursos más el logo y las imágenes propias de CFCG. Unos 12,8 MB |
 | `cct/` | Tema que usa `pasantiaEmpresarial.html`. Misma situación: copia del tema más las imágenes de pasantías. Unos 12,6 MB |
@@ -272,4 +272,36 @@ No se movió ningún HTML ni ninguna imagen para «ordenar» antes de Git. Las p
 
 Esas tres copias del tema visual se conservan a propósito. Servicio Comunitario y Pasantías no funcionan si se les quita su carpeta para dejar una sola.
 
-El repositorio todavía no se creó. El orden previsto, cuando se pida, es: `git init -b main` en esta misma carpeta, un commit con todo lo que no ignora `.gitignore`, un repositorio remoto vacío y `git push -u origin main`. No hace falta reacomodar archivos antes de ese paso.
+El repositorio local se creó después, con el commit `904848a`, y se publicó en https://github.com/dkaguero/DExUSB, rama `main`.
+
+## 10. CESEG y la coordinación del Litoral, 5 de noviembre de 2026
+
+La Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG) es la de la Sede Sartenejas. La de la Sede del Litoral es otra coordinación, con su propio responsable y su propio correo.
+
+En `Personal.html`:
+
+- Sartenejas queda como «Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG), Sede Sartenejas»: Ing. Desiree Agüero, `09-11250@usb.ve`, `ceseg@usb.ve` e Instagram `@ceseg_usb`. El enlace que decía Twitter ahora abre https://www.instagram.com/ceseg_usb/. Lo mismo quedó en `ceseg.html`.
+- El Litoral deja de llamarse programa y queda como «Coordinación de Emprendimiento y Seguimiento de Egresados, Sede Litoral»: Laura Millán, `lauramillan@usb.ve` y `peseg-sl@usb.ve`.
+
+La página nueva es `ceseg.html`. El menú que decía «La Simón Emprende» ahora dice CESEG y abre esa página. En la estructura organizacional, el enlace de CESEG también abre `ceseg.html`.
+
+`ceseg.html` tiene cuatro partes, solo de Sartenejas:
+
+- La coordinación y los datos de la Ing. Desiree Agüero.
+- La II Feria de Emprendedores USB, del 30 de noviembre al 4 de diciembre de 2026.
+- La Feria Virtual de Pasantías, Empleo y PYMES, con fecha «Próximamente». Después de esa palabra está el enlace «más información», que abre `feriaVirtual.html`. Esa página queda reservada para publicar luego la feria. También se conserva la nota de que la feria presencial de julio de 2026 no se realizó por el terremoto.
+- La Simón Emprende, como sección, con los audios de 2019.
+
+El afiche de la portada y las dos noticias correspondientes abren esas secciones. `emprendeUSB.html` redirige a La Simón Emprende dentro de `ceseg.html`. `feriaEmpleo.html` redirige a `feriaVirtual.html`.
+
+Las unidades y coordinaciones de la Sede del Litoral también están en `sedeLitoral.html`. El menú «Sede del Litoral» y el enlace de Extensión Sede Litoral en la estructura abren esa página. La ficha de Personal se mantiene.
+
+`sedeLitoral.html` reúne, con los mismos datos ya publicados en Personal:
+
+- Coordinación de Extensión: Prof. María Magnolia Claudeville, `mclaudeville@usb.ve`, `coordext-sl@usb.ve` y `@extensionlit`. Asistente Diana Mata. Administradora Yriana Abadía.
+- Programa de Educación Permanente: Illeny Aponte y la secretaria Francys Leal.
+- Programa de Cooperación Técnica: Prof. Elsy Tamara Visbal Pérez, la asistente Zaiduby Parra y la secretaria Meivimar Rodríguez.
+- Programa de Acción Social y Desarrollo Comunitario: Enif Cothua y la secretaria Meivimar Rodríguez.
+- Coordinación de Emprendimiento y Seguimiento de Egresados de la Sede del Litoral: Laura Millan, `lauramillan@usb.ve` y `peseg-sl@usb.ve`.
+
+Esa coordinación del Litoral no forma parte de la CESEG. `ceseg.html` conserva su contenido: la coordinación de Sartenejas, la II Feria de Emprendedores, la Feria Virtual con el afiche, la fecha «Próximamente», el enlace «más información» y la sección La Simón Emprende. `feriaVirtual.html` repite el afiche y el texto de esa feria para que el enlace no abra una página vacía.
