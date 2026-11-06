@@ -1,8 +1,8 @@
 # Informe de la copia local del Decanato de Extensión
 
-Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: la misma fecha, al cerrar los enlaces locales de cursos y diplomados y dejar la carpeta lista para Git.  
+Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11 y 12.  
 Carpeta de trabajo: `C:\Users\karin\DExWeb`.  
-Sigue siendo una copia estática del sitio que dejó de estar activo en http://www.dex.usb.ve. Todavía no es un repositorio Git. La sección 9 dice cómo están ordenados los archivos y qué falta para subirlo.
+Sigue siendo una copia estática del sitio que dejó de estar activo en http://www.dex.usb.ve. El repositorio está en https://github.com/dkaguero/DExUSB, rama `main`. La sección 9 dice cómo están ordenados los archivos.
 
 El informe sigue el orden de los cambios: la captura original, la reconstrucción local, las noticias confirmadas, la nómina, los ajustes posteriores, los botones bajo Somos USB y la preparación de la carpeta.
 
@@ -305,3 +305,72 @@ Las unidades y coordinaciones de la Sede del Litoral también están en `sedeLit
 - Coordinación de Emprendimiento y Seguimiento de Egresados de la Sede del Litoral: Laura Millan, `lauramillan@usb.ve` y `peseg-sl@usb.ve`.
 
 Esa coordinación del Litoral no forma parte de la CESEG. `ceseg.html` conserva su contenido: la coordinación de Sartenejas, la II Feria de Emprendedores, la Feria Virtual con el afiche, la fecha «Próximamente», el enlace «más información» y la sección La Simón Emprende. `feriaVirtual.html` repite el afiche y el texto de esa feria para que el enlace no abra una página vacía.
+
+## 11. Mayúscula y acento en la CESEG, 5 de noviembre de 2026
+
+Commit `b3e70c4`, en `ceseg.html`:
+
+- El enlace que seguía a «Próximamente.» pasó de «más información» a «Más información».
+- El nombre del audio del 21 de junio de 2019 pasó de Ricardo Gomez a Ricardo Gómez. La dirección de SoundCloud se dejó igual, porque el archivo publicado sigue llamándose `gomes`.
+
+## 12. Pestañas, calendario y Orgullo USBista, 5 de noviembre de 2026
+
+Commit `cf1f993`. La página de la CESEG dejó de ser una sola columna de bloques y pasó a organizarse bajo un título, una búsqueda y cuatro pestañas. No se cambió la hoja de estilos global ni la paleta: los estilos nuevos viven en `ceseg.html` y usan `#1c6ea0`, `#42a9be` y `#e6e4de`.
+
+### Cómo se lee la página
+
+- Título: «Impulsamos el talento y los proyectos de la comunidad USBista».
+- «Tengo un Proyecto» abre la pestaña Emprendimiento e Incubación. «Soy Egresado» abre Egresados y Red Global.
+- La búsqueda filtra el texto de la página y, si el resultado está dentro de una pestaña, abre esa pestaña.
+- Las tres cifras de Impacto dicen «Próximamente». No hay un conteo publicado que se pueda poner en `data-count`.
+- Pestañas: Emprendimiento e Incubación (la que abre por defecto), Egresados y Red Global, Bolsa de Trabajo, y Trámites y Certificaciones. En el teléfono la barra de pestañas se desplaza en horizontal.
+- Emprendimiento conserva la II Feria de Emprendedores, con el ancla `#feria-emprendedores`. Incubadora, propiedad intelectual, guías, directorio de startups USBistas y vitrina de talento quedan en «Próximamente».
+- Bolsa de Trabajo conserva el afiche, el ancla `#feria-virtual` y la frase de que la feria de julio de 2026 no se realizó por el terremoto. Hay un filtro con una sola oportunidad publicada, la feria virtual. El formulario de vacantes abre un correo a `ceseg@usb.ve`.
+- Trámites y certificaciones (referencia, títulos y legalización) están en acordeones y dicen «Próximamente».
+- Debajo de las pestañas siguen el contacto y el equipo, los eventos y La Simón Emprende con los cuatro audios de 2019.
+- El censo de egresados abre el formulario público «Censo de Egresados CESEG USB». Formación continua enlaza `ofertaAcad.html` y `diplomados.html`. Las charlas de la CESEG, los beneficios y la red de mentores dicen «Próximamente».
+
+### Calendario
+
+`calendarioCeseg.html` lista los eventos programados. Cada actividad nueva se agrega como una fila de la tabla. Hoy tiene dos:
+
+- II Feria de Emprendedores USB, del 30 de noviembre al 4 de diciembre de 2026. Enlaza a `ceseg.html#feria-emprendedores`.
+- Feria Virtual de Pasantías, Empleo y PYMES. Fecha: Próximamente. Enlaza a `feriaVirtual.html`.
+
+La sección Eventos de `ceseg.html` apunta a ese calendario.
+
+### Orgullo USBista
+
+El carrusel se llama **Orgullo USBista**: solo la O de Orgullo va en mayúscula, y USB va en mayúsculas. Vive en la pestaña Egresados y Red Global. Los datos están en `src/data/egresadosData.js` y la vista en `src/components/orgulloUSBista.js`. La página los carga con un módulo. Cada ficha muestra iniciales si no hay foto, la categoría, la ubicación cuando la fuente la trae, la carrera, la cohorte, el cargo y el logro, más un enlace «Ver fuente». Tiene filtro por categoría, flechas, puntos, deslizamiento y avance automático que se detiene al poner el cursor encima.
+
+La sección «USBistas por el mundo» se eliminó. Su única línea, René Cartaya en Alemania, quedó dentro del carrusel. La ficha usa la nota del seminario sobre el plasma: http://www.usb.ve/home/node/8011.
+
+Una ficha entra solo cuando una página pública dice que la persona egresó de la USB, o cuando USB Noticias publica el reconocimiento. El texto de la ficha no completa lo que esa fuente no dice. Por eso no se publicaron, entre otras, Evelyn Miralles, Lilian Rincon, Gioconda San-Blas, Guillermo Rauch, José Luis Pons, Verónica Ruiz del Vizo, Mariana Rodríguez, Tomas J. Bañez, Arturo Sánchez Pineda, María Elena Gómez, Rolando Viana y Otmaro Ruíz: la fuente los gradúa en otra universidad, no los identifica, o, en el caso de Ruíz, registra estudios de biología en la USB entre 1980 y 1983 sin el título.
+
+Perfiles que sí están, con la fuente de la ficha:
+
+| Persona | Qué publica la ficha | Fuente |
+| --- | --- | --- |
+| René Cartaya | Física. CEO y fundador de Blue Orbit Space Systems, Alemania. Seminario sobre el plasma | USB, seminario |
+| Juan Carlos Guerrero | Física. Premio Estudiante de Ciencia 2025, ACFIMAN, Pregrado | USB Noticias |
+| Gloria Buendía | Física, 1979. Premio Dr. Juan Alberto Olivares 2025 | USB Noticias |
+| Marcos Sabino | Química. Premio Fundación Empresas Polar Lorenzo Mendoza Fleury 2026 | USB Noticias |
+| Alicia Villamizar | Biología, 1987. Individuo de Número de la ACFIMAN | USB Noticias |
+| Davna Rodríguez | Ingeniería Química. Segundo volumen de las 100 Mujeres de la Ciencia en Venezuela | USB Noticias |
+| José Vicente Hernández | Biología de Organismos. Mención honorífica del Premio Nacional, Ciencias Básicas | USB Noticias |
+| Jorge Baralt Torrijos | Profesor Emérito | USB Noticias |
+| Alberto Armengol, Dany Merentes y Oswaldo Escobar | Reconocimiento de la Gobernación de La Guaira, Sede del Litoral | USB Noticias |
+| Andrés Guevara de la Vega | Ingeniería de Producción, cum laude. Presidente de bp en Brasil | Nota de bp |
+| Gregorio Drayer | Ingeniería Eléctrica. Sistemas de control en el Centro Marshall de la NASA, Huntsville | El Pitazo |
+| Carlos Tomás Mata | Ingeniería Eléctrica, 1993. Protección contra rayos del cohete SLS, Artemis I | Voz de América |
+| Alejandro Flores Velazco | Ingeniería de la Computación, 2014, cum laude. YouTube Search, Google, Nueva York | Voz de América |
+| José Antonio Delgado Sucre | Ingeniería Mecánica, 1989. Cinco cumbres de más de 8.000 metros. Murió en el Nanga Parbat en 2006 | Ediciones Ekaré |
+| Adriana Salerno | Licenciatura en Matemáticas, 2001. Teoría de números. Bates College y la NSF. Desde junio de 2026, American Mathematical Society | Wikipedia |
+| Santiago Schnell | Licenciatura en Biología, 1997. Doctor en biología matemática por Oxford. Nombramiento como decano de Ciencias en Notre Dame desde el 1 de septiembre de 2021. Dejó ese cargo en 2025 | USB |
+| Francisco Zaera | Licenciatura en Química, 1979, cum laude. UC Riverside. Catálisis heterogénea | UC Riverside |
+| Gabriela Ochoa | Licenciatura en Computación, 1990, y magíster en la USB. University of Stirling. Algoritmos evolutivos | University of Stirling |
+| Cristina Amón | Ingeniería Mecánica, 1981, summa cum laude. Decana emérita de Ingeniería en la Universidad de Toronto, 2006-2019 | USB |
+
+Los filtros que se ven son los de las categorías que tienen al menos una ficha: Aeroespacial & Ciencia, Tech & Software, Corporativo & Energía, Deporte de alto rendimiento y Academia. Inteligencia Artificial queda prevista en el orden del carrusel y aparece cuando una ficha use esa categoría.
+
+En `_serve.js`, los archivos `.js` se sirven como `text/javascript; charset=utf-8`, igual que el HTML y el CSS.
