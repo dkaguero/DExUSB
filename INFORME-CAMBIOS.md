@@ -1,6 +1,6 @@
 # Informe de la copia local del Decanato de Extensión
 
-Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11 y 12.  
+Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11, 12 y 13.  
 Carpeta de trabajo: `C:\Users\karin\DExWeb`.  
 Sigue siendo una copia estática del sitio que dejó de estar activo en http://www.dex.usb.ve. El repositorio está en https://github.com/dkaguero/DExUSB, rama `main`. La sección 9 dice cómo están ordenados los archivos.
 
@@ -343,7 +343,7 @@ La sección Eventos de `ceseg.html` apunta a ese calendario.
 
 El carrusel se llama **Orgullo USBista**: solo la O de Orgullo va en mayúscula, y USB va en mayúsculas. Vive en la pestaña Egresados y Red Global. Los datos están en `src/data/egresadosData.js` y la vista en `src/components/orgulloUSBista.js`. La página los carga con un módulo. Cada ficha muestra iniciales si no hay foto, la categoría, la ubicación cuando la fuente la trae, la carrera, la cohorte, el cargo y el logro, más un enlace «Ver fuente». Tiene filtro por categoría, flechas, puntos, deslizamiento y avance automático que se detiene al poner el cursor encima.
 
-La sección «USBistas por el mundo» se eliminó. Su única línea, René Cartaya en Alemania, quedó dentro del carrusel. La ficha usa la nota del seminario sobre el plasma: http://www.usb.ve/home/node/8011.
+La sección de texto «USBistas por el mundo» se eliminó en este paso. Su única línea, René Cartaya en Alemania, quedó dentro del carrusel. La ficha usa la nota del seminario sobre el plasma: http://www.usb.ve/home/node/8011. Esa sección volvió después como globo, en la sección 13.
 
 Una ficha entra solo cuando una página pública dice que la persona egresó de la USB, o cuando USB Noticias publica el reconocimiento. El texto de la ficha no completa lo que esa fuente no dice. Por eso no se publicaron, entre otras, Evelyn Miralles, Lilian Rincon, Gioconda San-Blas, Guillermo Rauch, José Luis Pons, Verónica Ruiz del Vizo, Mariana Rodríguez, Tomas J. Bañez, Arturo Sánchez Pineda, María Elena Gómez, Rolando Viana y Otmaro Ruíz: la fuente los gradúa en otra universidad, no los identifica, o, en el caso de Ruíz, registra estudios de biología en la USB entre 1980 y 1983 sin el título.
 
@@ -374,3 +374,29 @@ Perfiles que sí están, con la fuente de la ficha:
 Los filtros que se ven son los de las categorías que tienen al menos una ficha: Aeroespacial & Ciencia, Tech & Software, Corporativo & Energía, Deporte de alto rendimiento y Academia. Inteligencia Artificial queda prevista en el orden del carrusel y aparece cuando una ficha use esa categoría.
 
 En `_serve.js`, los archivos `.js` se sirven como `text/javascript; charset=utf-8`, igual que el HTML y el CSS.
+
+## 13. Globo USBistas por el mundo, 5 de noviembre de 2026
+
+En la pestaña Egresados y Red Global, debajo de Orgullo USBista, volvió el título **USBistas por el mundo**. Ahora es un globo de empresas cuya fuente dice que las fundó un egresado de la USB. El carrusel no se movió.
+
+La página sigue siendo HTML y JavaScript, sin React. Los datos están en `src/data/empresasUSBData.js` y la vista en `src/components/globeUSB.js`. El globo usa globe.gl 2.46.2, cargado desde unpkg. La Tierra es la textura nocturna de three-globe. El fondo es `#0b1329` y la atmósfera es `#0055a5`. Cada empresa es un botón con la cebolla de `public/assets/img/logo-usb-cebolla.svg`, un dibujo geométrico inspirado en el sello, sin el nombre de la universidad. El bloque mide el ancho de la columna y 550 px de alto. En el teléfono, un dedo que sube o baja deja pasar el desplazamiento de la página. Un arrastre horizontal gira el globo.
+
+El recorrido pasa por cada empresa: acerca la cámara en dos segundos y abre la ficha. Se detiene cuando el cursor entra al mapa, al hacer clic o al arrastrar, y sigue cuatro segundos después de salir. Quien pide menos movimiento no ve el recorrido. La lista bajo el mapa queda visible aunque el globo no cargue.
+
+Una empresa entra cuando una página pública nombra a una persona como egresada de la USB y como fundadora o cofundadora, o cuando la CESEG confirma a esa persona con nombre. La ficha no publica un «equipo USB» sin nombre, y no cambia una carrera que la fuente ya corrigió. Si la fuente es una dirección web, la ficha dice «Ver fuente». Si la fuente es la CESEG, dice «Fuente: CESEG».
+
+Empresas publicadas:
+
+| Empresa | Fundador | Carrera | Lugar | Fuente |
+| --- | --- | --- | --- | --- |
+| 3D3 | Jaime Leonardo Padrón | Ingeniería Electrónica | Sartenejas, Venezuela | CESEG. La USB inauguró el laboratorio de impresión 3D en alianza con JPL |
+| AST SpaceMobile | Abel Avellán | Ingeniería Electrónica | Midland, Estados Unidos | AEUSB |
+| Biofarm | Diógenes Infante | Licenciatura en Biología | Caracas, Venezuela | AEUSB. Granja vertical de agricultura urbana |
+| Blue Orbit Space Systems | René Cartaya | Física | Bremen, Alemania | USB, seminario sobre el plasma |
+| Domotai | José Antonio Avendaño, David Altuve y Ángel Rodríguez | Urbanismo, Ingeniería Electrónica y Tecnología Electrónica | Caracas, Venezuela | CESEG |
+| Kavak | Loreanne García, cofundadora | Ingeniería de Producción | Ciudad de México, México | La Lista |
+| Krill Energy | Luis Emilio Suberviola | Ingeniería Electrónica | Caracas, Venezuela | Universidad Monteávila. La USB lo nombra presidente |
+| Scientific Lightning Solutions | Carlos Tomás Mata | Ingeniería Eléctrica | Merritt Island, Estados Unidos | Correo del Caroní |
+| Sistemas Gerenciales JPL & Asociados | Jaime Leonardo Padrón | Ingeniería Electrónica | Caracas, Venezuela | CESEG. La USB lo presenta como director principal del convenio |
+
+Quedaron fuera las fichas que nombran un equipo, unos investigadores o unos consultores sin apellido. También quedaron fuera personas cuya página las gradúa en otra universidad o con otro nombre: Demian Brener (ITBA, OpenZeppelin), Slavik Markovich (Technion, Sentrigo), Ana Asuero (Bdeo), Marcelo Burbano (Universidad de Los Andes, Colombia, Arukay), Alberto Kabbabe (Universidad Metropolitana, Alimenta La Solidaridad), Luz Mely Reyes (UCV, Efecto Cocuyo) y Verónica Ruiz del Vizo (Amarilo Creative). Ubii Pagos publica como fundador a Ramón Velásquez, no a Ramón Heredia. Enzo se agregó a Domotai y la CESEG pidió quitarlo. Luis Landín e Irene Rivero aparecen en la nota del laboratorio 3D3. La CESEG indicó que no son egresados ni fundadores, así que la ficha nombra solo a Jaime Leonardo Padrón.

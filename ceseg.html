@@ -179,6 +179,82 @@
     color: #666;
   }
   .ceseg-fuente a { color: #1c6ea0; }
+  .ceseg-globo {
+    position: relative;
+    width: 100%;
+    height: 550px;
+    background: #0b1329;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+  .ceseg-globo canvas { display: block; touch-action: pan-y; }
+  .ceseg-cebolla {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ceseg-cebolla img {
+    width: 28px;
+    height: 28px;
+    display: block;
+    margin: 4px auto 0;
+    transition: transform .2s ease;
+    animation: ceseg-rebote 2.4s ease-in-out infinite;
+  }
+  .ceseg-cebolla:hover img,
+  .ceseg-cebolla:focus img,
+  .ceseg-cebolla-activa img {
+    animation: none;
+    transform: scale(1.2);
+  }
+  .ceseg-haz {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    width: 3px;
+    height: 0;
+    margin-left: -1.5px;
+    background: linear-gradient(to top, #7eb6e6, rgba(0, 85, 165, 0));
+    box-shadow: 0 0 8px #0055a5;
+    pointer-events: none;
+    transition: height .2s ease;
+  }
+  .ceseg-cebolla:hover .ceseg-haz,
+  .ceseg-cebolla:focus .ceseg-haz,
+  .ceseg-cebolla-activa .ceseg-haz { height: 48px; }
+  @keyframes ceseg-rebote {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .ceseg-globo-tarjeta {
+    position: absolute;
+    z-index: 6;
+    background: #fff;
+    color: #000;
+    border: 1px solid #e6e4de;
+    padding: 8px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+  .ceseg-globo-tarjeta p { margin: 0 0 4px; }
+  .ceseg-globo-tarjeta strong { color: #1c6ea0; }
+  .ceseg-globo-aviso {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    z-index: 4;
+    margin: 0;
+    color: #fff;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+  }
+  .ceseg-globo-indice { margin: 8px 0; padding-left: 18px; }
   .ceseg-inicial {
     width: 36px;
     height: 36px;
@@ -197,6 +273,8 @@
     html { scroll-behavior: auto; }
     .ceseg-panel { transition: none; }
     .ceseg-panel-tab.ceseg-entra { animation: none; }
+    .ceseg-cebolla img { animation: none; }
+    .ceseg-haz { transition: none; }
   }
 </style>
 <body>
@@ -305,6 +383,11 @@
 
 <div class="ceseg-panel-tab" id="panel-egresados" role="tabpanel" aria-labelledby="tab-egresados" hidden>
 <section id="orgullo-usbista" class="ceseg-item" aria-label="Orgullo USBista"></section>
+<section id="usbistas-mundo" class="ceseg-item" aria-label="USBistas por el mundo">
+<h2 class="title">USBistas por el mundo</h2>
+<p>Empresas fundadas por egresados de la USB, según una fuente pública o la confirmación de la CESEG.</p>
+<div id="globe-usb" class="ceseg-globo" aria-label="Globo con las empresas publicadas"></div>
+</section>
 <article class="ceseg-panel ceseg-item" id="egresado">
 <h2 class="title">Censo de egresados</h2>
 <p>El egresado registra su ubicación, su empresa y su contacto en el <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJ-je68chbQBldDe4RiR2LIyZjBm91u55G-wSURRih7geLJg/viewform" target="_blank" rel="noopener">Censo de Egresados CESEG USB</a>.</p>
@@ -647,6 +730,7 @@ Horario de atención: de 9:00 a.m. a 3:30 p.m.<br>
   }());
   </script>
   <script type="module" src="src/components/orgulloUSBista.js"></script>
+  <script type="module" src="src/components/globeUSB.js"></script>
  
 
 

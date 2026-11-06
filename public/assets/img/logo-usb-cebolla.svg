@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Cebolla de la USB">
+  <circle cx="40" cy="40" r="38" fill="#ffffff"/>
+  <g fill="none" stroke="#003366" stroke-width="2.6" stroke-linecap="butt">
+    <path d="M14 54 V40 C14 20 66 20 66 40 V54"/>
+    <path d="M20 54 V41 C20 26 60 26 60 41 V54"/>
+    <path d="M26 54 V42 C26 32 54 32 54 42 V54"/>
+    <path d="M32 54 V44 C32 38 48 38 48 44 V54"/>
+    <path d="M38 54 V46 C38 43 42 43 42 46 V54"/>
+  </g>
+</svg>
