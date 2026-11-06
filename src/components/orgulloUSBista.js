@@ -1,4 +1,6 @@
 import egresados from "../data/egresadosData.js";
+import empresas from "../data/empresasUSBData.js";
+import { alCambiarFiltro, filtrarEmpresas } from "./filtroRed.js";
 
 const ORDEN = [
   "Aeroespacial & Ciencia",
@@ -51,7 +53,9 @@ function tarjeta(persona) {
   return (
     '<article class="ceseg-caso ceseg-panel">' +
     "<header>" + retrato(persona) +
-    ' <span class="ceseg-badge">' + escapar(persona.categoría) + "</span>" + lugar +
+    ' <span class="ceseg-badge">' + escapar(persona.categoría) + "</span>" +
+    (persona.destacado ? '<span class="ceseg-badge ceseg-destacado">Egresado destacado</span>' : "") +
+    lugar +
     "</header>" +
     "<p><strong>" + escapar(persona.nombre) + "</strong></p>" +
     "<p>Talento USBista</p>" +
@@ -63,18 +67,22 @@ function tarjeta(persona) {
   );
 }
 
+const MINI = '<img class="ceseg-mini-cebolla" src="public/assets/img/logo-usb-cebolla.svg" alt="" width="14" height="14">';
+
 function pieFuente(persona) {
   if (!persona.fuente) return "";
   const nombre = persona.fuenteTexto || (/usbnoticias\.usb\.ve/i.test(persona.fuente) ? "USB Noticias" : "Referencia");
+  const marca = MINI + "Fuente verificada · ";
   if (!/^https?:\/\//i.test(persona.fuente)) {
-    return '<p class="ceseg-fuente">' + escapar(persona.fuente) + "</p>";
+    return '<p class="ceseg-fuente">' + marca + escapar(persona.fuente) + "</p>";
   }
-  return '<p class="ceseg-fuente"><a href="' + escapar(persona.fuente) + '" target="_blank" rel="noopener">Ver fuente</a> · ' + escapar(nombre) + "</p>";
+  return '<p class="ceseg-fuente">' + marca + '<a href="' + escapar(persona.fuente) + '" target="_blank" rel="noopener">Ver fuente</a> · ' + escapar(nombre) + "</p>";
 }
 
 export function OrgulloUSBistaCarousel(raiz) {
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let categoria = "Todos";
+  let filtro = { texto: "", rubro: "", region: "", fuente: "" };
   let indice = 0;
   let timer = null;
   let pausado = false;
@@ -91,15 +99,40 @@ export function OrgulloUSBistaCarousel(raiz) {
     '<div class="ceseg-carril" id="orgullo-carril" tabindex="0" aria-label="Orgullo USBista"></div>' +
     "</div>" +
     '<div class="ceseg-puntos" role="tablist" aria-label="Fichas de Orgullo USBista"></div>' +
-    '<p class="ceseg-orgullo-vacio" hidden>No hay perfiles en esta categoría.</p>';
+    '<p class="ceseg-orgullo-vacio" hidden>Ningún perfil de Orgullo USBista coincide con este filtro.</p>';
 
   const filtros = raiz.querySelector(".ceseg-filtros");
   const carril = raiz.querySelector(".ceseg-carril");
   const puntos = raiz.querySelector(".ceseg-puntos");
   const vacio = raiz.querySelector(".ceseg-orgullo-vacio");
 
+  function vinculado(persona, listaEmpresas) {
+    const nombre = persona.nombre.toLowerCase();
+    const cargo = (persona.cargo || "").toLowerCase();
+    const logro = (persona.logro || "").toLowerCase();
+    return listaEmpresas.some((empresa) => {
+      const fundador = empresa.fundador.toLowerCase();
+      const nombreEmpresa = empresa.empresa.toLowerCase();
+      return fundador.indexOf(nombre) !== -1 ||
+        (cargo && cargo.indexOf(nombreEmpresa) !== -1) ||
+        (logro && logro.indexOf(nombreEmpresa) !== -1);
+    });
+  }
+
   function lista() {
-    const base = categoria === "Todos" ? egresados : egresados.filter((persona) => persona.categoría === categoria);
+    let base = categoria === "Todos" ? egresados : egresados.filter((persona) => persona.categoría === categoria);
+    const q = (filtro.texto || "").trim().toLowerCase();
+    if (q) {
+      base = base.filter((persona) =>
+        (persona.nombre + " " + persona.carrera + " " + persona.cargo + " " + persona.ubicación + " " + persona.logro)
+          .toLowerCase()
+          .indexOf(q) !== -1
+      );
+    }
+    if (filtro.rubro || filtro.region || filtro.fuente) {
+      const publicadas = filtrarEmpresas(empresas, filtro);
+      base = base.filter((persona) => vinculado(persona, publicadas));
+    }
     return ordenar(base);
   }
 
@@ -224,8 +257,11 @@ export function OrgulloUSBistaCarousel(raiz) {
   }
 
   pintarFiltros();
-  pintar();
-  arrancar();
+  alCambiarFiltro((siguiente) => {
+    filtro = siguiente;
+    pintar();
+    arrancar();
+  });
 }
 
 const raiz = document.getElementById("orgullo-usbista");

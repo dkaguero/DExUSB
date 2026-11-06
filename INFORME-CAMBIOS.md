@@ -1,6 +1,6 @@
 # Informe de la copia local del Decanato de Extensión
 
-Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11, 12 y 13.  
+Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11, 12, 13 y 14.  
 Carpeta de trabajo: `C:\Users\karin\DExWeb`.  
 Sigue siendo una copia estática del sitio que dejó de estar activo en http://www.dex.usb.ve. El repositorio está en https://github.com/dkaguero/DExUSB, rama `main`. La sección 9 dice cómo están ordenados los archivos.
 
@@ -400,3 +400,34 @@ Empresas publicadas:
 | Sistemas Gerenciales JPL & Asociados | Jaime Leonardo Padrón | Ingeniería Electrónica | Caracas, Venezuela | CESEG. La USB lo presenta como director principal del convenio |
 
 Quedaron fuera las fichas que nombran un equipo, unos investigadores o unos consultores sin apellido. También quedaron fuera personas cuya página las gradúa en otra universidad o con otro nombre: Demian Brener (ITBA, OpenZeppelin), Slavik Markovich (Technion, Sentrigo), Ana Asuero (Bdeo), Marcelo Burbano (Universidad de Los Andes, Colombia, Arukay), Alberto Kabbabe (Universidad Metropolitana, Alimenta La Solidaridad), Luz Mely Reyes (UCV, Efecto Cocuyo) y Verónica Ruiz del Vizo (Amarilo Creative). Ubii Pagos publica como fundador a Ramón Velásquez, no a Ramón Heredia. Enzo se agregó a Domotai y la CESEG pidió quitarlo. Luis Landín e Irene Rivero aparecen en la nota del laboratorio 3D3. La CESEG indicó que no son egresados ni fundadores, así que la ficha nombra solo a Jaime Leonardo Padrón.
+
+## 14. Tema, cifras de la red publicada y filtro, 5 de noviembre de 2026
+
+Este paso solo toca `ceseg.html` y los módulos de esa página. El resto del Decanato conserva su hoja de estilos. La página sigue en HTML y JavaScript, sin React y sin Tailwind.
+
+### Color, tema y cebolla
+
+En `ceseg.html` el azul de títulos, botones y acentos pasó de `#1c6ea0` a `#0055a5`. El dorado `#d4af37` marca el borde superior de las cifras y la etiqueta «Egresado destacado». El gris de apoyo es `#64748b` y el fondo claro de la columna es `#f8fafc`. El globo sigue sobre `#0b1329`.
+
+El botón «Tema oscuro», en la barra de pestañas, guarda la elección en el navegador con la clave `ceseg-tema`. El modo oscuro cambia la columna de la CESEG, la ficha del mapa y el panel a `#0b1329` y `#1e293b`. La cabecera y el menú lateral del Decanato no cambian.
+
+Mientras carga globe.gl, `src/components/cebollaSpinner.js` muestra la cebolla de `public/assets/img/logo-usb-cebolla.svg` con el texto «Cargando el mapa». En el carrusel y en la ficha del mapa, esa misma cebolla, en pequeño, acompaña la línea «Fuente verificada». Si la fuente es una dirección web, sigue el enlace «Ver fuente». Si no hay dirección, queda el nombre de la fuente, por ejemplo CESEG.
+
+La ficha del mapa sigue siendo la tarjeta de hasta 260 px junto a la cebolla, también en pantallas de menos de 768 px. Se probó un panel inferior de borde a borde y se retiró: ocupaba gran parte de la pantalla. En un dispositivo táctil, el mapa muestra «Tocar para interactuar» y, hasta ese toque, un dedo sigue bajando la página. `ceseg.html` corta el desplazamiento horizontal de la página.
+
+### Cifras y filtro de la red publicada
+
+Arriba de Orgullo USBista, dentro de Egresados y Red Global, hay dos bloques nuevos.
+
+`src/components/impactoGlobal.js` muestra cuatro cifras que suben al abrir la pestaña. Cuentan solo lo que esta página publica hoy:
+
+| Cifra | Qué cuenta | Valor al publicar esta sección |
+| --- | --- | --- |
+| Empresas publicadas | Fichas de `empresasUSBData.js` | 9 |
+| Países en el mapa | Países distintos de esas fichas | 4 |
+| Perfiles de Orgullo USBista | Fichas de `egresadosData.js` | 21 |
+| Con enlace de fuente | Empresas cuya fuente es una dirección web | 6 |
+
+No se publicaron 51 empresas, 20 países, 15.000 egresados ni una valuación de 500 millones de dólares. Esas cifras no están en los datos. Las tres tarjetas de Impacto, al inicio de la página, siguen en «Próximamente».
+
+`src/components/filtroRed.js` filtra el mapa, la lista bajo el mapa y el carrusel. El texto busca empresa, fundador o ciudad, y también nombre, carrera, cargo o logro en Orgullo USBista. El rubro y la fuente salen de los valores que ya tienen las fichas. La región agrupa los países publicados: Venezuela y México en Latinoamérica, Estados Unidos en Norteamérica, y Alemania en Europa. No se agregaron rubros ni fuentes vacíos, como FinTech, Insurtech, cotización en la SEC o Y Combinator, porque ninguna empresa publicada los usa. El contador dice «Mostrando X de 9 empresas publicadas». «Limpiar filtros» vuelve a mostrar las nueve y los 21 perfiles. Un filtro de rubro, región o fuente deja en el carrusel solo el perfil cuyo nombre está en el fundador o cuyo texto nombra esa empresa. Si no hay un perfil así, el carrusel lo dice.

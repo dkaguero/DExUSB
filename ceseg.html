@@ -21,23 +21,68 @@
 
   </head>
 <style type="text/css">
-  html { scroll-behavior: smooth; }
+  :root {
+    --ceseg-azul: #0055a5;
+    --ceseg-noche: #0b1329;
+    --ceseg-dorado: #d4af37;
+    --ceseg-fondo: #f8fafc;
+    --ceseg-muted: #64748b;
+    --ceseg-superficie: #ffffff;
+    --ceseg-texto: #0f172a;
+    --ceseg-linea: #e6e4de;
+    --ceseg-panel-oscuro: #1e293b;
+  }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body { overflow-x: hidden; }
+  .ceseg-portal h1.title,
   h2.title {
     font-size: 12px;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    color: #1c6ea0;
+    color: var(--ceseg-azul);
     font-weight: bold;
     margin-top: 7px;
     line-height: 1.6em;
   }
-  .ceseg-pestanas {
+  .ceseg-portal {
+    background: var(--ceseg-fondo);
+    color: var(--ceseg-texto);
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .ceseg-nav {
     display: flex;
-    overflow-x: auto;
+    align-items: stretch;
     position: sticky;
     top: 0;
     z-index: 5;
-    background: #fff;
-    border-bottom: 1px solid #e6e4de;
+    background: var(--ceseg-superficie);
+    border-bottom: 1px solid var(--ceseg-linea);
+    max-width: 100%;
+  }
+  .ceseg-pestanas {
+    display: flex;
+    flex: 1 1 auto;
+    overflow-x: auto;
+    background: var(--ceseg-superficie);
+    border-bottom: 0;
+  }
+  .ceseg-tema {
+    flex: 0 0 auto;
+    border: 0;
+    border-left: 1px solid var(--ceseg-linea);
+    background: var(--ceseg-superficie);
+    color: var(--ceseg-azul);
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+  .ceseg-tema:hover, .ceseg-tema:focus {
+    background: var(--ceseg-azul);
+    color: #fff;
+    outline: 2px solid var(--ceseg-azul);
+    outline-offset: -2px;
   }
   .ceseg-pestanas button {
     flex: 0 0 auto;
@@ -45,18 +90,18 @@
     border: 0;
     border-bottom: 2px solid transparent;
     background: #fff;
-    color: #1c6ea0;
+    color: var(--ceseg-azul);
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
     padding: 8px 10px;
     cursor: pointer;
   }
-  .ceseg-pestanas button[aria-selected="true"] { border-bottom-color: #1c6ea0; }
+  .ceseg-pestanas button[aria-selected="true"] { border-bottom-color: var(--ceseg-azul); }
   .ceseg-pestanas button:hover,
   .ceseg-pestanas button:focus {
     color: #42a9be;
-    outline: 2px solid #1c6ea0;
+    outline: 2px solid var(--ceseg-azul);
     outline-offset: -2px;
   }
   .ceseg-panel-tab.ceseg-entra { animation: ceseg-fade .2s linear; }
@@ -66,7 +111,7 @@
     width: 100%;
     text-align: left;
     background: #fff;
-    color: #1c6ea0;
+    color: var(--ceseg-azul);
     border: 0;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
@@ -74,9 +119,10 @@
     padding: 8px;
     cursor: pointer;
   }
-  .ceseg-acordeon > button[aria-expanded="true"] { border-bottom: 2px solid #1c6ea0; }
+  .ceseg-acordeon > button[aria-expanded="true"] { border-bottom: 2px solid var(--ceseg-azul); }
   .ceseg-acordeon-panel { padding: 0 8px 8px; }
-  .ceseg-buscar, .ceseg-panel select, .ceseg-panel input, .ceseg-panel textarea {
+  .ceseg-buscar, .ceseg-panel select, .ceseg-panel input, .ceseg-panel textarea,
+  .ceseg-filtro-red select, .ceseg-filtro-red input {
     width: 100%;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
@@ -93,30 +139,32 @@
     font-size: 11px;
     font-weight: bold;
     text-decoration: none;
-    border: 1px solid #1c6ea0;
+    border: 1px solid var(--ceseg-azul);
     background: #fff;
-    color: #1c6ea0;
+    color: var(--ceseg-azul);
     cursor: pointer;
   }
-  .ceseg-acciones a.ceseg-primario { background: #1c6ea0; color: #fff; }
+  .ceseg-acciones a.ceseg-primario { background: var(--ceseg-azul); color: #fff; }
   .ceseg-acciones a:hover, .ceseg-acciones a:focus,
   .ceseg-acciones button:hover, .ceseg-acciones button:focus,
   .ceseg-controles button:hover, .ceseg-controles button:focus {
     background: #42a9be;
     color: #fff;
     border-color: #42a9be;
-    outline: 2px solid #1c6ea0;
+    outline: 2px solid var(--ceseg-azul);
     outline-offset: 2px;
   }
   .ceseg-cifras { display: flex; flex-wrap: wrap; gap: 8px; }
   .ceseg-cifra {
     flex: 1 1 120px;
-    border: 1px solid #e6e4de;
+    border: 1px solid var(--ceseg-linea);
+    border-top: 3px solid var(--ceseg-dorado);
+    background: var(--ceseg-superficie);
     padding: 6px;
     text-align: center;
     margin: 0;
   }
-  .ceseg-cifra strong { display: block; color: #1c6ea0; }
+  .ceseg-cifra strong { display: block; color: var(--ceseg-azul); }
   .ceseg-panel {
     border: 1px solid #e6e4de;
     padding: 8px;
@@ -143,9 +191,9 @@
   .ceseg-filtros, .ceseg-puntos { display: flex; gap: 6px; overflow-x: auto; max-width: 100%; }
   .ceseg-filtros button, .ceseg-puntos button {
     flex: 0 0 auto;
-    border: 1px solid #1c6ea0;
+    border: 1px solid var(--ceseg-azul);
     background: #fff;
-    color: #1c6ea0;
+    color: var(--ceseg-azul);
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -155,12 +203,12 @@
   .ceseg-filtros button:hover, .ceseg-filtros button:focus,
   .ceseg-puntos button:hover, .ceseg-puntos button:focus { background: #42a9be; color: #fff; }
   .ceseg-filtros button[aria-pressed="true"],
-  .ceseg-puntos button[aria-current="true"] { background: #1c6ea0; color: #fff; }
+  .ceseg-puntos button[aria-current="true"] { background: var(--ceseg-azul); color: #fff; }
   .ceseg-puntos button { width: 10px; height: 10px; padding: 0; border-radius: 50%; }
   .ceseg-badge {
     display: inline-block;
-    border: 1px solid #1c6ea0;
-    color: #1c6ea0;
+    border: 1px solid var(--ceseg-azul);
+    color: var(--ceseg-azul);
     padding: 1px 6px;
     margin: 0 4px 4px 0;
   }
@@ -174,11 +222,130 @@
   .ceseg-fuente {
     margin: 8px 0 0;
     padding-top: 6px;
-    border-top: 1px solid #e6e4de;
+    border-top: 1px solid var(--ceseg-linea);
     font-size: 10px;
-    color: #666;
+    color: var(--ceseg-muted);
   }
-  .ceseg-fuente a { color: #1c6ea0; }
+  .ceseg-mini-cebolla {
+    width: 14px;
+    height: 14px;
+    vertical-align: -2px;
+    margin-right: 4px;
+  }
+  .ceseg-destacado {
+    background: var(--ceseg-dorado);
+    border-color: var(--ceseg-dorado);
+    color: var(--ceseg-noche);
+  }
+  .ceseg-spinner {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #fff;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+  }
+  .ceseg-spinner img {
+    width: 48px;
+    height: 48px;
+    animation: ceseg-pulso 1.4s ease-in-out infinite;
+  }
+  @keyframes ceseg-pulso {
+    0%, 100% { transform: scale(1); opacity: .85; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+  .ceseg-velo {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: linear-gradient(to top, rgba(11, 19, 41, .82), rgba(11, 19, 41, 0));
+    color: #fff;
+    text-align: center;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    touch-action: pan-y;
+  }
+  .ceseg-velo p { margin: 0; }
+  .ceseg-velo button {
+    border: 1px solid #fff;
+    background: var(--ceseg-azul);
+    color: #fff;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  body[data-tema="oscuro"] .ceseg-portal {
+    background: var(--ceseg-noche);
+    color: var(--ceseg-fondo);
+  }
+  body[data-tema="oscuro"] .ceseg-portal h1.title,
+  body[data-tema="oscuro"] .ceseg-portal h2.title,
+  body[data-tema="oscuro"] .ceseg-portal a,
+  body[data-tema="oscuro"] .ceseg-globo-tarjeta strong { color: #9ec9ef; }
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-nav,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas button,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-tema,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-panel,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon > button,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-cifra,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-caso,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-buscar,
+  body[data-tema="oscuro"] .ceseg-portal select,
+  body[data-tema="oscuro"] .ceseg-portal input,
+  body[data-tema="oscuro"] .ceseg-portal textarea,
+  body[data-tema="oscuro"] .ceseg-globo-tarjeta {
+    background: var(--ceseg-panel-oscuro);
+    color: var(--ceseg-fondo);
+    border-color: #334155;
+  }
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-acciones a,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-controles button,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-filtros button,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button {
+    background: var(--ceseg-panel-oscuro);
+    color: #9ec9ef;
+  }
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-primario,
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-filtros button[aria-pressed="true"],
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button[aria-current="true"] {
+    background: var(--ceseg-azul);
+    color: #fff;
+  }
+  .ceseg-fuente a { color: var(--ceseg-azul); }
+  .ceseg-impacto {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 8px 0;
+  }
+  @media (min-width: 768px) {
+    .ceseg-impacto { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .ceseg-impacto .ceseg-cifra {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(8px);
+  }
+  body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
+    background: rgba(30, 41, 59, 0.72);
+  }
+  .ceseg-filtro-red label { display: block; margin: 6px 0; }
+  .ceseg-filtro-cuenta { color: var(--ceseg-muted); margin: 6px 0; }
   .ceseg-globo {
     position: relative;
     width: 100%;
@@ -242,7 +409,7 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   }
   .ceseg-globo-tarjeta p { margin: 0 0 4px; }
-  .ceseg-globo-tarjeta strong { color: #1c6ea0; }
+  .ceseg-globo-tarjeta strong { color: var(--ceseg-azul); }
   .ceseg-globo-aviso {
     position: absolute;
     left: 8px;
@@ -259,7 +426,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #1c6ea0;
+    background: var(--ceseg-azul);
     color: #fff;
     display: inline-flex;
     align-items: center;
@@ -275,6 +442,7 @@
     .ceseg-panel-tab.ceseg-entra { animation: none; }
     .ceseg-cebolla img { animation: none; }
     .ceseg-haz { transition: none; }
+    .ceseg-spinner img { animation: none; }
   }
 </style>
 <body>
@@ -325,7 +493,7 @@
         </div>
           
             <!--Centro  de la pagina-->
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-6 col-xs-12 ceseg-portal">
 
 
 <header>
@@ -352,11 +520,14 @@
 </section>
 
 <div id="ceseg-pestanas">
+<div class="ceseg-nav">
 <div class="ceseg-pestanas" role="tablist" aria-label="Secciones de la CESEG">
 <button type="button" role="tab" id="tab-emprendimiento" aria-controls="panel-emprendimiento" aria-selected="true">Emprendimiento e Incubación</button>
 <button type="button" role="tab" id="tab-egresados" aria-controls="panel-egresados" aria-selected="false" tabindex="-1">Egresados y Red Global</button>
 <button type="button" role="tab" id="tab-bolsa" aria-controls="panel-bolsa" aria-selected="false" tabindex="-1">Bolsa de Trabajo</button>
 <button type="button" role="tab" id="tab-tramites" aria-controls="panel-tramites" aria-selected="false" tabindex="-1">Trámites y Certificaciones</button>
+</div>
+<button type="button" id="ceseg-tema" class="ceseg-tema" aria-pressed="false">Tema oscuro</button>
 </div>
 
 <div class="ceseg-panel-tab" id="panel-emprendimiento" role="tabpanel" aria-labelledby="tab-emprendimiento">
@@ -382,6 +553,8 @@
 </div>
 
 <div class="ceseg-panel-tab" id="panel-egresados" role="tabpanel" aria-labelledby="tab-egresados" hidden>
+<section id="impacto-global" class="ceseg-item" aria-label="Cifras de la red publicada"></section>
+<div id="filtro-red" class="ceseg-item"></div>
 <section id="orgullo-usbista" class="ceseg-item" aria-label="Orgullo USBista"></section>
 <section id="usbistas-mundo" class="ceseg-item" aria-label="USBistas por el mundo">
 <h2 class="title">USBistas por el mundo</h2>
@@ -729,6 +902,30 @@ Horario de atención: de 9:00 a.m. a 3:30 p.m.<br>
     }
   }());
   </script>
+  <script>
+    (function () {
+      var clave = "ceseg-tema";
+      var boton = document.getElementById("ceseg-tema");
+      var oscuro = false;
+      try { oscuro = localStorage.getItem(clave) === "oscuro"; } catch (e) {}
+      function aplicar() {
+        document.body.setAttribute("data-tema", oscuro ? "oscuro" : "claro");
+        if (!boton) return;
+        boton.setAttribute("aria-pressed", oscuro ? "true" : "false");
+        boton.textContent = oscuro ? "Tema claro" : "Tema oscuro";
+      }
+      aplicar();
+      if (boton) {
+        boton.addEventListener("click", function () {
+          oscuro = !oscuro;
+          try { localStorage.setItem(clave, oscuro ? "oscuro" : "claro"); } catch (e) {}
+          aplicar();
+        });
+      }
+    }());
+  </script>
+  <script type="module" src="src/components/impactoGlobal.js"></script>
+  <script type="module" src="src/components/filtroRed.js"></script>
   <script type="module" src="src/components/orgulloUSBista.js"></script>
   <script type="module" src="src/components/globeUSB.js"></script>
  

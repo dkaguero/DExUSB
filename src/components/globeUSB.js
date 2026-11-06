@@ -1,6 +1,9 @@
 import empresas from "../data/empresasUSBData.js";
+import { montarCebollaSpinner } from "./cebollaSpinner.js";
+import { alCambiarFiltro, filtrarEmpresas, filtroActivo } from "./filtroRed.js";
 
 const LOGO = "public/assets/img/logo-usb-cebolla.svg";
+const MINI = '<img class="ceseg-mini-cebolla" src="' + LOGO + '" alt="" width="14" height="14">';
 const GLOBE_SRC = "https://unpkg.com/globe.gl@2.46.2/dist/globe.gl.min.js";
 const TIERRA = "https://unpkg.com/three-globe/example/img/earth-night.jpg";
 
@@ -31,9 +34,10 @@ function ficha(empresa) {
   const fundador = empresa.carrera
     ? "Fundador: " + escapar(empresa.fundador) + ", " + escapar(empresa.carrera)
     : "Fundador: " + escapar(empresa.fundador);
-  const fuente = typeof empresa.fuente === "string" && empresa.fuente.indexOf("http") === 0
+  const detalle = typeof empresa.fuente === "string" && empresa.fuente.indexOf("http") === 0
     ? '<a href="' + escapar(empresa.fuente) + '" target="_blank" rel="noopener">Ver fuente</a> · ' + escapar(empresa.fuenteTexto)
-    : "Fuente: " + escapar(empresa.fuenteTexto);
+    : escapar(empresa.fuenteTexto);
+  const fuente = MINI + "Fuente verificada · " + detalle;
   return (
     "<p><strong>" + escapar(empresa.empresa) + "</strong></p>" +
     "<p>" + fundador + "</p>" +
@@ -56,10 +60,16 @@ export function GlobeUSB(raiz) {
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const tactil = window.matchMedia("(pointer: coarse)").matches;
   const panel = document.getElementById("panel-egresados");
+  let visibles = empresas.slice();
+  let ultimoFiltro = { texto: "", rubro: "", region: "", fuente: "" };
   const lista = document.createElement("ul");
   lista.className = "ceseg-globo-indice";
-  lista.innerHTML = indice(empresas);
+  lista.innerHTML = indice(visibles);
   raiz.insertAdjacentElement("afterend", lista);
+  const sinResultados = document.createElement("p");
+  sinResultados.hidden = true;
+  sinResultados.textContent = "Ninguna empresa publicada coincide con este filtro.";
+  lista.insertAdjacentElement("afterend", sinResultados);
 
   const tarjeta = document.createElement("div");
   tarjeta.className = "ceseg-globo-tarjeta";
@@ -67,8 +77,10 @@ export function GlobeUSB(raiz) {
   const aviso = document.createElement("p");
   aviso.className = "ceseg-globo-aviso";
   aviso.textContent = tactil
-    ? "Toca una cebolla para ver la empresa. El recorrido se detiene al tocar el mapa."
+    ? "Toca para interactuar. Con un dedo la página sigue bajando."
     : "El recorrido pasa por cada empresa. Pasa el cursor por el mapa para detenerlo.";
+  let interactivo = !tactil;
+  let spinner = null;
   tarjeta.addEventListener("pointerleave", (evento) => {
     if (evento.relatedTarget && activo && activo.contains(evento.relatedTarget)) return;
     ocultar();
@@ -93,12 +105,16 @@ export function GlobeUSB(raiz) {
     if (activo) activo.classList.add("ceseg-cebolla-activa");
   }
 
+  function fichaAbierta() {
+    return !tarjeta.hidden;
+  }
+
   function mostrar(empresa, boton) {
     marcar(boton);
-    tarjeta.hidden = false;
-    tarjeta.innerHTML = ficha(empresa);
     aviso.hidden = true;
     if (mundo && mundo.controls) mundo.controls().autoRotate = false;
+    tarjeta.hidden = false;
+    tarjeta.innerHTML = ficha(empresa);
     const caja = raiz.getBoundingClientRect();
     const marca = boton.getBoundingClientRect();
     const ancho = Math.min(260, caja.width - 16);
@@ -172,7 +188,7 @@ export function GlobeUSB(raiz) {
       if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 10) controles.enabled = false;
     }, { passive: true });
     const soltar = () => {
-      controles.enabled = true;
+      if (interactivo) controles.enabled = true;
       origen = null;
     };
     lienzo.addEventListener("touchend", soltar, { passive: true });
@@ -184,9 +200,9 @@ export function GlobeUSB(raiz) {
   }
 
   function enfocar(destino, animar) {
-    if (!mundo || !empresas.length) return;
-    puesto = (destino + empresas.length) % empresas.length;
-    const empresa = empresas[puesto];
+    if (!mundo || !visibles.length) return;
+    puesto = (destino + visibles.length) % visibles.length;
+    const empresa = visibles[puesto];
     const duracion = animar && !reducir ? VUELO : 0;
     volando = duracion > 0;
     mundo.controls().autoRotate = false;
@@ -213,7 +229,7 @@ export function GlobeUSB(raiz) {
 
   function iniciarTour() {
     window.clearInterval(timerTour);
-    if (reducir || empresas.length < 2) return;
+    if (reducir || visibles.length < 2) return;
     pausado = false;
     enfocar(0, false);
     timerTour = window.setInterval(paso, ESPERA);
@@ -223,7 +239,7 @@ export function GlobeUSB(raiz) {
     if (reducir) return;
     pausado = true;
     window.clearTimeout(timerReanudar);
-    if (!tarjeta.hidden) return;
+    if (fichaAbierta()) return;
     aviso.hidden = false;
     aviso.textContent = "Recorrido en pausa. Continúa al salir del mapa.";
   }
@@ -239,6 +255,10 @@ export function GlobeUSB(raiz) {
   }
 
   function crear(Globe) {
+    if (spinner) {
+      spinner.quitar();
+      spinner = null;
+    }
     mundo = new Globe(raiz);
     mundo
       .globeImageUrl(TIERRA)
@@ -246,7 +266,8 @@ export function GlobeUSB(raiz) {
       .showAtmosphere(true)
       .atmosphereColor("#0055a5")
       .atmosphereAltitude(0.18)
-      .htmlElementsData(empresas)
+      .htmlElementsData(visibles)
+      .htmlTransitionDuration(0)
       .htmlLat((empresa) => empresa.lat)
       .htmlLng((empresa) => empresa.lng)
       .htmlAltitude(0.02)
@@ -270,6 +291,21 @@ export function GlobeUSB(raiz) {
       if (!volando) pausar();
     });
     soltarScroll(controles);
+    if (!interactivo) controles.enabled = false;
+    if (tactil) {
+      const velo = document.createElement("div");
+      velo.className = "ceseg-velo";
+      velo.innerHTML =
+        "<p>Con un dedo la página sigue bajando.</p>" +
+        '<button type="button">Tocar para interactuar</button>';
+      velo.querySelector("button").addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        interactivo = true;
+        controles.enabled = true;
+        velo.remove();
+      });
+      raiz.appendChild(velo);
+    }
     raiz.appendChild(tarjeta);
     raiz.appendChild(aviso);
     raiz.addEventListener("pointerover", () => {
@@ -291,11 +327,19 @@ export function GlobeUSB(raiz) {
     });
     window.addEventListener("resize", medir);
     listo = true;
-    iniciarTour();
+    if (filtroActivo(ultimoFiltro)) {
+      pausado = true;
+      if (visibles.length) {
+        mundo.pointOfView({ lat: visibles[0].lat, lng: visibles[0].lng, altitude: 1.8 }, 0);
+      }
+    } else {
+      iniciarTour();
+    }
   }
 
   function arrancar() {
     if (listo || !panel || panel.hidden || raiz.clientWidth < 20) return;
+    if (!spinner) spinner = montarCebollaSpinner(raiz, "Cargando el mapa");
     cargarGlobe()
       .then((Globe) => {
         if (!Globe || listo) {
@@ -305,7 +349,12 @@ export function GlobeUSB(raiz) {
         crear(Globe);
       })
       .catch(() => {
+        if (spinner) {
+          spinner.quitar();
+          spinner = null;
+        }
         aviso.textContent = "El globo no pudo cargarse. Las empresas publicadas están en la lista.";
+        raiz.appendChild(aviso);
       });
   }
 
@@ -321,6 +370,28 @@ export function GlobeUSB(raiz) {
     });
     observador.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
   }
+  function aplicarVisibles(filtro) {
+    ultimoFiltro = filtro;
+    visibles = filtrarEmpresas(empresas, filtro);
+    lista.hidden = visibles.length === 0;
+    sinResultados.hidden = visibles.length !== 0;
+    lista.innerHTML = indice(visibles);
+    if (!mundo) return;
+    ocultar();
+    mundo.htmlElementsData(visibles);
+    window.clearInterval(timerTour);
+    window.clearTimeout(timerFicha);
+    volando = false;
+    if (!visibles.length) return;
+    if (filtroActivo(filtro)) {
+      pausado = true;
+      mundo.pointOfView({ lat: visibles[0].lat, lng: visibles[0].lng, altitude: 1.8 }, reducir ? 0 : 800);
+      return;
+    }
+    if (!dentro) iniciarTour();
+  }
+
+  alCambiarFiltro(aplicarVisibles);
   arrancar();
 }
 
