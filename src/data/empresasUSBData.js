@@ -62,17 +62,17 @@ export const empresasUSBistas = [
   {
     id: "domotai",
     empresa: "Domotai",
-    fundador: "José Antonio Avendaño (Urbanismo), David Altuve (Ingeniería Electrónica) y Ángel Rodríguez (Tecnología Electrónica), cofundadores",
-    carrera: "",
+    fundador: "José Antonio Avendaño",
+    carrera: "Urbanismo",
     ciudad: "Caracas",
     pais: "Venezuela",
     lat: 10.455,
     lng: -66.93,
     rubro: "Inteligencia artificial",
-    descripcion: "Empresa de software e inteligencia artificial. Los cofundadores trabajan desde Caracas.",
+    descripcion: "Empresa de software e inteligencia artificial. José Antonio Avendaño trabaja desde Caracas.",
     fuente: "",
     fuenteTexto: "CESEG",
-    verificacion: "La CESEG confirma que son egresados de la USB y cofundadores. La carrera de Avendaño es Urbanismo, la de Altuve es Ingeniería Electrónica y la de Ángel Rodríguez es Tecnología Electrónica."
+    verificacion: "La CESEG confirma que José Antonio Avendaño es egresado de Urbanismo y cofundador."
   },
   {
     id: "kavak",
