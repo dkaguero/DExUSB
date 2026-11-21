@@ -303,7 +303,8 @@ body[data-tema="oscuro"] .ceseg-globo-tarjeta {
 body[data-tema="oscuro"] .ceseg-portal .ceseg-acciones a,
 body[data-tema="oscuro"] .ceseg-portal .ceseg-controles button,
 body[data-tema="oscuro"] .ceseg-portal .ceseg-filtros button,
-body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button {
+body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button,
+body[data-tema="oscuro"] .ceseg-portal .ceseg-globo-pliegue > summary {
   background: var(--ceseg-panel-oscuro);
   color: #9ec9ef;
 }
@@ -408,6 +409,31 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
   font-size: 11px;
 }
 .ceseg-globo-indice { margin: 8px 0; padding-left: 18px; }
+/* Lista plegada bajo el globo: el botón usa el mismo estilo que los demás. */
+.ceseg-globo-pliegue { margin: 8px 0; }
+.ceseg-globo-pliegue > summary {
+  display: inline-block;
+  list-style: none;
+  padding: 6px 10px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid var(--ceseg-azul);
+  background: #fff;
+  color: var(--ceseg-azul);
+  cursor: pointer;
+}
+.ceseg-globo-pliegue > summary::-webkit-details-marker { display: none; }
+.ceseg-globo-pliegue > summary::before { content: "▸ "; }
+.ceseg-globo-pliegue[open] > summary::before { content: "▾ "; }
+.ceseg-globo-pliegue > summary:hover,
+.ceseg-globo-pliegue > summary:focus {
+  background: #42a9be;
+  color: #fff;
+  border-color: #42a9be;
+  outline: 2px solid var(--ceseg-azul);
+  outline-offset: 2px;
+}
 .ceseg-inicial {
   width: 36px;
   height: 36px;

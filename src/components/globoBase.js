@@ -48,11 +48,24 @@ export function montarGlobo(raiz, opciones) {
   const lista = document.createElement("ul");
   lista.className = "ceseg-globo-indice";
   lista.innerHTML = opciones.indice(visibles);
-  raiz.insertAdjacentElement("afterend", lista);
+  // Con opciones.plegar(n), la lista queda cerrada tras un botón cuyo
+  // texto da esa función (por ejemplo «Ver las 63 ciudades»).
+  let pliegue = null;
+  if (opciones.plegar) {
+    pliegue = document.createElement("details");
+    pliegue.className = "ceseg-globo-pliegue";
+    const boton = document.createElement("summary");
+    boton.textContent = opciones.plegar(visibles.length);
+    pliegue.appendChild(boton);
+    pliegue.appendChild(lista);
+    raiz.insertAdjacentElement("afterend", pliegue);
+  } else {
+    raiz.insertAdjacentElement("afterend", lista);
+  }
   const sinResultados = document.createElement("p");
   sinResultados.hidden = true;
   sinResultados.textContent = textos.sinResultados;
-  lista.insertAdjacentElement("afterend", sinResultados);
+  (pliegue || lista).insertAdjacentElement("afterend", sinResultados);
 
   const tarjeta = document.createElement("div");
   tarjeta.className = "ceseg-globo-tarjeta";
@@ -348,6 +361,10 @@ export function montarGlobo(raiz, opciones) {
     visibles = nuevos.slice();
     fijo = Boolean(opcionesCambio && opcionesCambio.fijo);
     lista.hidden = visibles.length === 0;
+    if (pliegue) {
+      pliegue.hidden = visibles.length === 0;
+      pliegue.querySelector("summary").textContent = opciones.plegar(visibles.length);
+    }
     sinResultados.hidden = visibles.length !== 0;
     lista.innerHTML = opciones.indice(visibles);
     if (!mundo) return;

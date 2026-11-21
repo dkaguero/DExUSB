@@ -155,6 +155,7 @@ export function GloboEgresados(raiz) {
         etiqueta: (punto) => punto.ciudad + ", " + punto.pais + ": " + cuantos(punto.egresados),
         ficha,
         indice,
+        plegar: (n) => (n === 1 ? "Ver la ciudad" : "Ver las " + n + " ciudades"),
         textos: {
           recorrido: "El recorrido pasa por cada ciudad. Pasa el cursor por el mapa para detenerlo.",
           error: "El globo no pudo cargarse. Las ciudades están en la lista.",
