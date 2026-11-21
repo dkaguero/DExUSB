@@ -36,6 +36,10 @@ export function GlobeUSB(raiz, empresas) {
     etiqueta: (empresa) => empresa.empresa,
     ficha,
     indice,
+    // En el widget de Google Sites (data-plegar="1") la lista queda plegada.
+    plegar: raiz.dataset.plegar === "1"
+      ? (n) => (n === 1 ? "Ver la empresa" : "Ver las " + n + " empresas")
+      : null,
     textos: {
       recorrido: "El recorrido pasa por cada empresa. Pasa el cursor por el mapa para detenerlo.",
       error: "El globo no pudo cargarse. Las empresas publicadas están en la lista.",

@@ -7,20 +7,20 @@ Cómo leer esta guía:
 - **🧩 Widget**: **Insertar › Incorporar › Incorporar código**, pegar el contenido completo del archivo indicado de `dist-google-sites/ceseg/` y ajustar el alto del recuadro arrastrando su borde.
 - Los widgets se generan con `node tools/build-google-sites.js`. Si cambia algo del widget, se regenera y se vuelve a pegar. Los **datos** (fichas, empresas, ciudades) no requieren volver a pegarlo: se leen de Google Sheets.
 
-## Altos de los widgets
+## Altos y disposición de los widgets
 
-Google Sites da a cada «Incorporar código» un alto fijo. Medidos en un navegador:
+**Comprobado en Sites (21 de noviembre de 2026):** en el teléfono, Google Sites **achica cada recuadro en proporción a su ancho**; un recuadro de 900 × 760 queda de unos 340 × 290. Por eso cada widget llena el recuadro que le toque y ordena su contenido según el espacio, sin barra de desplazamiento interna. Mientras más alto sea el recuadro en escritorio, más alto quedará en el teléfono. Un recuadro en **media columna** se achica mucho menos (450 → 340 de ancho) que uno de ancho completo (900 → 340).
 
-| Widget | Ancho de escritorio | Teléfono | Alto sugerido |
+| Widget | Disposición en escritorio | Alto en escritorio | Queda en el teléfono |
 |---|---|---|---|
-| `censo-banner.html` | 209 px | 266 px | **280 px** |
-| `orgullo-usbista.html` | 381 px | 455 px | **470 px** |
-| `globo-egresados.html` | llena el recuadro | llena el recuadro | **800 px** |
-| `red-global.html` | 1096 px | 1202 px | **1220 px** |
+| `censo-banner.html` | Ancho completo | **300 px** | ~115 px: título, cifras y botón |
+| `orgullo-usbista.html` | **Media columna**, con el texto y el botón «Proponer» en la otra mitad | **600 px** | ~450 px: ficha completa |
+| `globo-egresados.html` | Ancho completo | **800 px** | ~300 px |
+| `red-global.html` | Ancho completo | **900 px** | ~340 px: cifras, «Filtrar empresas» y globo |
 
-**Comprobado en Sites (21 de noviembre de 2026):** en el teléfono, Google Sites **achica el recuadro en proporción**; un recuadro de 900 × 760 queda de unos 340 × 290. Por eso los widgets se adaptan al alto que les toque, en vez de tener un alto fijo. Mientras más alto sea el recuadro en escritorio, más alto quedará en el teléfono.
+Todos los widgets siguen el tema claro u oscuro del sistema del visitante y abren sus enlaces fuera del recuadro.
 
-Todos los widgets siguen el tema claro u oscuro del sistema del visitante, y abren sus enlaces fuera del recuadro.
+Para pegar un widget: abrir el archivo de `dist-google-sites/ceseg/` en VS Code, Ctrl+A, Ctrl+C, y en Sites **Insertar › Incorporar › Incorporar código**, Ctrl+V.
 
 ## Navegación del sitio
 
@@ -62,7 +62,7 @@ Subtítulo que se repite debajo del título de cada página (salvo Inicio):
 - **Próximamente** · Egresados en la red global
 - **Próximamente** · Oportunidades laborales publicadas
 
-🧩 **Widget `censo-banner.html`**, alto 280 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
 
 **Convocatoria abierta**
 > **II Feria de Emprendedores USB.** Del lunes 30 de noviembre al viernes 4 de diciembre de 2026, de 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. [Más información → página Emprendimiento]
@@ -109,9 +109,15 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 
 **Título:** Egresados
 
-🧩 **Widget `censo-banner.html`**, alto 280 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
 
-🧩 **Widget `orgullo-usbista.html`**, alto 470 px.
+**Sección de dos columnas** (en Sites: **Insertar › Diseños**, el de dos columnas):
+- Columna izquierda: 🧩 **Widget `orgullo-usbista.html`**, alto 600 px.
+- Columna derecha (texto nativo):
+  > **Orgullo USBista**
+  > Egresados y egresadas de la USB con logros nacionales e internacionales. Cada ficha usa solo el dato que aparece en la fuente enlazada.
+  >
+  > **Proponer un egresado destacado** (ver abajo: el texto y el botón van en esta columna).
 
 **Proponer un egresado destacado**
 > ¿Conoces a un egresado o egresada de la USB con logros importantes a nivel nacional o internacional? Propónlo. La CESEG verifica cada propuesta con fuentes públicas antes de publicarla en Orgullo USBista.
@@ -139,7 +145,10 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 
 **Título:** Red Global USBista
 
-🧩 **Widget `red-global.html`**, alto 1220 px. Incluye las cifras de la red publicada, el filtro y el globo «USBistas por el mundo» con su lista.
+**USBistas por el mundo** (texto nativo, encima del widget)
+> Empresas fundadas por egresados de la USB, según una fuente pública o la confirmación de la CESEG. Las cifras cuentan solo las empresas y los perfiles de Orgullo USBista que publica la CESEG.
+
+🧩 **Widget `red-global.html`**, alto 900 px. Incluye las cuatro cifras, el botón «Filtrar empresas», el globo y la lista plegada de empresas.
 
 **Registrar tu empresa**
 > ¿Fundaste o cofundaste una empresa y egresaste de la USB? Regístrala. La CESEG verifica los datos antes de publicarla en el mapa USBistas por el mundo.

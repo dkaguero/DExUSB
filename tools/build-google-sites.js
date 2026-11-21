@@ -209,6 +209,84 @@ ${codigo}
 
 // ---------- widgets ----------
 
+const CSS_BANNER = `
+html, body.w-banner { height: 100%; }
+body.w-banner { overflow: hidden; }
+.w-banner .ceseg-portal { height: 100%; padding: 0; }
+.w-banner .ceseg-censo {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(6px, 4vh, 18px) clamp(10px, 3vw, 20px);
+}
+.w-banner .ceseg-portal .ceseg-censo p { margin: 0 0 clamp(3px, 2.5vh, 10px); }
+.w-banner .ceseg-censo-titulo { font-size: clamp(13px, 7vh, 24px); margin-bottom: clamp(3px, 2.5vh, 10px); }
+.w-banner .ceseg-censo-cifra, .w-banner .ceseg-censo-cifra strong { font-size: clamp(11px, 4.5vh, 15px); }
+.w-banner .ceseg-portal .ceseg-censo a.ceseg-censo-boton { font-size: clamp(11px, 4.5vh, 14px); padding: clamp(4px, 2.5vh, 10px) clamp(10px, 3vw, 18px); }
+@media (max-height: 190px) {
+  .w-banner .ceseg-censo-antetitulo, .w-banner .ceseg-censo-nota { display: none; }
+}
+`;
+
+const CSS_ORGULLO = `
+html, body.w-orgullo { height: 100%; }
+body.w-orgullo { overflow: hidden; }
+.w-orgullo .ceseg-portal { height: 100%; padding: 6px; }
+.w-orgullo #orgullo-usbista { height: 100%; display: flex; flex-direction: column; gap: 4px; }
+.w-orgullo #orgullo-usbista > h2,
+.w-orgullo #orgullo-usbista > p:not(.ceseg-orgullo-vacio) { display: none; }
+.w-orgullo .ceseg-filtros { order: 1; flex: 0 0 auto; flex-wrap: nowrap; padding-bottom: 2px; }
+.w-orgullo .ceseg-orgullo-ventana { order: 2; flex: 1 1 auto; min-height: 0; }
+.w-orgullo .ceseg-carril { height: 100%; padding-bottom: 0; }
+.w-orgullo .ceseg-caso { height: 100%; overflow-y: auto; margin: 0; }
+.w-orgullo .ceseg-controles { order: 3; flex: 0 0 auto; display: flex; gap: 6px; margin: 0; }
+.w-orgullo .ceseg-controles button { margin: 0; padding: 4px 10px; }
+.w-orgullo .ceseg-puntos { order: 4; flex: 0 0 auto; }
+.w-orgullo .ceseg-orgullo-vacio { order: 2; }
+`;
+
+const CSS_RED = `
+.w-red #impacto-global { flex: 0 0 auto; margin: 0 6px; }
+.w-red #impacto-global > h2, .w-red #impacto-global > p { display: none; }
+.w-red .ceseg-impacto { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 6px 0 2px; }
+.w-red .ceseg-impacto .ceseg-cifra { padding: 3px 2px; font-size: 10px; line-height: 1.25; }
+.w-red .ceseg-filtro-pliegue { flex: 0 0 auto; margin: 4px 6px; position: relative; }
+.w-red .ceseg-filtro-pliegue > summary {
+  display: inline-block;
+  list-style: none;
+  padding: 4px 10px;
+  border: 1px solid var(--ceseg-azul);
+  background: var(--ceseg-superficie);
+  color: var(--ceseg-azul);
+  font-weight: bold;
+  cursor: pointer;
+}
+.w-red .ceseg-filtro-pliegue > summary::-webkit-details-marker { display: none; }
+.w-red .ceseg-filtro-pliegue > summary::before { content: "▸ "; }
+.w-red .ceseg-filtro-pliegue[open] > summary::before { content: "▾ "; }
+.w-red .ceseg-filtro-pliegue[open] #filtro-red {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100003;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--ceseg-superficie);
+  border: 1px solid var(--ceseg-linea);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+body[data-tema="oscuro"] .w-red .ceseg-filtro-pliegue > summary,
+body[data-tema="oscuro"] .w-red .ceseg-filtro-pliegue[open] #filtro-red {
+  background: var(--ceseg-panel-oscuro);
+  color: #9ec9ef;
+  border-color: #334155;
+}
+`;
+
 // Widgets que llenan el alto del iframe: columna flexible con el globo al medio.
 const CSS_LLENAR = `
 html, body.w-llenar { height: 100%; }
@@ -249,7 +327,11 @@ const WIDGETS = [
     archivo: "censo-banner.html",
     titulo: "Censo de Egresados CESEG",
     pagina: "Inicio y Egresados",
+    // Llena el recuadro con el contenido centrado; el texto se ajusta al alto
+    // y, en recuadros muy bajos (teléfono), se ocultan el antetítulo y la nota.
+    clase: "w-banner",
     html: bloque("cesegEgresados.html", "section", "censo"),
+    css: CSS_BANNER,
     modulos: ["src/components/censoBanner.js"]
   },
   {
@@ -257,7 +339,12 @@ const WIDGETS = [
     titulo: "Orgullo USBista",
     pagina: "Egresados",
     cdn: [FONT_AWESOME],
+    // El título y el texto van como texto nativo de Sites. Quedan los filtros
+    // arriba, la ficha llenando el alto (con desplazamiento propio si es
+    // larga) y los controles abajo.
+    clase: "w-orgullo",
     html: bloque("cesegEgresados.html", "section", "orgullo-usbista"),
+    css: CSS_ORGULLO,
     modulos: ["src/components/orgulloUSBista.js"]
   },
   {
@@ -280,11 +367,17 @@ const WIDGETS = [
     archivo: "red-global.html",
     titulo: "Red Global USBista",
     pagina: "Red Global",
+    // Cifras en una fila, filtro plegado que se abre encima del globo, globo
+    // llenando el alto y lista de empresas plegada.
+    clase: "w-llenar w-red",
     html: [
       bloque("cesegRedGlobal.html", "section", "impacto-global"),
+      '<details class="ceseg-filtro-pliegue"><summary>Filtrar empresas</summary>',
       bloque("cesegRedGlobal.html", "div", "filtro-red"),
-      bloque("cesegRedGlobal.html", "section", "usbistas-mundo")
+      "</details>",
+      elemento("cesegRedGlobal.html", "div", "globe-usb").replace('id="globe-usb"', 'id="globe-usb" data-plegar="1"')
     ].join("\n"),
+    css: CSS_LLENAR + CSS_RED,
     modulos: ["src/components/impactoGlobal.js", "src/components/filtroRed.js", "src/components/globeUSB.js"]
   }
 ];
