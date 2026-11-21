@@ -9,14 +9,29 @@ Cómo leer esta guía:
 
 ## Altos y disposición de los widgets
 
-**Comprobado en Sites (21 de noviembre de 2026):** en el teléfono, Google Sites **achica cada recuadro en proporción a su ancho**; un recuadro de 900 × 760 queda de unos 340 × 290. Por eso cada widget llena el recuadro que le toque y ordena su contenido según el espacio, sin barra de desplazamiento interna. Mientras más alto sea el recuadro en escritorio, más alto quedará en el teléfono. Un recuadro en **media columna** se achica mucho menos (450 → 340 de ancho) que uno de ancho completo (900 → 340).
+**Medido en el sitio de la CESEG (21 de noviembre de 2026)** con `medidor.html`, un widget que muestra el tamaño de su propio recuadro:
 
-| Widget | Disposición en escritorio | Alto en escritorio | Queda en el teléfono |
+| Recuadro en escritorio | En el teléfono |
+|---|---|
+| 630 × 600 (ancho completo) | 315 × 300 |
+| 600 × 437 | 315 × 219 |
+
+Google Sites **conserva la proporción** del recuadro y en el teléfono lo pone a unos **315 px de ancho**:
+
+> **alto en el teléfono ≈ alto en escritorio × 315 ÷ ancho en escritorio**
+
+Con el menú lateral, el contenido del sitio mide **630 px** de ancho. Un recuadro de ancho completo queda a la **mitad** de alto en el teléfono. Uno más angosto que 315 px **crece** en el teléfono.
+
+Además, cada widget llena el recuadro que le toque y, si es bajo, oculta primero lo secundario (resumen, cifras, puntos, filtros). Así nunca aparece una barra de desplazamiento interna.
+
+| Widget | Disposición | Recuadro en escritorio | En el teléfono |
 |---|---|---|---|
-| `censo-banner.html` | Ancho completo | **400 px** | ~130 px: título, cifras y botón |
-| `orgullo-usbista.html` | **Media columna**, con el texto y el botón «Proponer» en la otra mitad | **600 px** | ~450 px: ficha completa |
-| `globo-egresados.html` | Ancho completo | **800 px** | ~300 px |
-| `red-global.html` | Ancho completo | **900 px** | ~340 px: cifras, «Filtrar empresas» y globo |
+| `censo-banner.html` | Ancho completo | **630 × 300** | 315 × 150 |
+| `orgullo-usbista.html` | Columna angosta (unos 300 de ancho), con el texto y el botón «Proponer» al lado | **300 × 440** | 315 × 460 |
+| `globo-egresados.html` | Ancho completo | **630 × 760** | 315 × 380 |
+| `red-global.html` | Ancho completo | **630 × 800** | 315 × 400 |
+
+Para comprobar el ancho de una columna antes de pegar un widget, pega primero `medidor.html` en ella.
 
 Todos los widgets siguen el tema claro u oscuro del sistema del visitante y abren sus enlaces fuera del recuadro.
 
@@ -62,7 +77,7 @@ Subtítulo que se repite debajo del título de cada página (salvo Inicio):
 - **Próximamente** · Egresados en la red global
 - **Próximamente** · Oportunidades laborales publicadas
 
-🧩 **Widget `censo-banner.html`**, ancho completo, alto 400 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
 
 **Convocatoria abierta**
 > **II Feria de Emprendedores USB.** Del lunes 30 de noviembre al viernes 4 de diciembre de 2026, de 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. [Más información → página Emprendimiento]
@@ -109,10 +124,10 @@ Los audios de SoundCloud dejaron de ser públicos y la CESEG no conserva los arc
 
 **Título:** Egresados
 
-🧩 **Widget `censo-banner.html`**, ancho completo, alto 400 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
 
 **Sección de dos columnas** (en Sites: **Insertar › Diseños**, el de dos columnas):
-- Columna izquierda: 🧩 **Widget `orgullo-usbista.html`**, alto 600 px.
+- Columna izquierda (unos 300 px de ancho): 🧩 **Widget `orgullo-usbista.html`**, alto 440 px.
 - Columna derecha (texto nativo):
   > **Orgullo USBista**
   > Egresados y egresadas de la USB con logros nacionales e internacionales. Cada ficha usa solo el dato que aparece en la fuente enlazada.
@@ -126,7 +141,7 @@ Los audios de SoundCloud dejaron de ser públicos y la CESEG no conserva los arc
 **Egresados por el mundo** (texto nativo, encima del widget)
 > Cada cebolla es una ciudad donde vive al menos un egresado que respondió el [Censo de Egresados CESEG](https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform). La ficha muestra solo la ciudad, el país y cuántos egresados hay allí. No se publican nombres ni datos de contacto.
 
-🧩 **Widget `globo-egresados.html`**, alto 800 px en escritorio. Incluye el resumen («240 egresados en 63 ciudades…»), el globo, el botón «¿No ves tu ciudad? Agrégala» y la lista plegada de ciudades. El globo llena todo el alto del recuadro, así que se adapta cuando Sites lo achica en el teléfono.
+🧩 **Widget `globo-egresados.html`**, ancho completo, alto 760 px. Incluye el resumen («240 egresados en 63 ciudades…»), el globo, el botón «¿No ves tu ciudad? Agrégala» y la lista plegada de ciudades. El globo llena todo el alto del recuadro, así que se adapta cuando Sites lo achica en el teléfono.
 
 **Formación continua**
 > Cursos de extensión y Diplomados. Las charlas de la CESEG se agregarán aquí. Próximamente.
@@ -148,7 +163,7 @@ Los audios de SoundCloud dejaron de ser públicos y la CESEG no conserva los arc
 **USBistas por el mundo** (texto nativo, encima del widget)
 > Empresas fundadas por egresados de la USB, según una fuente pública o la confirmación de la CESEG. Las cifras cuentan solo las empresas y los perfiles de Orgullo USBista que publica la CESEG.
 
-🧩 **Widget `red-global.html`**, alto 900 px. Incluye las cuatro cifras, el botón «Filtrar empresas», el globo y la lista plegada de empresas.
+🧩 **Widget `red-global.html`**, ancho completo, alto 800 px. Incluye las cuatro cifras, el botón «Filtrar empresas», el globo y la lista plegada de empresas.
 
 **Registrar tu empresa**
 > ¿Fundaste o cofundaste una empresa y egresaste de la USB? Regístrala. La CESEG verifica los datos antes de publicarla en el mapa USBistas por el mundo.

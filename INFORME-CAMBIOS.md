@@ -547,3 +547,7 @@ La lógica de publicación se probó con una simulación de las hojas de Google:
 ### La Simón Emprende sin audios
 
 Los cuatro audios de 2019 en SoundCloud dejaron de ser públicos: el servicio de incrustación de SoundCloud responde 404 para cada uno, y sí responde para una pista pública de control. La CESEG no conserva los archivos. La sección queda como una lista de las entrevistas, sin enlaces, en la página local y en Google Sites.
+
+### Cómo achica Google Sites los widgets en el teléfono
+
+Medido con `medidor.html`: Sites conserva la proporción de cada recuadro y en el teléfono lo pone a unos 315 px de ancho. El contenido del sitio de la CESEG, con menú lateral, mide 630 px, así que un recuadro de ancho completo queda a la mitad de alto. Los widgets llenan el recuadro que les toque y ocultan primero lo secundario si es bajo. Los altos recomendados están en `docs/google-sites/CONTENIDO.md`.
