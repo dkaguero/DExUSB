@@ -275,6 +275,7 @@ const CSS_RED = `
 .w-red .ceseg-impacto { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 6px 0 2px; }
 .w-red .ceseg-impacto .ceseg-cifra { padding: 3px 2px; font-size: 10px; line-height: 1.25; }
 .w-red .ceseg-filtros { scrollbar-width: none; }
+@media (max-height: 300px) { .w-red #impacto-global { display: none; } }
 .w-red .ceseg-filtros::-webkit-scrollbar { display: none; }
 .w-red .ceseg-filtro-pliegue { flex: 0 0 auto; margin: 4px 6px; position: relative; }
 .w-red .ceseg-filtro-pliegue > summary {
@@ -323,7 +324,13 @@ body.w-llenar { overflow: hidden; }
   position: relative;
 }
 .w-llenar .ceseg-filtro-cuenta { flex: 0 0 auto; margin: 4px 8px; }
-.w-llenar .ceseg-globo { flex: 1 1 auto; height: auto; min-height: 160px; }
+.w-llenar .ceseg-globo { flex: 1 1 auto; height: auto; min-height: 90px; }
+/* Recuadros muy bajos (teléfono): el globo tiene prioridad sobre el resumen. */
+@media (max-height: 260px) {
+  .w-llenar .ceseg-filtro-cuenta { display: none; }
+  .w-llenar .ceseg-globo-pliegue { margin: 2px 6px; }
+  .w-llenar .ceseg-globo-pliegue > summary { padding: 2px 8px; font-size: 10px; }
+}
 .w-llenar .ceseg-globo-pliegue { flex: 0 0 auto; margin: 4px 8px; position: relative; }
 .w-llenar .ceseg-globo-pliegue > summary { padding: 4px 10px; }
 .w-llenar .ceseg-globo-pliegue[open] .ceseg-globo-indice {
@@ -347,6 +354,18 @@ body[data-tema="oscuro"].w-llenar .ceseg-globo-pliegue[open] .ceseg-globo-indice
 `;
 
 const WIDGETS = [
+  {
+    archivo: "medidor.html",
+    titulo: "Medidor del recuadro",
+    pagina: "solo para pruebas",
+    html: '<div id="medida" style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+      'text-align:center;border:3px dashed #0055a5;font-size:clamp(12px,8vw,40px);font-weight:bold;color:#0055a5">' +
+      '<span>Recuadro</span><span id="medida-valor">…</span></div>' +
+      '<script>(function(){function m(){document.getElementById("medida-valor").textContent=' +
+      'innerWidth+" × "+innerHeight+" px";}m();addEventListener("resize",m);}());</script>',
+    css: "html, body { height: 100%; } body { overflow: hidden; } .ceseg-portal { padding: 0; height: 100%; }",
+    modulos: []
+  },
   {
     archivo: "censo-banner.html",
     titulo: "Censo de Egresados CESEG",
