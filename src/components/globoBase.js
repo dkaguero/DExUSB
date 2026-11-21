@@ -38,6 +38,8 @@ function cargarGlobe() {
 //   indice(lista): HTML de los <li> de la lista bajo el mapa
 //   textos: { recorrido, error, sinResultados }
 //   fijo: true para empezar sin recorrido, mirando el primer punto
+//   plegar(n): si existe, la lista queda plegada tras un botón con ese texto
+//   alCrear(raiz): agrega elementos sobre el mapa una vez creado
 export function montarGlobo(raiz, opciones) {
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const tactil = window.matchMedia("(pointer: coarse)").matches;
@@ -318,6 +320,9 @@ export function montarGlobo(raiz, opciones) {
     }
     raiz.appendChild(tarjeta);
     raiz.appendChild(aviso);
+    // globe.gl vacía el contenedor al crearse: lo que se quiera encima del
+    // mapa se agrega aquí, después.
+    if (opciones.alCrear) opciones.alCrear(raiz);
     raiz.addEventListener("pointerover", () => {
       dentro = true;
       if (!volando) pausar();
@@ -362,6 +367,7 @@ export function montarGlobo(raiz, opciones) {
         }
         aviso.textContent = textos.error;
         raiz.appendChild(aviso);
+        if (opciones.alCrear) opciones.alCrear(raiz);
       });
   }
 

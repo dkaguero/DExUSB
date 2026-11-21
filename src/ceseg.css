@@ -404,3 +404,94 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
   .ceseg-haz { transition: none; }
   .ceseg-spinner img { animation: none; }
 }
+
+/* ---------- Censo de Egresados ---------- */
+
+/* Banner: azul con borde dorado, botón dorado y contador. */
+.ceseg-censo {
+  margin: 8px 0;
+  padding: 14px 14px 12px;
+  background: var(--ceseg-azul);
+  border: 3px solid var(--ceseg-dorado);
+  color: #fff;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+.ceseg-portal .ceseg-censo p { color: #fff; margin: 0 0 8px; }
+.ceseg-censo-antetitulo {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ceseg-portal .ceseg-censo .ceseg-censo-antetitulo { color: var(--ceseg-dorado); }
+.ceseg-censo-titulo {
+  margin: 0 0 8px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.35;
+  color: #fff;
+}
+.ceseg-censo-cifra { font-size: 12px; }
+.ceseg-censo-cifra strong { color: var(--ceseg-dorado); font-size: 14px; }
+.ceseg-portal .ceseg-censo a.ceseg-censo-boton {
+  display: inline-block;
+  padding: 9px 16px;
+  background: var(--ceseg-dorado);
+  color: var(--ceseg-noche);
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  border: 2px solid var(--ceseg-dorado);
+}
+.ceseg-portal .ceseg-censo a.ceseg-censo-boton:hover,
+.ceseg-portal .ceseg-censo a.ceseg-censo-boton:focus {
+  background: #fff;
+  color: var(--ceseg-azul);
+  border-color: #fff;
+  outline: 2px solid var(--ceseg-dorado);
+  outline-offset: 2px;
+}
+.ceseg-portal .ceseg-censo .ceseg-censo-nota { font-size: 10px; color: #dbe7f5; margin: 0; }
+body[data-tema="oscuro"] .ceseg-portal .ceseg-censo {
+  background: var(--ceseg-panel-oscuro);
+}
+
+/* Opción del menú lateral, resaltada en dorado. */
+.ceseg-menu > li > a.ceseg-menu-censo {
+  display: inline-block;
+  margin: 2px 0;
+  padding: 3px 8px;
+  background: var(--ceseg-dorado);
+  color: var(--ceseg-noche);
+}
+.ceseg-menu > li > a.ceseg-menu-censo:hover,
+.ceseg-menu > li > a.ceseg-menu-censo:focus {
+  background: var(--ceseg-azul);
+  color: #fff;
+}
+
+/* Botón sobre el globo de egresados. Va debajo de la ficha (100002). */
+.ceseg-globo-cta {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 100001;
+  padding: 6px 10px;
+  background: var(--ceseg-dorado);
+  color: var(--ceseg-noche);
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+}
+.ceseg-portal a.ceseg-globo-cta,
+body[data-tema="oscuro"] .ceseg-portal a.ceseg-globo-cta { color: var(--ceseg-noche); }
+.ceseg-portal a.ceseg-globo-cta:hover,
+.ceseg-portal a.ceseg-globo-cta:focus {
+  background: #fff;
+  color: var(--ceseg-azul);
+  text-decoration: none;
+  outline: 2px solid var(--ceseg-dorado);
+}

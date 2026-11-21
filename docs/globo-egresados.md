@@ -67,3 +67,6 @@ Para corregir una ciudad mal ubicada, edita su fila de la misma forma.
 - El geocodificador de Apps Script tiene un cupo diario. La cache evita repetir consultas: cada combinación escrita se ubica una sola vez.
 - **Probar sin la hoja.** Con `node _serve.js`, abre http://127.0.0.1:8765/cesegEgresados.html?demo. El globo usa entonces `src/data/egresadosMundoDemo.csv`, con ciudades de prueba que no son datos reales.
 - Si `data-csv` está vacío, la página dice «Aún no hay ciudades registradas.».
+- El mismo CSV alimenta el contador del banner del censo (Inicio y Egresados), con el atributo `data-csv` del banner. Las páginas las genera la misma plantilla, así que los dos usan la misma dirección.
+- El atributo `data-censo` del globo es la dirección del formulario del censo, para el botón «¿No ves tu ciudad? Agrégala».
+

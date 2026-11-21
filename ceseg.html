@@ -46,6 +46,7 @@
               <li role="presentation"><a href="ceseg.html" aria-current="page">Inicio</a></li>
               <li role="presentation"><a href="cesegEmprendimiento.html">Emprendimiento</a></li>
               <li role="presentation"><a href="cesegEgresados.html">Egresados</a></li>
+              <li role="presentation"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" class="ceseg-menu-censo" target="_blank" rel="noopener">Censo de egresados</a></li>
               <li role="presentation"><a href="cesegRedGlobal.html">Red Global</a></li>
               <li role="presentation"><a href="cesegBolsa.html">Bolsa de Trabajo</a></li>
               <li role="presentation"><a href="cesegTramites.html">Trámites</a></li>
@@ -73,7 +74,7 @@
 <p class="rtejustify">Coordinación de Emprendimiento y Seguimiento de Egresados de la Universidad Simón Bolívar, Sede Sartenejas.</p>
 <p class="ceseg-acciones">
 <a class="ceseg-primario" href="cesegEmprendimiento.html">Tengo un Proyecto</a>
-<a class="ceseg-secundario" href="cesegEgresados.html">Soy Egresado</a>
+<a class="ceseg-secundario" href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Soy Egresado</a>
 </p>
 </header>
 
@@ -90,6 +91,14 @@
 <p class="ceseg-cifra"><strong data-count="">Próximamente</strong> Egresados en la red global</p>
 <p class="ceseg-cifra"><strong data-count="">Próximamente</strong> Oportunidades laborales publicadas</p>
 </div>
+</section>
+
+<section class="ceseg-censo ceseg-item" id="censo" aria-labelledby="censo-titulo" data-csv="https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades">
+<p class="ceseg-censo-antetitulo">Censo de Egresados CESEG</p>
+<h2 class="ceseg-censo-titulo" id="censo-titulo">¿Eres egresado de la USB? Pon tu ciudad en el mapa</h2>
+<p class="ceseg-censo-cifra" aria-live="polite" hidden></p>
+<p><a class="ceseg-censo-boton" href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Registrarme en el censo →</a></p>
+<p class="ceseg-censo-nota">En el mapa solo aparece tu ciudad. No publicamos tu nombre ni tus datos de contacto.</p>
 </section>
 
 <article class="ceseg-panel ceseg-item">
@@ -169,5 +178,6 @@
   <script src="cursos/static/js2/jquery.min.js"></script>
   <script src="cursos/static/js2/bootstrap.min.js"></script>
   <script src="src/components/cesegComun.js"></script>
+  <script type="module" src="src/components/censoBanner.js"></script>
 
 </html>

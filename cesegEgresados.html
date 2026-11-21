@@ -46,6 +46,7 @@
               <li role="presentation"><a href="ceseg.html">Inicio</a></li>
               <li role="presentation"><a href="cesegEmprendimiento.html">Emprendimiento</a></li>
               <li role="presentation"><a href="cesegEgresados.html" aria-current="page">Egresados</a></li>
+              <li role="presentation"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" class="ceseg-menu-censo" target="_blank" rel="noopener">Censo de egresados</a></li>
               <li role="presentation"><a href="cesegRedGlobal.html">Red Global</a></li>
               <li role="presentation"><a href="cesegBolsa.html">Bolsa de Trabajo</a></li>
               <li role="presentation"><a href="cesegTramites.html">Trámites</a></li>
@@ -71,19 +72,26 @@
 <h1 class="title" id="page-title">Egresados</h1>
 <p class="rtejustify">Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG) de la Universidad Simón Bolívar, Sede Sartenejas.</p>
 
-<article class="ceseg-panel ceseg-item" id="egresado">
-<h2 class="title">Censo de egresados</h2>
-<p>El egresado registra su ubicación, su empresa y su contacto en el <a href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Censo de Egresados CESEG USB</a>.</p>
-<p><strong>Formación continua.</strong> <a href="ofertaAcad.html">Cursos de extensión</a> y <a href="diplomados.html">Diplomados</a>. Las charlas de la CESEG se agregarán aquí. Próximamente.</p>
-</article>
+<section class="ceseg-censo ceseg-item" id="censo" aria-labelledby="censo-titulo" data-csv="https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades">
+<p class="ceseg-censo-antetitulo">Censo de Egresados CESEG</p>
+<h2 class="ceseg-censo-titulo" id="censo-titulo">¿Eres egresado de la USB? Pon tu ciudad en el mapa</h2>
+<p class="ceseg-censo-cifra" aria-live="polite" hidden></p>
+<p><a class="ceseg-censo-boton" href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Registrarme en el censo →</a></p>
+<p class="ceseg-censo-nota">En el mapa solo aparece tu ciudad. No publicamos tu nombre ni tus datos de contacto.</p>
+</section>
 
 <section id="egresados-mundo" class="ceseg-item" aria-label="Egresados por el mundo">
 <h2 class="title">Egresados por el mundo</h2>
-<p>Cada cebolla es una ciudad donde vive al menos un egresado que respondió el <a href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Censo de Egresados CESEG USB</a>. La ficha muestra solo la ciudad, el país y cuántos egresados hay allí. No se publican nombres ni datos de contacto.</p>
+<p>Cada cebolla es una ciudad donde vive al menos un egresado que respondió el <a href="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" target="_blank" rel="noopener">Censo de Egresados CESEG</a>. La ficha muestra solo la ciudad, el país y cuántos egresados hay allí. No se publican nombres ni datos de contacto.</p>
 <p id="egresados-mundo-resumen" class="ceseg-filtro-cuenta" aria-live="polite"></p>
 <!-- data-csv: pestaña «Ciudades» del archivo «Ciudades CESEG», leída como CSV. Nunca la hoja de respuestas. Ver docs/globo-egresados.md -->
-<div id="globo-egresados" class="ceseg-globo" data-csv="https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades" aria-label="Globo con las ciudades donde viven egresados"></div>
+<div id="globo-egresados" class="ceseg-globo" data-csv="https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades" data-censo="https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform" aria-label="Globo con las ciudades donde viven egresados"></div>
 </section>
+
+<article class="ceseg-panel ceseg-item" id="formacion">
+<h2 class="title">Formación continua</h2>
+<p><a href="ofertaAcad.html">Cursos de extensión</a> y <a href="diplomados.html">Diplomados</a>. Las charlas de la CESEG se agregarán aquí. Próximamente.</p>
+</article>
 
 <article class="ceseg-panel ceseg-item" id="beneficios">
 <h2 class="title">Beneficios para egresados</h2>
@@ -166,6 +174,7 @@
   <script src="cursos/static/js2/jquery.min.js"></script>
   <script src="cursos/static/js2/bootstrap.min.js"></script>
   <script src="src/components/cesegComun.js"></script>
+  <script type="module" src="src/components/censoBanner.js"></script>
   <script type="module" src="src/components/globoEgresados.js"></script>
 
 </html>

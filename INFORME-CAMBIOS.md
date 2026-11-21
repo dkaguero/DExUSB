@@ -480,3 +480,15 @@ globe.gl le da a cada cebolla un `z-index` de 1 al total de puntos, según su di
 `censoEgresados.html`, al que lleva el botón «Censo de egresados» de la columna derecha de todas las páginas, pasó a ser una redirección al formulario «Censo de Egresados CESEG» (`1FAIpQLSeWRBYT…`), igual que `emprendeUSB.html` y `feriaEmpleo.html`. La copia del censo de 2020, con inicio de sesión por cédula, ya no funcionaba porque faltaba su PHP. Queda en el historial de git, y la carpeta `censo/` ya no la usa ninguna página.
 
 Los dos enlaces del censo en la página Egresados también llevan a «Censo de Egresados CESEG». El enlace anterior (`1FAIpQLSeJ-je68…`, «Censo de Egresados CESEG USB») enviaba a otro formulario y ya no aparece en el sitio. El globo no cambia: sigue leyendo la hoja «Ciudades CESEG».
+
+### Llamado al Censo de Egresados
+
+Para que los egresados vean el censo y se registren, el formulario «Censo de Egresados CESEG» aparece en cuatro lugares:
+
+- **Banner** en Inicio (después de Impacto) y como primer bloque de Egresados. Es azul con borde dorado y botón dorado «Registrarme en el censo», y aclara que en el mapa solo aparece la ciudad. Un contador muestra cuántos egresados ya se registraron, en cuántas ciudades y países. Usa las mismas cifras del globo, de la hoja «Ciudades CESEG», y se oculta si no hay datos.
+- **«Soy Egresado»**, en el Inicio, abre el formulario.
+- **Menú lateral**: «Censo de egresados», resaltado en dorado, debajo de Egresados.
+- **Globo de egresados**: botón «¿No ves tu ciudad? Agrégala» en la esquina superior derecha del mapa.
+
+`src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque.
+
