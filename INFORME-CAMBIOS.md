@@ -438,7 +438,7 @@ Rama `ceseg-subpaginas`. La página única de la CESEG, con sus cuatro pestañas
 
 ### Cómo se lee ahora
 
-El menú lateral del Decanato no cambia. Arriba del contenido de cada página de la CESEG hay una barra de subsecciones con la página actual marcada y el botón «Tema oscuro». La barra pasa a dos o tres líneas cuando no cabe, para que las ocho secciones queden a la vista.
+En las páginas de la CESEG, el menú lateral del Decanato se reemplaza por el de la CESEG, con el mismo formato: lista a la derecha, separadores y redes sociales. La primera opción es «Volver al DEx», que lleva a `index.html`. Siguen las ocho secciones, con la página actual marcada por una línea azul a la derecha, y al final «Tema oscuro». En el teléfono, el menú se abre con el mismo botón ☰ de las demás páginas. Una primera versión ponía estas secciones en una barra sobre el contenido; se retiró en favor del menú lateral.
 
 | Página | Qué tiene |
 | --- | --- |
@@ -451,7 +451,7 @@ El menú lateral del Decanato no cambia. Arriba del contenido de cada página de
 | `calendarioCeseg.html` | La tabla de eventos. Reemplaza al acordeón Eventos |
 | `cesegContacto.html` | Dirección, teléfonos, horario, correos, Instagram y equipo |
 
-`feriaVirtual.html` también lleva la barra y enlaza a la Bolsa de Trabajo. Los textos se movieron sin reescribirlos. Lo único nuevo son las líneas de los accesos de Inicio y el subtítulo de cada página.
+`feriaVirtual.html` también lleva el menú de la CESEG y enlaza a la Bolsa de Trabajo. Los textos se movieron sin reescribirlos. Lo único nuevo son las líneas de los accesos de Inicio y el subtítulo de cada página.
 
 - El buscador queda solo en Inicio y busca dentro de Inicio.
 - El tema oscuro funciona en todas las páginas de la CESEG con la misma clave `ceseg-tema`, así que se mantiene al cambiar de página. Un script corto, justo después de `<body>`, lo aplica antes de pintar la página para que no parpadee en claro.

@@ -19,7 +19,9 @@
     }
     aplicar();
     if (boton) {
-      boton.addEventListener("click", function () {
+      boton.addEventListener("click", function (evento) {
+        // En el menú lateral es un enlace con href="#": no debe saltar arriba.
+        evento.preventDefault();
         oscuro = !oscuro;
         try { localStorage.setItem(clave, oscuro ? "oscuro" : "claro"); } catch (e) {}
         aplicar();

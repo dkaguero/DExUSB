@@ -26,62 +26,11 @@ h2.title {
   max-width: 100%;
   overflow-x: hidden;
 }
-.ceseg-nav {
-  display: flex;
-  align-items: stretch;
-  z-index: 5;
-  background: var(--ceseg-superficie);
-  border-bottom: 1px solid var(--ceseg-linea);
-  max-width: 100%;
-}
-@media (min-width: 768px) {
-  .ceseg-nav { position: sticky; top: 0; }
-}
-/* La barra de subsecciones pasa a varias líneas: las ocho secciones
-   quedan siempre a la vista, también en el teléfono. */
-.ceseg-pestanas {
-  display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  background: var(--ceseg-superficie);
-  border-bottom: 0;
-}
-.ceseg-tema {
-  flex: 0 0 auto;
-  border: 0;
-  border-left: 1px solid var(--ceseg-linea);
-  background: var(--ceseg-superficie);
+/* Menú lateral de la CESEG: mismo formato que el del Decanato. La página
+   actual se marca con un borde a la derecha, del lado del texto. */
+.ceseg-menu > li > a[aria-current="page"] {
   color: var(--ceseg-azul);
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 8px 10px;
-  cursor: pointer;
-}
-.ceseg-tema:hover, .ceseg-tema:focus {
-  background: var(--ceseg-azul);
-  color: #fff;
-  outline: 2px solid var(--ceseg-azul);
-  outline-offset: -2px;
-}
-.ceseg-pestanas a {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  background: #fff;
-  color: var(--ceseg-azul);
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 8px 10px;
-  text-decoration: none;
-}
-.ceseg-pestanas a[aria-current="page"] { border-bottom-color: var(--ceseg-azul); }
-.ceseg-pestanas a:hover,
-.ceseg-pestanas a:focus {
-  color: #42a9be;
-  outline: 2px solid var(--ceseg-azul);
-  outline-offset: -2px;
+  border-right: 3px solid var(--ceseg-azul);
 }
 .ceseg-accesos { list-style: none; padding: 0; margin: 8px 0; }
 .ceseg-accesos li { margin: 0; }
@@ -282,10 +231,6 @@ body[data-tema="oscuro"] .ceseg-portal h1.title,
 body[data-tema="oscuro"] .ceseg-portal h2.title,
 body[data-tema="oscuro"] .ceseg-portal a,
 body[data-tema="oscuro"] .ceseg-globo-tarjeta strong { color: #9ec9ef; }
-body[data-tema="oscuro"] .ceseg-portal .ceseg-nav,
-body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas,
-body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas a,
-body[data-tema="oscuro"] .ceseg-portal .ceseg-tema,
 body[data-tema="oscuro"] .ceseg-portal .ceseg-panel,
 body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon,
 body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon > button,
