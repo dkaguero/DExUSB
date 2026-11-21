@@ -445,7 +445,7 @@ En las páginas de la CESEG, el menú lateral del Decanato se reemplaza por el d
 | `ceseg.html` (Inicio) | Título, «Tengo un Proyecto» y «Soy Egresado», buscador, cifras de Impacto, aviso de la II Feria de Emprendedores y la Feria Virtual de Pasantías, Empleo y PYMES con su afiche (`#feria-empleo`). Los accesos a cada sección se quitaron porque repetían el menú lateral |
 | `cesegEmprendimiento.html` | Convocatoria abierta (`#feria-emprendedores`), Incubadora, Guías, Directorio de startups y La Simón Emprende (`#la-simon-emprende`) |
 | `cesegEgresados.html` | Censo de egresados, el globo **Egresados por el mundo**, Beneficios, Red de mentores y un acceso a Red Global |
-| `cesegRedGlobal.html` | Red publicada, filtro, Orgullo USBista y el globo **USBistas por el mundo** |
+| `cesegRedGlobal.html` | Red publicada, filtro y el globo **USBistas por el mundo**. Orgullo USBista pasó a Egresados |
 | `cesegBolsa.html` | Afiche y oportunidades (`#feria-virtual`), filtros y «Publicar una vacante» |
 | `cesegTramites.html` | Cartas de referencia, verificación de títulos y legalización, en acordeones |
 | `calendarioCeseg.html` | La tabla de eventos. Reemplaza al acordeón Eventos |
@@ -490,5 +490,5 @@ Para que los egresados vean el censo y se registren, el formulario «Censo de Eg
 - **Menú lateral**: «Censo de egresados», resaltado en dorado, debajo de Egresados.
 - **Globo de egresados**: botón «¿No ves tu ciudad? Agrégala» en la esquina superior derecha del mapa.
 
-`src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque. Debajo del banner está también el carrusel Orgullo USBista, que se ve igual en Red Global. El filtro y el globo de empresas siguen solo en Red Global.
+`src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque. Debajo del banner está el carrusel Orgullo USBista, que ya no aparece en Red Global. Red Global queda con las cifras de la red, el filtro y el globo de empresas; el filtro ahora solo afecta al globo y a su lista. Su texto dice que las cifras cuentan lo que «publica la CESEG», porque los perfiles de Orgullo USBista ya no están en esa página.
 

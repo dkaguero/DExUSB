@@ -20,7 +20,7 @@ function montar(raiz) {
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   raiz.innerHTML =
     '<h2 class="title">Red publicada</h2>' +
-    '<p>Estas cifras cuentan solo las empresas y los perfiles publicados en esta página.</p>' +
+    '<p>Estas cifras cuentan solo las empresas y los perfiles de Orgullo USBista que publica la CESEG.</p>' +
     '<div class="ceseg-impacto">' +
     metricas.map((metrica) =>
       '<p class="ceseg-cifra"><strong data-count="' + metrica.valor + '">0</strong> ' + metrica.etiqueta + "</p>"
