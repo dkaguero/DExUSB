@@ -442,7 +442,7 @@ En las páginas de la CESEG, el menú lateral del Decanato se reemplaza por el d
 
 | Página | Qué tiene |
 | --- | --- |
-| `ceseg.html` (Inicio) | Título, «Tengo un Proyecto» y «Soy Egresado», buscador, cifras de Impacto, aviso de la II Feria y un acceso a cada sección |
+| `ceseg.html` (Inicio) | Título, «Tengo un Proyecto» y «Soy Egresado», buscador, cifras de Impacto y aviso de la II Feria. Los accesos a cada sección se quitaron porque repetían el menú lateral |
 | `cesegEmprendimiento.html` | Convocatoria abierta (`#feria-emprendedores`), Incubadora, Guías, Directorio de startups y La Simón Emprende (`#la-simon-emprende`) |
 | `cesegEgresados.html` | Censo de egresados, el globo **Egresados por el mundo**, Beneficios, Red de mentores y un acceso a Red Global |
 | `cesegRedGlobal.html` | Red publicada, filtro, Orgullo USBista y el globo **USBistas por el mundo** |
@@ -451,7 +451,7 @@ En las páginas de la CESEG, el menú lateral del Decanato se reemplaza por el d
 | `calendarioCeseg.html` | La tabla de eventos. Reemplaza al acordeón Eventos |
 | `cesegContacto.html` | Dirección, teléfonos, horario, correos, Instagram y equipo |
 
-`feriaVirtual.html` también lleva el menú de la CESEG y enlaza a la Bolsa de Trabajo. Los textos se movieron sin reescribirlos. Lo único nuevo son las líneas de los accesos de Inicio y el subtítulo de cada página.
+`feriaVirtual.html` también lleva el menú de la CESEG y enlaza a la Bolsa de Trabajo. Los textos se movieron sin reescribirlos. Lo único nuevo es el subtítulo de cada página.
 
 - El buscador queda solo en Inicio y busca dentro de Inicio.
 - El tema oscuro funciona en todas las páginas de la CESEG con la misma clave `ceseg-tema`, así que se mantiene al cambiar de página. Un script corto, justo después de `<body>`, lo aplica antes de pintar la página para que no parpadee en claro.
@@ -470,3 +470,7 @@ El globo nuevo pone una cebolla en cada ciudad donde vive al menos un egresado q
 Los datos no salen de las respuestas. Un Apps Script instalado en la hoja de respuestas (`docs/apps-script/ciudadesCenso.gs`) lee solo las preguntas «Indique en que país reside actualmente» e «Indique en que ciudad reside actualmente». Ubica cada ciudad y escribe una fila por ciudad en un archivo aparte, «Ciudades CESEG». Ese archivo está compartido como «Cualquier persona con el enlace: lector», y el globo lee su pestaña «Ciudades» como CSV (`/gviz/tq?tqx=out:csv&sheet=Ciudades`) desde el atributo `data-csv`. Al conectarlo había 240 egresados en 63 ciudades de 19 países. Las respuestas anteriores se cargan al instalar el script. Los pasos están en `docs/globo-egresados.md`.
 
 Si `data-csv` está vacío, la página dice «Aún no hay ciudades registradas.». Para probar en local, `cesegEgresados.html?demo` usa `src/data/egresadosMundoDemo.csv`, con siete ciudades de prueba que no son datos reales. `_serve.js` sirve ahora los `.csv` como `text/csv`.
+
+### Ficha de los globos
+
+globe.gl le da a cada cebolla un `z-index` de 1 al total de puntos, según su distancia a la cámara. La ficha tenía `z-index: 6`, así que en zonas con muchas ciudades, como España, varias cebollas quedaban encima del texto. Ahora la ficha, el aviso y el velo del teléfono van en una capa por encima de cualquier cebolla, y el globo usa `isolation: isolate` para que esos valores no salgan de él. La ficha se coloca sobre la cebolla o, si no cabe, debajo. Si tampoco cabe debajo, se ajusta para quedar entera dentro del globo. Antes, las fichas altas de empresas se cortaban por el borde inferior.

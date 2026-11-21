@@ -116,9 +116,19 @@ export function montarGlobo(raiz, opciones) {
     const ancho = Math.min(260, caja.width - 16);
     tarjeta.style.width = ancho + "px";
     const izquierda = marca.left - caja.left + marca.width / 2 - ancho / 2;
-    const arriba = marca.top - caja.top - tarjeta.offsetHeight - 8;
     tarjeta.style.left = Math.max(8, Math.min(izquierda, caja.width - ancho - 8)) + "px";
-    tarjeta.style.top = (arriba > 8 ? arriba : marca.bottom - caja.top + 8) + "px";
+    // La ficha va sobre la cebolla; si no cabe, debajo. Si tampoco cabe
+    // debajo, se ajusta para quedar entera dentro del globo (puede tapar la
+    // cebolla: la ficha tiene prioridad). El CSS limita su alto al del globo.
+    const alto = tarjeta.offsetHeight;
+    const arriba = marca.top - caja.top - alto - 8;
+    const abajo = marca.bottom - caja.top + 8;
+    const limite = caja.height - alto - 8;
+    let top;
+    if (arriba >= 8) top = arriba;
+    else if (abajo <= limite) top = abajo;
+    else top = Math.max(8, Math.min(abajo, limite));
+    tarjeta.style.top = top + "px";
   }
 
   function ocultar() {

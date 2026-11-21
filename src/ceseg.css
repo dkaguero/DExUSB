@@ -193,7 +193,7 @@ h2.title {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 5;
+  z-index: 100001; /* velo del teléfono: sobre las cebollas */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -285,6 +285,7 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
   background: #0b1329;
   overflow: hidden;
   touch-action: pan-y;
+  isolation: isolate; /* los z-index de las cebollas y la ficha no salen del globo */
 }
 .ceseg-globo canvas { display: block; touch-action: pan-y; }
 .ceseg-cebolla {
@@ -331,7 +332,7 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
 }
 .ceseg-globo-tarjeta {
   position: absolute;
-  z-index: 6;
+  z-index: 100002; /* globe.gl da a cada cebolla un z-index de 1 al total de puntos; la ficha va siempre encima */
   background: #fff;
   color: #000;
   border: 1px solid #e6e4de;
@@ -339,6 +340,9 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  max-height: calc(100% - 16px); /* nunca más alta que el globo */
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 .ceseg-globo-tarjeta p { margin: 0 0 4px; }
 .ceseg-globo-tarjeta strong { color: var(--ceseg-azul); }
@@ -347,7 +351,7 @@ body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
   left: 8px;
   right: 8px;
   bottom: 8px;
-  z-index: 4;
+  z-index: 100000; /* aviso: sobre las cebollas */
   margin: 0;
   color: #fff;
   font-family: Verdana, Arial, Helvetica, sans-serif;
