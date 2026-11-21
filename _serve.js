@@ -13,6 +13,7 @@ const types = {
   ".pdf": "application/pdf",
   ".ico": "image/x-icon",
   ".svg": "image/svg+xml",
+  ".csv": "text/csv; charset=utf-8",
 };
 http
   .createServer((req, res) => {

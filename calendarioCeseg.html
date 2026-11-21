@@ -8,22 +8,18 @@
     <meta name="description" content="Pagina para DEX">
     <meta name="author" content="Mabraca">
     <link rel="shortcut icon" type="image" href="cursos/static/img2/usb.png">
-    <title>Decanato de Extension</title>
+    <title>CESEG · Calendario | Decanato de Extension</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="cursos/static/bootstrap32/bootstrap.min.css"/>
     <link rel="stylesheet" href="cursos/static/bootstrap32/bootstrap-theme.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="cursos/static/css2/index.css"/>
-
-
-   
+    <link rel="stylesheet" href="src/ceseg.css"/>
 
   </head>
-<style type="text/css">
-  
-</style>
 <body>
+<script>try { if (localStorage.getItem("ceseg-tema") === "oscuro") document.body.setAttribute("data-tema", "oscuro"); } catch (e) {}</script>
 
 <div class="container">
   <div class="row">
@@ -71,22 +67,34 @@
         </div>
           
             <!--Centro  de la pagina-->
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-6 col-xs-12 ceseg-portal">
 
+<nav class="ceseg-nav" aria-label="Secciones de la CESEG">
+<div class="ceseg-pestanas">
+<a href="ceseg.html">Inicio</a>
+<a href="cesegEmprendimiento.html">Emprendimiento</a>
+<a href="cesegEgresados.html">Egresados</a>
+<a href="cesegRedGlobal.html">Red Global</a>
+<a href="cesegBolsa.html">Bolsa de Trabajo</a>
+<a href="cesegTramites.html">Trámites</a>
+<a href="calendarioCeseg.html" aria-current="page">Calendario</a>
+<a href="cesegContacto.html">Contacto</a>
+</div>
+<button type="button" id="ceseg-tema" class="ceseg-tema" aria-pressed="false">Tema oscuro</button>
+</nav>
 
 <h1 class="title" id="page-title">Calendario de la CESEG</h1>
 <p class="rtejustify">Eventos programados por la Coordinación de Emprendimiento y Seguimiento de Egresados, Sede Sartenejas. Cada actividad nueva se agrega como una fila de esta tabla.</p>
 <table class="table">
 <tbody>
-<tr><td>30 de noviembre al 4 de diciembre de 2026</td><td>II Feria de Emprendedores USB. De 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. <a href="ceseg.html#feria-emprendedores">Más información</a></td></tr>
+<tr><td>30 de noviembre al 4 de diciembre de 2026</td><td>II Feria de Emprendedores USB. De 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. <a href="cesegEmprendimiento.html#feria-emprendedores">Más información</a></td></tr>
 <tr><td>Próximamente</td><td>Feria Virtual de Pasantías, Empleo y PYMES. <a href="feriaVirtual.html">Más información</a></td></tr>
 </tbody>
 </table>
-<p><a href="ceseg.html">Volver a la CESEG</a></p>
 <!-- Para agregar un evento, copia una fila: la fecha va en la primera celda y el texto en la segunda. -->
 
-
 </div>
+
 <!--Lado derecho de la pagina-->
         <div class="col-md-2 col-xs-12">
            <ul class="nav nav-stacked">
@@ -150,8 +158,6 @@
   <!--  JavaScript -->
   <script src="cursos/static/js2/jquery.min.js"></script>
   <script src="cursos/static/js2/bootstrap.min.js"></script>
- 
-
+  <script src="src/components/cesegComun.js"></script>
 
 </html>
-

@@ -1,6 +1,6 @@
 # Informe de la copia local del Decanato de Extensión
 
-Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 5 de noviembre de 2026, secciones 11, 12, 13 y 14.  
+Fecha del informe: 4 de noviembre de 2026. Última actualización de este texto: 21 de noviembre de 2026, sección 15.  
 Carpeta de trabajo: `C:\Users\karin\DExWeb`.  
 Sigue siendo una copia estática del sitio que dejó de estar activo en http://www.dex.usb.ve. El repositorio está en https://github.com/dkaguero/DExUSB, rama `main`. La sección 9 dice cómo están ordenados los archivos.
 
@@ -431,3 +431,42 @@ Arriba de Orgullo USBista, dentro de Egresados y Red Global, hay dos bloques nue
 No se publicaron 51 empresas, 20 países, 15.000 egresados ni una valuación de 500 millones de dólares. Esas cifras no están en los datos. Las tres tarjetas de Impacto, al inicio de la página, siguen en «Próximamente».
 
 `src/components/filtroRed.js` filtra el mapa, la lista bajo el mapa y el carrusel. El texto busca empresa, fundador o ciudad, y también nombre, carrera, cargo o logro en Orgullo USBista. El rubro y la fuente salen de los valores que ya tienen las fichas. La región agrupa los países publicados: Venezuela y México en Latinoamérica, Estados Unidos en Norteamérica, y Alemania en Europa. No se agregaron rubros ni fuentes vacíos, como FinTech, Insurtech, cotización en la SEC o Y Combinator, porque ninguna empresa publicada los usa. El contador dice «Mostrando X de 9 empresas publicadas». «Limpiar filtros» vuelve a mostrar las nueve y los 21 perfiles. Un filtro de rubro, región o fuente deja en el carrusel solo el perfil cuyo nombre está en el fundador o cuyo texto nombra esa empresa. Si no hay un perfil así, el carrusel lo dice.
+
+## 15. La CESEG en subpáginas y el globo de egresados, 21 de noviembre de 2026
+
+Rama `ceseg-subpaginas`. La página única de la CESEG, con sus cuatro pestañas, pasó a ser un grupo de páginas con el mismo diseño del Decanato. Es el primer paso hacia la migración obligatoria a Google Sites: cada página de aquí será una página de Sites.
+
+### Cómo se lee ahora
+
+El menú lateral del Decanato no cambia. Arriba del contenido de cada página de la CESEG hay una barra de subsecciones con la página actual marcada y el botón «Tema oscuro». La barra pasa a dos o tres líneas cuando no cabe, para que las ocho secciones queden a la vista.
+
+| Página | Qué tiene |
+| --- | --- |
+| `ceseg.html` (Inicio) | Título, «Tengo un Proyecto» y «Soy Egresado», buscador, cifras de Impacto, aviso de la II Feria y un acceso a cada sección |
+| `cesegEmprendimiento.html` | Convocatoria abierta (`#feria-emprendedores`), Incubadora, Guías, Directorio de startups y La Simón Emprende (`#la-simon-emprende`) |
+| `cesegEgresados.html` | Censo de egresados, el globo **Egresados por el mundo**, Beneficios, Red de mentores y un acceso a Red Global |
+| `cesegRedGlobal.html` | Red publicada, filtro, Orgullo USBista y el globo **USBistas por el mundo** |
+| `cesegBolsa.html` | Afiche y oportunidades (`#feria-virtual`), filtros y «Publicar una vacante» |
+| `cesegTramites.html` | Cartas de referencia, verificación de títulos y legalización, en acordeones |
+| `calendarioCeseg.html` | La tabla de eventos. Reemplaza al acordeón Eventos |
+| `cesegContacto.html` | Dirección, teléfonos, horario, correos, Instagram y equipo |
+
+`feriaVirtual.html` también lleva la barra y enlaza a la Bolsa de Trabajo. Los textos se movieron sin reescribirlos. Lo único nuevo son las líneas de los accesos de Inicio y el subtítulo de cada página.
+
+- El buscador queda solo en Inicio y busca dentro de Inicio.
+- El tema oscuro funciona en todas las páginas de la CESEG con la misma clave `ceseg-tema`, así que se mantiene al cambiar de página. Un script corto, justo después de `<body>`, lo aplica antes de pintar la página para que no parpadee en claro.
+- Se actualizaron los enlaces que llegaban a las anclas viejas: `index.html` y `noticias.html` (feria virtual y feria de emprendedores), y `emprendeUSB.html`, que ahora redirige a `cesegEmprendimiento.html#la-simon-emprende`. El menú del Decanato y `estructuraO.html` siguen apuntando a `ceseg.html`.
+
+### Archivos compartidos
+
+- `src/ceseg.css`: los estilos que antes estaban dentro de `ceseg.html`, sin las reglas de las pestañas.
+- `src/components/cesegComun.js`: tema oscuro, acordeones (se abren solos si la dirección trae su ancla), buscador, filtros de la bolsa y formulario de vacantes.
+- `src/components/globoBase.js`: la parte común de los dos globos (carga de globe.gl, cebollas, ficha, recorrido y gesto táctil). `globeUSB.js` quedó como una capa delgada sobre esa base, con su filtro.
+
+### Egresados por el mundo
+
+El globo nuevo pone una cebolla en cada ciudad donde vive al menos un egresado que respondió el Censo de Egresados CESEG USB. Hay una sola cebolla por ciudad, sin importar cuántas personas vivan allí. La ficha y la lista bajo el mapa dicen solo «Ciudad, País» y cuántos egresados hay. No se publican nombres ni otros datos.
+
+Los datos no salen de las respuestas. Un Apps Script instalado en la hoja de respuestas (`docs/apps-script/ciudadesCenso.gs`) lee solo las preguntas «Indique en que país reside actualmente» e «Indique en que ciudad reside actualmente». Ubica cada ciudad y escribe una fila por ciudad en un archivo aparte, «Ciudades CESEG». Ese archivo está compartido como «Cualquier persona con el enlace: lector», y el globo lee su pestaña «Ciudades» como CSV (`/gviz/tq?tqx=out:csv&sheet=Ciudades`) desde el atributo `data-csv`. Al conectarlo había 240 egresados en 63 ciudades de 19 países. Las respuestas anteriores se cargan al instalar el script. Los pasos están en `docs/globo-egresados.md`.
+
+Si `data-csv` está vacío, la página dice «Aún no hay ciudades registradas.». Para probar en local, `cesegEgresados.html?demo` usa `src/data/egresadosMundoDemo.csv`, con siete ciudades de prueba que no son datos reales. `_serve.js` sirve ahora los `.csv` como `text/csv`.

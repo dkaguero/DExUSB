@@ -8,444 +8,18 @@
     <meta name="description" content="Pagina para DEX">
     <meta name="author" content="Mabraca">
     <link rel="shortcut icon" type="image" href="cursos/static/img2/usb.png">
-    <title>Decanato de Extension</title>
+    <title>CESEG | Decanato de Extension</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="cursos/static/bootstrap32/bootstrap.min.css"/>
     <link rel="stylesheet" href="cursos/static/bootstrap32/bootstrap-theme.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="cursos/static/css2/index.css"/>
-
-
-   
+    <link rel="stylesheet" href="src/ceseg.css"/>
 
   </head>
-<style type="text/css">
-  :root {
-    --ceseg-azul: #0055a5;
-    --ceseg-noche: #0b1329;
-    --ceseg-dorado: #d4af37;
-    --ceseg-fondo: #f8fafc;
-    --ceseg-muted: #64748b;
-    --ceseg-superficie: #ffffff;
-    --ceseg-texto: #0f172a;
-    --ceseg-linea: #e6e4de;
-    --ceseg-panel-oscuro: #1e293b;
-  }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
-  body { overflow-x: hidden; }
-  .ceseg-portal h1.title,
-  h2.title {
-    font-size: 12px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    color: var(--ceseg-azul);
-    font-weight: bold;
-    margin-top: 7px;
-    line-height: 1.6em;
-  }
-  .ceseg-portal {
-    background: var(--ceseg-fondo);
-    color: var(--ceseg-texto);
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  .ceseg-nav {
-    display: flex;
-    align-items: stretch;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--ceseg-superficie);
-    border-bottom: 1px solid var(--ceseg-linea);
-    max-width: 100%;
-  }
-  .ceseg-pestanas {
-    display: flex;
-    flex: 1 1 auto;
-    overflow-x: auto;
-    background: var(--ceseg-superficie);
-    border-bottom: 0;
-  }
-  .ceseg-tema {
-    flex: 0 0 auto;
-    border: 0;
-    border-left: 1px solid var(--ceseg-linea);
-    background: var(--ceseg-superficie);
-    color: var(--ceseg-azul);
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 8px 10px;
-    cursor: pointer;
-  }
-  .ceseg-tema:hover, .ceseg-tema:focus {
-    background: var(--ceseg-azul);
-    color: #fff;
-    outline: 2px solid var(--ceseg-azul);
-    outline-offset: -2px;
-  }
-  .ceseg-pestanas button {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: #fff;
-    color: var(--ceseg-azul);
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 8px 10px;
-    cursor: pointer;
-  }
-  .ceseg-pestanas button[aria-selected="true"] { border-bottom-color: var(--ceseg-azul); }
-  .ceseg-pestanas button:hover,
-  .ceseg-pestanas button:focus {
-    color: #42a9be;
-    outline: 2px solid var(--ceseg-azul);
-    outline-offset: -2px;
-  }
-  .ceseg-panel-tab.ceseg-entra { animation: ceseg-fade .2s linear; }
-  @keyframes ceseg-fade { from { opacity: 0; } to { opacity: 1; } }
-  .ceseg-acordeon { border: 1px solid #e6e4de; margin: 8px 0; background: #fff; }
-  .ceseg-acordeon > button {
-    width: 100%;
-    text-align: left;
-    background: #fff;
-    color: var(--ceseg-azul);
-    border: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 8px;
-    cursor: pointer;
-  }
-  .ceseg-acordeon > button[aria-expanded="true"] { border-bottom: 2px solid var(--ceseg-azul); }
-  .ceseg-acordeon-panel { padding: 0 8px 8px; }
-  .ceseg-buscar, .ceseg-panel select, .ceseg-panel input, .ceseg-panel textarea,
-  .ceseg-filtro-red select, .ceseg-filtro-red input {
-    width: 100%;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    border: 1px solid #e6e4de;
-    padding: 4px;
-    color: #000;
-    background: #fff;
-  }
-  .ceseg-acciones a, .ceseg-acciones button, .ceseg-controles button {
-    display: inline-block;
-    margin: 0 6px 6px 0;
-    padding: 6px 10px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    text-decoration: none;
-    border: 1px solid var(--ceseg-azul);
-    background: #fff;
-    color: var(--ceseg-azul);
-    cursor: pointer;
-  }
-  .ceseg-acciones a.ceseg-primario { background: var(--ceseg-azul); color: #fff; }
-  .ceseg-acciones a:hover, .ceseg-acciones a:focus,
-  .ceseg-acciones button:hover, .ceseg-acciones button:focus,
-  .ceseg-controles button:hover, .ceseg-controles button:focus {
-    background: #42a9be;
-    color: #fff;
-    border-color: #42a9be;
-    outline: 2px solid var(--ceseg-azul);
-    outline-offset: 2px;
-  }
-  .ceseg-cifras { display: flex; flex-wrap: wrap; gap: 8px; }
-  .ceseg-cifra {
-    flex: 1 1 120px;
-    border: 1px solid var(--ceseg-linea);
-    border-top: 3px solid var(--ceseg-dorado);
-    background: var(--ceseg-superficie);
-    padding: 6px;
-    text-align: center;
-    margin: 0;
-  }
-  .ceseg-cifra strong { display: block; color: var(--ceseg-azul); }
-  .ceseg-panel {
-    border: 1px solid #e6e4de;
-    padding: 8px;
-    margin: 8px 0;
-    background: #fff;
-  }
-  .ceseg-panel:hover { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12); }
-  .ceseg-carril {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 6px;
-  }
-  .ceseg-caso {
-    flex: 0 0 100%;
-    min-width: 100%;
-    box-sizing: border-box;
-    scroll-snap-align: start;
-    border: 1px solid #e6e4de;
-    padding: 8px;
-  }
-  .ceseg-orgullo-ventana { overflow: hidden; max-width: 100%; }
-  .ceseg-filtros, .ceseg-puntos { display: flex; gap: 6px; overflow-x: auto; max-width: 100%; }
-  .ceseg-filtros button, .ceseg-puntos button {
-    flex: 0 0 auto;
-    border: 1px solid var(--ceseg-azul);
-    background: #fff;
-    color: var(--ceseg-azul);
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 4px 8px;
-    cursor: pointer;
-  }
-  .ceseg-filtros button:hover, .ceseg-filtros button:focus,
-  .ceseg-puntos button:hover, .ceseg-puntos button:focus { background: #42a9be; color: #fff; }
-  .ceseg-filtros button[aria-pressed="true"],
-  .ceseg-puntos button[aria-current="true"] { background: var(--ceseg-azul); color: #fff; }
-  .ceseg-puntos button { width: 10px; height: 10px; padding: 0; border-radius: 50%; }
-  .ceseg-badge {
-    display: inline-block;
-    border: 1px solid var(--ceseg-azul);
-    color: var(--ceseg-azul);
-    padding: 1px 6px;
-    margin: 0 4px 4px 0;
-  }
-  .ceseg-foto {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 6px;
-    vertical-align: middle;
-  }
-  .ceseg-fuente {
-    margin: 8px 0 0;
-    padding-top: 6px;
-    border-top: 1px solid var(--ceseg-linea);
-    font-size: 10px;
-    color: var(--ceseg-muted);
-  }
-  .ceseg-mini-cebolla {
-    width: 14px;
-    height: 14px;
-    vertical-align: -2px;
-    margin-right: 4px;
-  }
-  .ceseg-destacado {
-    background: var(--ceseg-dorado);
-    border-color: var(--ceseg-dorado);
-    color: var(--ceseg-noche);
-  }
-  .ceseg-spinner {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #fff;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-  }
-  .ceseg-spinner img {
-    width: 48px;
-    height: 48px;
-    animation: ceseg-pulso 1.4s ease-in-out infinite;
-  }
-  @keyframes ceseg-pulso {
-    0%, 100% { transform: scale(1); opacity: .85; }
-    50% { transform: scale(1.08); opacity: 1; }
-  }
-  .ceseg-velo {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 16px 12px;
-    background: linear-gradient(to top, rgba(11, 19, 41, .82), rgba(11, 19, 41, 0));
-    color: #fff;
-    text-align: center;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    touch-action: pan-y;
-  }
-  .ceseg-velo p { margin: 0; }
-  .ceseg-velo button {
-    border: 1px solid #fff;
-    background: var(--ceseg-azul);
-    color: #fff;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 8px 12px;
-    cursor: pointer;
-  }
-  body[data-tema="oscuro"] .ceseg-portal {
-    background: var(--ceseg-noche);
-    color: var(--ceseg-fondo);
-  }
-  body[data-tema="oscuro"] .ceseg-portal h1.title,
-  body[data-tema="oscuro"] .ceseg-portal h2.title,
-  body[data-tema="oscuro"] .ceseg-portal a,
-  body[data-tema="oscuro"] .ceseg-globo-tarjeta strong { color: #9ec9ef; }
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-nav,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-pestanas button,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-tema,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-panel,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-acordeon > button,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-cifra,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-caso,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-buscar,
-  body[data-tema="oscuro"] .ceseg-portal select,
-  body[data-tema="oscuro"] .ceseg-portal input,
-  body[data-tema="oscuro"] .ceseg-portal textarea,
-  body[data-tema="oscuro"] .ceseg-globo-tarjeta {
-    background: var(--ceseg-panel-oscuro);
-    color: var(--ceseg-fondo);
-    border-color: #334155;
-  }
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-acciones a,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-controles button,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-filtros button,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button {
-    background: var(--ceseg-panel-oscuro);
-    color: #9ec9ef;
-  }
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-primario,
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-filtros button[aria-pressed="true"],
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-puntos button[aria-current="true"] {
-    background: var(--ceseg-azul);
-    color: #fff;
-  }
-  .ceseg-fuente a { color: var(--ceseg-azul); }
-  .ceseg-impacto {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin: 8px 0;
-  }
-  @media (min-width: 768px) {
-    .ceseg-impacto { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  }
-  .ceseg-impacto .ceseg-cifra {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(8px);
-  }
-  body[data-tema="oscuro"] .ceseg-portal .ceseg-impacto .ceseg-cifra {
-    background: rgba(30, 41, 59, 0.72);
-  }
-  .ceseg-filtro-red label { display: block; margin: 6px 0; }
-  .ceseg-filtro-cuenta { color: var(--ceseg-muted); margin: 6px 0; }
-  .ceseg-globo {
-    position: relative;
-    width: 100%;
-    height: 550px;
-    background: #0b1329;
-    overflow: hidden;
-    touch-action: pan-y;
-  }
-  .ceseg-globo canvas { display: block; touch-action: pan-y; }
-  .ceseg-cebolla {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-  }
-  .ceseg-cebolla img {
-    width: 28px;
-    height: 28px;
-    display: block;
-    margin: 4px auto 0;
-    transition: transform .2s ease;
-    animation: ceseg-rebote 2.4s ease-in-out infinite;
-  }
-  .ceseg-cebolla:hover img,
-  .ceseg-cebolla:focus img,
-  .ceseg-cebolla-activa img {
-    animation: none;
-    transform: scale(1.2);
-  }
-  .ceseg-haz {
-    position: absolute;
-    left: 50%;
-    bottom: 18px;
-    width: 3px;
-    height: 0;
-    margin-left: -1.5px;
-    background: linear-gradient(to top, #7eb6e6, rgba(0, 85, 165, 0));
-    box-shadow: 0 0 8px #0055a5;
-    pointer-events: none;
-    transition: height .2s ease;
-  }
-  .ceseg-cebolla:hover .ceseg-haz,
-  .ceseg-cebolla:focus .ceseg-haz,
-  .ceseg-cebolla-activa .ceseg-haz { height: 48px; }
-  @keyframes ceseg-rebote {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-  }
-  .ceseg-globo-tarjeta {
-    position: absolute;
-    z-index: 6;
-    background: #fff;
-    color: #000;
-    border: 1px solid #e6e4de;
-    padding: 8px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  }
-  .ceseg-globo-tarjeta p { margin: 0 0 4px; }
-  .ceseg-globo-tarjeta strong { color: var(--ceseg-azul); }
-  .ceseg-globo-aviso {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 8px;
-    z-index: 4;
-    margin: 0;
-    color: #fff;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-  }
-  .ceseg-globo-indice { margin: 8px 0; padding-left: 18px; }
-  .ceseg-inicial {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--ceseg-azul);
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-right: 6px;
-    vertical-align: middle;
-  }
-  .ceseg-panel label { display: block; margin: 6px 0; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .ceseg-panel { transition: none; }
-    .ceseg-panel-tab.ceseg-entra { animation: none; }
-    .ceseg-cebolla img { animation: none; }
-    .ceseg-haz { transition: none; }
-    .ceseg-spinner img { animation: none; }
-  }
-</style>
 <body>
+<script>try { if (localStorage.getItem("ceseg-tema") === "oscuro") document.body.setAttribute("data-tema", "oscuro"); } catch (e) {}</script>
 
 <div class="container">
   <div class="row">
@@ -495,20 +69,34 @@
             <!--Centro  de la pagina-->
             <div class="col-md-6 col-xs-12 ceseg-portal">
 
+<nav class="ceseg-nav" aria-label="Secciones de la CESEG">
+<div class="ceseg-pestanas">
+<a href="ceseg.html" aria-current="page">Inicio</a>
+<a href="cesegEmprendimiento.html">Emprendimiento</a>
+<a href="cesegEgresados.html">Egresados</a>
+<a href="cesegRedGlobal.html">Red Global</a>
+<a href="cesegBolsa.html">Bolsa de Trabajo</a>
+<a href="cesegTramites.html">Trámites</a>
+<a href="calendarioCeseg.html">Calendario</a>
+<a href="cesegContacto.html">Contacto</a>
+</div>
+<button type="button" id="ceseg-tema" class="ceseg-tema" aria-pressed="false">Tema oscuro</button>
+</nav>
 
 <header>
 <h1 class="title" id="page-title">Impulsamos el talento y los proyectos de la comunidad USBista</h1>
 <p class="rtejustify">Coordinación de Emprendimiento y Seguimiento de Egresados de la Universidad Simón Bolívar, Sede Sartenejas.</p>
 <p class="ceseg-acciones">
-<a class="ceseg-primario" href="#ceseg-pestanas" data-tab="panel-emprendimiento">Tengo un Proyecto</a>
-<a class="ceseg-secundario" href="#ceseg-pestanas" data-tab="panel-egresados">Soy Egresado</a>
+<a class="ceseg-primario" href="cesegEmprendimiento.html">Tengo un Proyecto</a>
+<a class="ceseg-secundario" href="cesegEgresados.html">Soy Egresado</a>
 </p>
 </header>
 
-<form role="search" aria-label="Buscar en la CESEG">
+<form role="search" aria-label="Buscar en la CESEG" onsubmit="return false;">
 <label for="ceseg-buscar">Buscar en esta página</label>
-<input class="ceseg-buscar" id="ceseg-buscar" type="search" placeholder="Nombre, premio, feria o trámite">
+<input class="ceseg-buscar" id="ceseg-buscar" type="search" placeholder="Sección, feria o trámite">
 </form>
+<p id="ceseg-buscar-vacio" hidden>Ningún bloque de esta página coincide con la búsqueda.</p>
 
 <section id="impacto" aria-label="Métricas de impacto">
 <h2 class="title">Impacto</h2>
@@ -519,176 +107,42 @@
 </div>
 </section>
 
-<div id="ceseg-pestanas">
-<div class="ceseg-nav">
-<div class="ceseg-pestanas" role="tablist" aria-label="Secciones de la CESEG">
-<button type="button" role="tab" id="tab-emprendimiento" aria-controls="panel-emprendimiento" aria-selected="true">Emprendimiento e Incubación</button>
-<button type="button" role="tab" id="tab-egresados" aria-controls="panel-egresados" aria-selected="false" tabindex="-1">Egresados y Red Global</button>
-<button type="button" role="tab" id="tab-bolsa" aria-controls="panel-bolsa" aria-selected="false" tabindex="-1">Bolsa de Trabajo</button>
-<button type="button" role="tab" id="tab-tramites" aria-controls="panel-tramites" aria-selected="false" tabindex="-1">Trámites y Certificaciones</button>
-</div>
-<button type="button" id="ceseg-tema" class="ceseg-tema" aria-pressed="false">Tema oscuro</button>
-</div>
-
-<div class="ceseg-panel-tab" id="panel-emprendimiento" role="tabpanel" aria-labelledby="tab-emprendimiento">
-<article class="ceseg-panel ceseg-item" id="emprendedor">
+<article class="ceseg-panel ceseg-item">
 <h2 class="title">Convocatoria abierta</h2>
-<p id="feria-emprendedores"><strong>II Feria de Emprendedores USB.</strong> Del lunes 30 de noviembre al viernes 4 de diciembre de 2026, de 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. Los stands son gratuitos para estudiantes, profesores, personal administrativo y obrero, y egresados con un proyecto propio. Quien quiera exponer escribe a <a href="mailto:ceseg@usb.ve">ceseg@usb.ve</a> para recibir el formulario. También se puede asistir como público.</p>
+<p><strong>II Feria de Emprendedores USB.</strong> Del lunes 30 de noviembre al viernes 4 de diciembre de 2026, de 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. <a href="cesegEmprendimiento.html#feria-emprendedores">Más información</a></p>
+</article>
+
+<article class="ceseg-panel ceseg-item">
+<h2 class="title"><a href="cesegEmprendimiento.html">Emprendimiento e Incubación</a></h2>
+<p>Convocatoria abierta, incubadora, guías, directorio de startups USBistas y La Simón Emprende.</p>
 </article>
 <article class="ceseg-panel ceseg-item">
-<h2 class="title">Incubadora</h2>
-<p>Próximamente.</p>
-<p><strong>Propiedad intelectual y aspectos legales.</strong> Próximamente.</p>
+<h2 class="title"><a href="cesegEgresados.html">Egresados</a></h2>
+<p>Censo de egresados, Egresados por el mundo, beneficios y red de mentores.</p>
 </article>
 <article class="ceseg-panel ceseg-item">
-<h2 class="title">Guías</h2>
-<p>Canvas, registro de marca y validación de la idea. Próximamente.</p>
-</article>
-<article class="ceseg-panel ceseg-item" id="startups">
-<h2 class="title">Directorio de startups USBistas</h2>
-<p>La vitrina de empresas nacidas en la USB se publicará en esta tarjeta. Próximamente.</p>
-<p><strong>Vitrina de talento.</strong> Próximamente.</p>
-<p>La actividad abierta para mostrar proyectos es la <a href="#feria-emprendedores">II Feria de Emprendedores</a>.</p>
-</article>
-</div>
-
-<div class="ceseg-panel-tab" id="panel-egresados" role="tabpanel" aria-labelledby="tab-egresados" hidden>
-<section id="impacto-global" class="ceseg-item" aria-label="Cifras de la red publicada"></section>
-<div id="filtro-red" class="ceseg-item"></div>
-<section id="orgullo-usbista" class="ceseg-item" aria-label="Orgullo USBista"></section>
-<section id="usbistas-mundo" class="ceseg-item" aria-label="USBistas por el mundo">
-<h2 class="title">USBistas por el mundo</h2>
-<p>Empresas fundadas por egresados de la USB, según una fuente pública o la confirmación de la CESEG.</p>
-<div id="globe-usb" class="ceseg-globo" aria-label="Globo con las empresas publicadas"></div>
-</section>
-<article class="ceseg-panel ceseg-item" id="egresado">
-<h2 class="title">Censo de egresados</h2>
-<p>El egresado registra su ubicación, su empresa y su contacto en el <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJ-je68chbQBldDe4RiR2LIyZjBm91u55G-wSURRih7geLJg/viewform" target="_blank" rel="noopener">Censo de Egresados CESEG USB</a>.</p>
-<p><strong>Formación continua.</strong> <a href="ofertaAcad.html">Cursos de extensión</a> y <a href="diplomados.html">Diplomados</a>. Las charlas de la CESEG se agregarán aquí. Próximamente.</p>
-</article>
-<article class="ceseg-panel ceseg-item" id="beneficios">
-<h2 class="title">Beneficios para egresados</h2>
-<p>Convenios y descuentos para la comunidad registrada. Próximamente.</p>
-</article>
-<article class="ceseg-panel ceseg-item" id="mentores">
-<h2 class="title">Red de mentores</h2>
-<p>El directorio para conectar egresados con emprendedores se publicará en esta tarjeta. Próximamente.</p>
-<p><strong>Mentorías.</strong> Próximamente.</p>
-</article>
-</div>
-
-<div class="ceseg-panel-tab" id="panel-bolsa" role="tabpanel" aria-labelledby="tab-bolsa" hidden>
-<article class="ceseg-panel ceseg-item">
-<h2 class="title">Oportunidades publicadas</h2>
-<p id="feria-virtual"><img src="cursos/static/img2/feriaEmpleo.jpg" alt="Feria Virtual de Pasantías, Empleo y PYMES. Próximamente." class="img-responsive"></p>
-<p>La Feria de Pasantías, Empleo y PYMES USB 2026-1, prevista del 1 al 3 de julio de 2026, no se realizó por el terremoto. La versión virtual está en desarrollo. <strong>Próximamente.</strong> <a href="feriaVirtual.html">Más información</a></p>
-<form id="bolsa-filtros" aria-label="Filtrar oportunidades publicadas">
-<label>Área profesional
-<select id="f-area">
-<option value="">Todas</option>
-<option value="pasantias">Pasantías, empleo y PYMES</option>
-</select>
-</label>
-<label>País
-<select id="f-pais">
-<option value="">Todos</option>
-<option value="virtual">Virtual</option>
-</select>
-</label>
-<label>Modalidad
-<select id="f-mod">
-<option value="">Todas</option>
-<option value="remota">Remota</option>
-<option value="presencial">Presencial</option>
-</select>
-</label>
-</form>
-<ul id="bolsa-lista">
-<li data-area="pasantias" data-pais="virtual" data-mod="remota"><strong>Feria Virtual de Pasantías, Empleo y PYMES.</strong> Modalidad remota. Próximamente. <a href="feriaVirtual.html">Más información</a></li>
-</ul>
-<p id="bolsa-vacio" hidden>No hay oportunidades publicadas con ese filtro.</p>
+<h2 class="title"><a href="cesegRedGlobal.html">Red Global USBista</a></h2>
+<p>Cifras de la red publicada, Orgullo USBista y el globo USBistas por el mundo.</p>
 </article>
 <article class="ceseg-panel ceseg-item">
-<h2 class="title">Publicar una vacante</h2>
-<p>Empresas y egresados envían la vacante a la CESEG. El mensaje se abre en el correo.</p>
-<form id="publicar-vacante">
-<label>Empresa o egresado <input name="quien" required></label>
-<label>Correo <input type="email" name="correo" required></label>
-<label>Área profesional <input name="area" required></label>
-<label>País <input name="pais"></label>
-<label>Modalidad
-<select name="mod">
-<option>Remota</option>
-<option>Presencial</option>
-</select>
-</label>
-<label>Descripción de la vacante <textarea name="texto" rows="4" required></textarea></label>
-<p class="ceseg-acciones"><button type="submit">Enviar a la CESEG</button></p>
-</form>
+<h2 class="title"><a href="cesegBolsa.html">Bolsa de Trabajo</a></h2>
+<p>Oportunidades publicadas, Feria Virtual de Pasantías, Empleo y PYMES, y publicación de vacantes.</p>
 </article>
-</div>
-
-<div class="ceseg-panel-tab" id="panel-tramites" role="tabpanel" aria-labelledby="tab-tramites" hidden>
-<div class="ceseg-acordeon">
-<button type="button" aria-expanded="false" aria-controls="acc-referencia">Cartas de referencia</button>
-<div class="ceseg-acordeon-panel" id="acc-referencia" hidden>
-<p>La guía para solicitar una carta de referencia se publicará aquí. Próximamente.</p>
-</div>
-</div>
-<div class="ceseg-acordeon">
-<button type="button" aria-expanded="false" aria-controls="acc-titulos">Verificación de títulos</button>
-<div class="ceseg-acordeon-panel" id="acc-titulos" hidden>
-<p>La guía para verificar un título se publicará aquí. Próximamente.</p>
-</div>
-</div>
-<div class="ceseg-acordeon">
-<button type="button" aria-expanded="false" aria-controls="acc-legalizacion">Legalización de programas</button>
-<div class="ceseg-acordeon-panel" id="acc-legalizacion" hidden>
-<p>La guía de legalización se publicará aquí. Próximamente.</p>
-</div>
-</div>
-</div>
-</div>
-
-
-<div class="ceseg-acordeon" id="institucional">
-<button type="button" aria-expanded="false" aria-controls="acc-contacto">Contacto y equipo</button>
-<div class="ceseg-acordeon-panel" id="acc-contacto" hidden>
-<p>Edificio de Comunicaciones. Piso 2. Apartado 89000. Valle de Sartenejas. Baruta. Edo. Miranda.<br>
-Teléfono: 0212-906-3157 / 3158 / 3162<br>
-Horario de atención: de 9:00 a.m. a 3:30 p.m.<br>
-<a href="mailto:09-11250@usb.ve">09-11250@usb.ve</a><br>
-<a href="mailto:ceseg@usb.ve">ceseg@usb.ve</a><br>
-<strong>Instagram:</strong> <a href="https://www.instagram.com/ceseg_usb/" target="_blank" rel="noopener">@ceseg_usb</a></p>
-<p><strong>Equipo.</strong> Coordinadora: Ing. Desiree Agüero</p>
-</div>
-</div>
-
-<div class="ceseg-acordeon" id="eventos">
-<button type="button" aria-expanded="false" aria-controls="acc-eventos">Eventos</button>
-<div class="ceseg-acordeon-panel" id="acc-eventos" hidden>
-<p>Los eventos programados están en el <a href="calendarioCeseg.html">calendario de la CESEG</a>. Allí se agrega cada actividad nueva como una fila.</p>
-<ul>
-<li><a href="#feria-emprendedores" data-tab="panel-emprendimiento">II Feria de Emprendedores</a>, del 30 de noviembre al 4 de diciembre de 2026.</li>
-<li><a href="#feria-virtual" data-tab="panel-bolsa">Feria Virtual de Pasantías, Empleo y PYMES</a>. Próximamente.</li>
-</ul>
-</div>
-</div>
-
-<div class="ceseg-acordeon" id="la-simon-emprende">
-<button type="button" aria-expanded="false" aria-controls="acc-audios">La Simón Emprende</button>
-<div class="ceseg-acordeon-panel" id="acc-audios" hidden>
-<p>Audios del programa:</p>
-<ul>
-<li>Alexandra La Cruz <a href="https://soundcloud.com/user-813591196/la-simon-emprende-alexandra-la-cruz-10-05-2019">10-05-2019</a></li>
-<li>Gustavo Rodríguez <a href="https://soundcloud.com/user-813591196/la-simon-emprende-gustavo-rodriguez-10-05-2019">10-05-2019</a></li>
-<li>Juan Flores y Ricardo Gómez <a href="https://soundcloud.com/user-813591196/la-simon-emprende-juan-flores-y-ricardo-gomes-21-06-2019">21-06-2019</a></li>
-<li>Elsy Visbal <a href="https://soundcloud.com/user-813591196/la-simon-emprende-elsy-visbal-21-06-2019">21-06-2019</a></li>
-</ul>
-</div>
-</div>
+<article class="ceseg-panel ceseg-item">
+<h2 class="title"><a href="cesegTramites.html">Trámites y Certificaciones</a></h2>
+<p>Cartas de referencia, verificación de títulos y legalización de programas.</p>
+</article>
+<article class="ceseg-panel ceseg-item">
+<h2 class="title"><a href="calendarioCeseg.html">Calendario</a></h2>
+<p>Eventos programados por la CESEG.</p>
+</article>
+<article class="ceseg-panel ceseg-item">
+<h2 class="title"><a href="cesegContacto.html">Contacto y equipo</a></h2>
+<p>Dirección, teléfonos, horario de atención, correos y equipo.</p>
+</article>
 
 </div>
+
 <!--Lado derecho de la pagina-->
         <div class="col-md-2 col-xs-12">
            <ul class="nav nav-stacked">
@@ -752,184 +206,6 @@ Horario de atención: de 9:00 a.m. a 3:30 p.m.<br>
   <!--  JavaScript -->
   <script src="cursos/static/js2/jquery.min.js"></script>
   <script src="cursos/static/js2/bootstrap.min.js"></script>
-  <script>
-  (function () {
-    var reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function activar(id, enfocar) {
-      var pestanas = document.querySelectorAll("[role='tab']");
-      var paneles = document.querySelectorAll(".ceseg-panel-tab");
-      for (var i = 0; i < paneles.length; i++) {
-        var activo = paneles[i].id === id;
-        paneles[i].hidden = !activo;
-        paneles[i].classList.remove("ceseg-entra");
-        if (activo) {
-          paneles[i].getBoundingClientRect();
-          paneles[i].classList.add("ceseg-entra");
-        }
-      }
-      for (var j = 0; j < pestanas.length; j++) {
-        var encendida = pestanas[j].getAttribute("aria-controls") === id;
-        pestanas[j].setAttribute("aria-selected", encendida ? "true" : "false");
-        pestanas[j].tabIndex = encendida ? 0 : -1;
-        if (encendida && enfocar) pestanas[j].focus();
-      }
-    }
-
-    var barra = document.querySelector(".ceseg-pestanas");
-    if (barra) {
-      barra.addEventListener("click", function (evento) {
-        var pestana = evento.target.closest("[role='tab']");
-        if (!pestana) return;
-        activar(pestana.getAttribute("aria-controls"), false);
-      });
-      barra.addEventListener("keydown", function (evento) {
-        var lista = Array.prototype.slice.call(barra.querySelectorAll("[role='tab']"));
-        var actual = lista.indexOf(document.activeElement);
-        if (actual < 0) return;
-        var siguiente = actual;
-        if (evento.key === "ArrowRight") siguiente = (actual + 1) % lista.length;
-        else if (evento.key === "ArrowLeft") siguiente = (actual - 1 + lista.length) % lista.length;
-        else return;
-        evento.preventDefault();
-        activar(lista[siguiente].getAttribute("aria-controls"), true);
-      });
-    }
-
-    document.addEventListener("click", function (evento) {
-      var disparador = evento.target.closest("[data-tab]");
-      if (!disparador) return;
-      var id = disparador.getAttribute("data-tab");
-      if (!document.getElementById(id)) return;
-      evento.preventDefault();
-      activar(id, false);
-      var ancla = disparador.getAttribute("href");
-      var destino = ancla && ancla.charAt(0) === "#" ? document.querySelector(ancla) : null;
-      if (!destino) destino = document.getElementById("ceseg-pestanas");
-      destino.scrollIntoView({ behavior: reducir ? "auto" : "smooth", block: "start" });
-    });
-
-    var acordeones = document.querySelectorAll(".ceseg-acordeon > button");
-    for (var a = 0; a < acordeones.length; a++) {
-      acordeones[a].addEventListener("click", function () {
-        var abierto = this.getAttribute("aria-expanded") === "true";
-        var panel = document.getElementById(this.getAttribute("aria-controls"));
-        this.setAttribute("aria-expanded", abierto ? "false" : "true");
-        if (panel) panel.hidden = abierto;
-      });
-    }
-
-    var buscar = document.getElementById("ceseg-buscar");
-    if (buscar) {
-      buscar.addEventListener("input", function () {
-        var q = buscar.value.trim().toLowerCase();
-        var items = document.querySelectorAll(".ceseg-item");
-        var panel = null;
-        for (var i = 0; i < items.length; i++) {
-          var coincide = q.length === 0 || items[i].textContent.toLowerCase().indexOf(q) !== -1;
-          items[i].hidden = !coincide;
-          if (coincide && q && !panel) {
-            var caja = items[i].closest(".ceseg-panel-tab");
-            if (caja) panel = caja.id;
-          }
-        }
-        if (panel) activar(panel, false);
-      });
-    }
-
-    var vacante = document.getElementById("publicar-vacante");
-    if (vacante) {
-      vacante.addEventListener("submit", function (evento) {
-        evento.preventDefault();
-        var datos = new FormData(vacante);
-        var cuerpo = "Empresa o egresado: " + datos.get("quien") + "\n" +
-          "Correo: " + datos.get("correo") + "\n" +
-          "Área: " + datos.get("area") + "\n" +
-          "País: " + (datos.get("pais") || "") + "\n" +
-          "Modalidad: " + datos.get("mod") + "\n\n" +
-          datos.get("texto");
-        window.location.href = "mailto:ceseg@usb.ve?subject=" +
-          encodeURIComponent("Vacante para la bolsa de la CESEG") +
-          "&body=" + encodeURIComponent(cuerpo);
-      });
-    }
-
-    var form = document.getElementById("bolsa-filtros");
-    if (form) {
-      form.addEventListener("change", function () {
-        var area = document.getElementById("f-area").value;
-        var pais = document.getElementById("f-pais").value;
-        var mod = document.getElementById("f-mod").value;
-        var ofertas = document.querySelectorAll("#bolsa-lista li");
-        var visibles = 0;
-        for (var i = 0; i < ofertas.length; i++) {
-          var ok = (area === "" || ofertas[i].getAttribute("data-area") === area) &&
-            (pais === "" || ofertas[i].getAttribute("data-pais") === pais) &&
-            (mod === "" || ofertas[i].getAttribute("data-mod") === mod);
-          ofertas[i].hidden = !ok;
-          if (ok) visibles += 1;
-        }
-        document.getElementById("bolsa-vacio").hidden = visibles !== 0;
-      });
-    }
-
-    var cifras = document.querySelectorAll(".ceseg-cifra strong[data-count]");
-    if (!cifras.length || !("IntersectionObserver" in window)) return;
-    var reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var observador = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (entrada) {
-        if (!entrada.isIntersecting) return;
-        var el = entrada.target;
-        var destino = parseInt(el.getAttribute("data-count"), 10);
-        observador.unobserve(el);
-        if (!isFinite(destino)) return;
-        if (reducir) {
-          el.textContent = String(destino);
-          return;
-        }
-        var inicio = null;
-        function cuadro(tiempo) {
-          if (inicio === null) inicio = tiempo;
-          var avance = Math.min(1, (tiempo - inicio) / 800);
-          el.textContent = String(Math.round(destino * avance));
-          if (avance < 1) window.requestAnimationFrame(cuadro);
-        }
-        window.requestAnimationFrame(cuadro);
-      });
-    }, { threshold: 0.6 });
-    for (var c = 0; c < cifras.length; c++) {
-      if (cifras[c].getAttribute("data-count")) observador.observe(cifras[c]);
-    }
-  }());
-  </script>
-  <script>
-    (function () {
-      var clave = "ceseg-tema";
-      var boton = document.getElementById("ceseg-tema");
-      var oscuro = false;
-      try { oscuro = localStorage.getItem(clave) === "oscuro"; } catch (e) {}
-      function aplicar() {
-        document.body.setAttribute("data-tema", oscuro ? "oscuro" : "claro");
-        if (!boton) return;
-        boton.setAttribute("aria-pressed", oscuro ? "true" : "false");
-        boton.textContent = oscuro ? "Tema claro" : "Tema oscuro";
-      }
-      aplicar();
-      if (boton) {
-        boton.addEventListener("click", function () {
-          oscuro = !oscuro;
-          try { localStorage.setItem(clave, oscuro ? "oscuro" : "claro"); } catch (e) {}
-          aplicar();
-        });
-      }
-    }());
-  </script>
-  <script type="module" src="src/components/impactoGlobal.js"></script>
-  <script type="module" src="src/components/filtroRed.js"></script>
-  <script type="module" src="src/components/orgulloUSBista.js"></script>
-  <script type="module" src="src/components/globeUSB.js"></script>
- 
-
+  <script src="src/components/cesegComun.js"></script>
 
 </html>
-
