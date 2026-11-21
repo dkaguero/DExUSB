@@ -477,4 +477,6 @@ globe.gl le da a cada cebolla un `z-index` de 1 al total de puntos, según su di
 
 ### Formulario del censo
 
-Las páginas de la CESEG enlazan ahora el formulario «Censo de Egresados CESEG» (`1FAIpQLSeWRBYT…`). Antes enlazaban «Censo de Egresados CESEG USB» (`1FAIpQLSeJ-je68…`). Los dos tienen las preguntas de país y ciudad. El globo cuenta las respuestas de la hoja donde está instalado el Apps Script, así que esa hoja debe ser la del formulario que se enlaza.
+`censoEgresados.html`, al que lleva el botón «Censo de egresados» de la columna derecha de todas las páginas, pasó a ser una redirección al formulario «Censo de Egresados CESEG» (`1FAIpQLSeWRBYT…`), igual que `emprendeUSB.html` y `feriaEmpleo.html`. La copia del censo de 2020, con inicio de sesión por cédula, ya no funcionaba porque faltaba su PHP. Queda en el historial de git, y la carpeta `censo/` ya no la usa ninguna página.
+
+La página Egresados y su globo siguen con el formulario «Censo de Egresados CESEG USB» (`1FAIpQLSeJ-je68…`), el de la hoja de respuestas donde está el Apps Script.
