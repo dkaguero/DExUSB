@@ -14,11 +14,11 @@ Antes de armar todo, confirmar que un widget funciona dentro de Sites.
 
 Avísame qué se ve. Si algo falla, ajusto los widgets antes de seguir.
 
-## 2. Datos y formularios
+## 2. Datos y formularios ✅ (hecho el 21 de noviembre de 2026)
 
 Sigue [`../datos-ceseg.md`](../datos-ceseg.md), sección **Instalación**. Al terminar:
 - ✅ Los tres formularios ya están creados y abiertos al público; sus enlaces están en las páginas del repositorio y en `CONTENIDO.md`;
-- comprueba que **Ciudades CESEG** tiene las pestañas `Orgullo` y `Empresas`.
+- ✅ **Ciudades CESEG** tiene las pestañas `Orgullo` (21 fichas) y `Empresas` (9 empresas), y las páginas y los widgets ya las leen.
 
 ## 3. Calendario de la CESEG
 
