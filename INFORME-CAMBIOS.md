@@ -543,3 +543,7 @@ La primera vez que la CESEG pulsó «Publicar cambios» aparecieron dos problema
 - **Las coordenadas de las empresas se leyeron mal.** El archivo de edición está en español, y al importar el CSV «10.409» se convirtió en 10409. «Publicar cambios» guarda ahora las coordenadas siempre como números, y repara las imposibles con las coordenadas verificadas de la carga inicial o con la ciudad. Las páginas ignoran la pestaña de empresas si encuentran alguna coordenada imposible, y usan entonces los datos del repositorio.
 
 La lógica de publicación se probó con una simulación de las hojas de Google: coordenadas imposibles, en texto y vacías; filas en borrador; fichas sin carrera y sin fuente; y la comprobación de que el correo de quien propone no sale del archivo de edición.
+
+### La Simón Emprende sin audios
+
+Los cuatro audios de 2019 en SoundCloud dejaron de ser públicos: el servicio de incrustación de SoundCloud responde 404 para cada uno, y sí responde para una pista pública de control. La CESEG no conserva los archivos. La sección queda como una lista de las entrevistas, sin enlaces, en la página local y en Google Sites.

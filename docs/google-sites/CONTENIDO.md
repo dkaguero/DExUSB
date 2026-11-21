@@ -95,13 +95,13 @@ El buscador de la página local no se lleva: Google Sites trae su propio buscado
 > La actividad abierta para mostrar proyectos es la II Feria de Emprendedores.
 
 **La Simón Emprende**
-> Audios del programa:
-- Alexandra La Cruz — [10-05-2019](https://soundcloud.com/user-813591196/la-simon-emprende-alexandra-la-cruz-10-05-2019)
-- Gustavo Rodríguez — [10-05-2019](https://soundcloud.com/user-813591196/la-simon-emprende-gustavo-rodriguez-10-05-2019)
-- Juan Flores y Ricardo Gómez — [21-06-2019](https://soundcloud.com/user-813591196/la-simon-emprende-juan-flores-y-ricardo-gomes-21-06-2019)
-- Elsy Visbal — [21-06-2019](https://soundcloud.com/user-813591196/la-simon-emprende-elsy-visbal-21-06-2019)
+> Programa de la CESEG con emprendedores USBistas. Entrevistas de 2019:
+- Alexandra La Cruz, 10 de mayo de 2019
+- Gustavo Rodríguez, 10 de mayo de 2019
+- Juan Flores y Ricardo Gómez, 21 de junio de 2019
+- Elsy Visbal, 21 de junio de 2019
 
-Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código que se pega con **Incorporar código** para reproducirlo en la página.
+Los audios de SoundCloud dejaron de ser públicos y la CESEG no conserva los archivos, así que la lista va sin enlaces.
 
 ---
 

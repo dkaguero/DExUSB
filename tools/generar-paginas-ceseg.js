@@ -184,7 +184,14 @@ ${L(534, 552)}
 
 <article class="ceseg-panel ceseg-item" id="la-simon-emprende">
 <h2 class="title">La Simón Emprende</h2>
-${L(681, 687)}
+<p>Programa de la CESEG con emprendedores USBistas. Entrevistas de 2019:</p>
+<ul>
+<li>Alexandra La Cruz, 10 de mayo de 2019</li>
+<li>Gustavo Rodríguez, 10 de mayo de 2019</li>
+<li>Juan Flores y Ricardo Gómez, 21 de junio de 2019</li>
+<li>Elsy Visbal, 21 de junio de 2019</li>
+</ul>
+<!-- Los audios de SoundCloud dejaron de ser públicos (noviembre de 2026) y la CESEG no conserva los archivos. -->
 </article>
 `
   },
