@@ -251,6 +251,22 @@ body.w-orgullo { overflow: hidden; }
 .w-orgullo .ceseg-controles button { margin: 0; padding: 4px 10px; }
 .w-orgullo .ceseg-puntos { order: 4; flex: 0 0 auto; }
 .w-orgullo .ceseg-orgullo-vacio { order: 2; }
+/* Sin barras de desplazamiento visibles (se sigue deslizando): en Windows
+   ocupaban alto en los filtros, la ficha y los puntos. */
+.w-orgullo .ceseg-filtros, .w-orgullo .ceseg-puntos, .w-orgullo .ceseg-carril { scrollbar-width: none; }
+.w-orgullo .ceseg-filtros::-webkit-scrollbar,
+.w-orgullo .ceseg-puntos::-webkit-scrollbar,
+.w-orgullo .ceseg-carril::-webkit-scrollbar { display: none; }
+.w-orgullo .ceseg-caso { scrollbar-width: thin; }
+/* Con poco alto, la ficha tiene prioridad: primero se van los puntos y luego
+   los filtros por categoría. Anterior y Siguiente siempre quedan. */
+@media (max-height: 380px) { .w-orgullo .ceseg-puntos { display: none; } }
+@media (max-height: 280px) {
+  .w-orgullo .ceseg-filtros { display: none; }
+  .w-orgullo .ceseg-portal { padding: 4px; }
+  .w-orgullo .ceseg-caso { padding: 6px; }
+  .w-orgullo .ceseg-caso p { margin-bottom: 4px; }
+}
 `;
 
 const CSS_RED = `
@@ -258,6 +274,8 @@ const CSS_RED = `
 .w-red #impacto-global > h2, .w-red #impacto-global > p { display: none; }
 .w-red .ceseg-impacto { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 6px 0 2px; }
 .w-red .ceseg-impacto .ceseg-cifra { padding: 3px 2px; font-size: 10px; line-height: 1.25; }
+.w-red .ceseg-filtros { scrollbar-width: none; }
+.w-red .ceseg-filtros::-webkit-scrollbar { display: none; }
 .w-red .ceseg-filtro-pliegue { flex: 0 0 auto; margin: 4px 6px; position: relative; }
 .w-red .ceseg-filtro-pliegue > summary {
   display: inline-block;
