@@ -216,17 +216,23 @@ body.w-banner { overflow: hidden; }
 .w-banner .ceseg-censo {
   height: 100%;
   margin: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(6px, 4vh, 18px) clamp(10px, 3vw, 20px);
+  /* «safe»: si el contenido no cabe, se alinea arriba en vez de cortarse por los dos lados. */
+  justify-content: safe center;
+  padding: clamp(4px, 4vh, 18px) clamp(8px, 3vw, 20px);
 }
-.w-banner .ceseg-portal .ceseg-censo p { margin: 0 0 clamp(3px, 2.5vh, 10px); }
-.w-banner .ceseg-censo-titulo { font-size: clamp(13px, 7vh, 24px); margin-bottom: clamp(3px, 2.5vh, 10px); }
-.w-banner .ceseg-censo-cifra, .w-banner .ceseg-censo-cifra strong { font-size: clamp(11px, 4.5vh, 15px); }
-.w-banner .ceseg-portal .ceseg-censo a.ceseg-censo-boton { font-size: clamp(11px, 4.5vh, 14px); padding: clamp(4px, 2.5vh, 10px) clamp(10px, 3vw, 18px); }
+.w-banner .ceseg-portal .ceseg-censo p { margin: 0 0 clamp(2px, 2.5vh, 10px); }
+/* El texto se ajusta al alto y al ancho del recuadro. */
+.w-banner .ceseg-censo-titulo { font-size: clamp(12px, min(7vh, 5.2vw), 24px); line-height: 1.25; margin-bottom: clamp(2px, 2.5vh, 10px); }
+.w-banner .ceseg-censo-cifra, .w-banner .ceseg-censo-cifra strong { font-size: clamp(10.5px, min(4.5vh, 3.6vw), 15px); line-height: 1.35; }
+.w-banner .ceseg-portal .ceseg-censo a.ceseg-censo-boton { font-size: clamp(10.5px, min(4.5vh, 3.6vw), 14px); padding: clamp(3px, 2.5vh, 10px) clamp(8px, 3vw, 18px); }
 @media (max-height: 190px) {
   .w-banner .ceseg-censo-antetitulo, .w-banner .ceseg-censo-nota { display: none; }
+}
+@media (max-height: 110px) {
+  .w-banner .ceseg-censo { border-width: 2px; }
 }
 `;
 

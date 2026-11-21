@@ -13,7 +13,7 @@ Cómo leer esta guía:
 
 | Widget | Disposición en escritorio | Alto en escritorio | Queda en el teléfono |
 |---|---|---|---|
-| `censo-banner.html` | Ancho completo | **300 px** | ~115 px: título, cifras y botón |
+| `censo-banner.html` | Ancho completo | **400 px** | ~130 px: título, cifras y botón |
 | `orgullo-usbista.html` | **Media columna**, con el texto y el botón «Proponer» en la otra mitad | **600 px** | ~450 px: ficha completa |
 | `globo-egresados.html` | Ancho completo | **800 px** | ~300 px |
 | `red-global.html` | Ancho completo | **900 px** | ~340 px: cifras, «Filtrar empresas» y globo |
@@ -62,7 +62,7 @@ Subtítulo que se repite debajo del título de cada página (salvo Inicio):
 - **Próximamente** · Egresados en la red global
 - **Próximamente** · Oportunidades laborales publicadas
 
-🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 400 px.
 
 **Convocatoria abierta**
 > **II Feria de Emprendedores USB.** Del lunes 30 de noviembre al viernes 4 de diciembre de 2026, de 9:00 a.m. a 3:00 p.m., en el Conjunto de Auditorios. [Más información → página Emprendimiento]
@@ -109,7 +109,7 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 
 **Título:** Egresados
 
-🧩 **Widget `censo-banner.html`**, ancho completo, alto 300 px.
+🧩 **Widget `censo-banner.html`**, ancho completo, alto 400 px.
 
 **Sección de dos columnas** (en Sites: **Insertar › Diseños**, el de dos columnas):
 - Columna izquierda: 🧩 **Widget `orgullo-usbista.html`**, alto 600 px.
