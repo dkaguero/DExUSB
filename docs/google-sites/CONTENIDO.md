@@ -15,10 +15,10 @@ Google Sites da a cada «Incorporar código» un alto fijo. Medidos en un navega
 |---|---|---|---|
 | `censo-banner.html` | 209 px | 266 px | **280 px** |
 | `orgullo-usbista.html` | 381 px | 455 px | **470 px** |
-| `globo-egresados.html` | 712 px | 745 px | **760 px** |
+| `globo-egresados.html` | llena el recuadro | llena el recuadro | **800 px** |
 | `red-global.html` | 1096 px | 1202 px | **1220 px** |
 
-El alto sugerido sirve para los dos anchos: en escritorio queda un poco de espacio abajo. Confirmarlo en la prueba de `PENDIENTES.md`.
+**Comprobado en Sites (21 de noviembre de 2026):** en el teléfono, Google Sites **achica el recuadro en proporción**; un recuadro de 900 × 760 queda de unos 340 × 290. Por eso los widgets se adaptan al alto que les toque, en vez de tener un alto fijo. Mientras más alto sea el recuadro en escritorio, más alto quedará en el teléfono.
 
 Todos los widgets siguen el tema claro u oscuro del sistema del visitante, y abren sus enlaces fuera del recuadro.
 
@@ -117,7 +117,10 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 > ¿Conoces a un egresado o egresada de la USB con logros importantes a nivel nacional o internacional? Propónlo. La CESEG verifica cada propuesta con fuentes públicas antes de publicarla en Orgullo USBista.
 - **Botón** «Proponer un egresado destacado» → `https://docs.google.com/forms/d/e/1FAIpQLSeNROc95jTP4J0QS4cVL-99r1iZoQxvCxRtTRTrtIFEWIczng/viewform`
 
-🧩 **Widget `globo-egresados.html`**, alto 760 px. Ya incluye el título «Egresados por el mundo», su texto, el resumen, el botón «¿No ves tu ciudad? Agrégala» y la lista plegada de ciudades.
+**Egresados por el mundo** (texto nativo, encima del widget)
+> Cada cebolla es una ciudad donde vive al menos un egresado que respondió el [Censo de Egresados CESEG](https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform). La ficha muestra solo la ciudad, el país y cuántos egresados hay allí. No se publican nombres ni datos de contacto.
+
+🧩 **Widget `globo-egresados.html`**, alto 800 px en escritorio. Incluye el resumen («240 egresados en 63 ciudades…»), el globo, el botón «¿No ves tu ciudad? Agrégala» y la lista plegada de ciudades. El globo llena todo el alto del recuadro, así que se adapta cuando Sites lo achica en el teléfono.
 
 **Formación continua**
 > Cursos de extensión y Diplomados. Las charlas de la CESEG se agregarán aquí. Próximamente.

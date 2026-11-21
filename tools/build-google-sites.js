@@ -43,6 +43,14 @@ function bloque(pagina, etiqueta, id) {
   return encontrado[0];
 }
 
+// Copia un elemento vacío o de una línea, como <div id="x" …></div>.
+function elemento(pagina, etiqueta, id) {
+  const re = new RegExp("<" + etiqueta + "\\b[^>]*\\bid=\"" + id + "\"[^>]*>[^<]*</" + etiqueta + ">");
+  const encontrado = leer(pagina).match(re);
+  if (!encontrado) throw new Error("No encontré <" + etiqueta + " id=\"" + id + "\"> en " + pagina);
+  return encontrado[0];
+}
+
 // ---------- imágenes ----------
 
 const TIPOS = { ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif" };
@@ -183,9 +191,10 @@ ${(widget.cdn || []).join("\n")}
 <style>
 ${BASE_CSS}
 ${css}
+${widget.css || ""}
 </style>
 </head>
-<body>
+<body class="${widget.clase || ""}">
 <div class="ceseg-portal ceseg-widget">
 ${contenido}
 </div>
@@ -199,6 +208,41 @@ ${codigo}
 }
 
 // ---------- widgets ----------
+
+// Widgets que llenan el alto del iframe: columna flexible con el globo al medio.
+const CSS_LLENAR = `
+html, body.w-llenar { height: 100%; }
+body.w-llenar { overflow: hidden; }
+.w-llenar .ceseg-portal {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+}
+.w-llenar .ceseg-filtro-cuenta { flex: 0 0 auto; margin: 4px 8px; }
+.w-llenar .ceseg-globo { flex: 1 1 auto; height: auto; min-height: 160px; }
+.w-llenar .ceseg-globo-pliegue { flex: 0 0 auto; margin: 4px 8px; position: relative; }
+.w-llenar .ceseg-globo-pliegue > summary { padding: 4px 10px; }
+.w-llenar .ceseg-globo-pliegue[open] .ceseg-globo-indice {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 4px);
+  z-index: 100003;
+  max-height: 70vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 8px 8px 8px 24px;
+  background: var(--ceseg-superficie);
+  border: 1px solid var(--ceseg-linea);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, .25);
+}
+body[data-tema="oscuro"].w-llenar .ceseg-globo-pliegue[open] .ceseg-globo-indice {
+  background: var(--ceseg-panel-oscuro);
+  border-color: #334155;
+}
+`;
 
 const WIDGETS = [
   {
@@ -220,7 +264,16 @@ const WIDGETS = [
     archivo: "globo-egresados.html",
     titulo: "Egresados por el mundo",
     pagina: "Egresados",
-    html: bloque("cesegEgresados.html", "section", "egresados-mundo"),
+    // Google Sites achica el recuadro en proporción en el teléfono. El título y
+    // el texto van como texto nativo de Sites; aquí quedan el resumen, el
+    // globo (que llena el alto disponible) y la lista plegada, que se abre
+    // encima del globo.
+    clase: "w-llenar",
+    html: [
+      elemento("cesegEgresados.html", "p", "egresados-mundo-resumen"),
+      elemento("cesegEgresados.html", "div", "globo-egresados")
+    ].join("\n"),
+    css: CSS_LLENAR,
     modulos: ["src/components/globoEgresados.js"]
   },
   {
