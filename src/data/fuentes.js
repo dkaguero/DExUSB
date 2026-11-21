@@ -12,7 +12,9 @@ import egresadosLocal from "./egresadosData.js";
 import empresasLocal from "./empresasUSBData.js";
 import { leerCSV, normal } from "../components/ciudadesCSV.js";
 
-const HOJA = "https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&sheet=";
+// headers=1: solo la primera fila son títulos. Sin esto, Google puede juntar
+// las primeras filas de datos con los títulos.
+const HOJA = "https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&headers=1&sheet=";
 
 function slug(texto) {
   return normal(texto).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -101,10 +103,12 @@ export function cargarEmpresas() {
   if (!empresasPromesa) {
     empresasPromesa = leerPestana("Empresas", ["empresa", "fundador", "ciudad", "pais", "lat", "lng"])
       .then((filas) => {
-        const lista = (filas || [])
-          .map(aEmpresa)
-          .filter((e) => e.empresa && isFinite(e.lat) && isFinite(e.lng));
-        return lista.length ? lista : empresasLocal;
+        const lista = (filas || []).map(aEmpresa).filter((e) => e.empresa);
+        // «Publicar cambios» nunca publica coordenadas imposibles. Si aparece
+        // alguna, la hoja está dañada: se usan los datos del repositorio.
+        const sanas = lista.every((e) => isFinite(e.lat) && isFinite(e.lng) &&
+          Math.abs(e.lat) <= 90 && Math.abs(e.lng) <= 180);
+        return lista.length && sanas ? lista : empresasLocal;
       })
       .catch(() => empresasLocal);
   }

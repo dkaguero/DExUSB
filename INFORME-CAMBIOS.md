@@ -534,3 +534,12 @@ Los tres formularios ya existen y aceptan respuestas sin iniciar sesión. Las p�
 - **Bolsa de Trabajo**: «Publicar una vacante» abre el formulario. Se quitó el formulario que armaba un correo a `ceseg@usb.ve`, y su código en `cesegComun.js`.
 
 Los enlaces también están en `docs/google-sites/CONTENIDO.md`, para los botones nativos de Sites.
+
+### Primera publicación y correcciones
+
+La primera vez que la CESEG pulsó «Publicar cambios» aparecieron dos problemas:
+
+- **Orgullo publicó 17 de 21 fichas.** Las de Alberto Armengol, Dany Merentes, Jorge Baralt Torrijos y Oswaldo Escobar no tienen carrera en su fuente, y el script la exigía. La carrera deja de ser obligatoria. Además, Google mezclaba las primeras fichas con la fila de títulos al leer la pestaña. Las lecturas llevan ahora `headers=1`, también la de ciudades.
+- **Las coordenadas de las empresas se leyeron mal.** El archivo de edición está en español, y al importar el CSV «10.409» se convirtió en 10409. «Publicar cambios» guarda ahora las coordenadas siempre como números, y repara las imposibles con las coordenadas verificadas de la carga inicial o con la ciudad. Las páginas ignoran la pestaña de empresas si encuentran alguna coordenada imposible, y usan entonces los datos del repositorio.
+
+La lógica de publicación se probó con una simulación de las hojas de Google: coordenadas imposibles, en texto y vacías; filas en borrador; fichas sin carrera y sin fuente; y la comprobación de que el correo de quien propone no sale del archivo de edición.

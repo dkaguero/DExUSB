@@ -54,7 +54,9 @@ const PESTANAS = {
       "fecha_propuesta", "propuesto_por", "correo_proponente", "relacion"],
     publicas: ["nombre", "carrera", "cohorte", "cargo", "ubicacion", "logro", "categoria",
       "destacado", "foto", "fuente", "fuente_texto"],
-    obligatorias: ["nombre", "carrera", "logro", "categoria", "fuente"]
+    // La carrera no es obligatoria: algunas fuentes no la dicen, y la ficha
+    // no completa lo que la fuente no dice.
+    obligatorias: ["nombre", "logro", "categoria", "fuente"]
   },
   Empresas: {
     columnas: ["estado", "empresa", "fundador", "carrera", "ciudad", "pais", "lat", "lng", "rubro",
@@ -350,16 +352,25 @@ function publicarPestana_(libro, publico, nombre) {
       continue;
     }
 
-    if (nombre === "Empresas" && (!esNumero_(valor("lat")) || !esNumero_(valor("lng")))) {
-      const punto = geocodificar_(valor("ciudad"), valor("pais"));
-      if (!punto) {
-        omitidas.push(etiqueta + ": no se pudo ubicar la ciudad; escribe lat y lng a mano");
-        continue;
+    if (nombre === "Empresas") {
+      let lat = aNumero_(fila[col("lat")]);
+      let lng = aNumero_(fila[col("lng")]);
+      if (!coordenadaValida_(lat, lng)) {
+        // Primero las coordenadas verificadas de la carga inicial; si no, la ciudad.
+        const punto = COORDENADAS_INICIALES[valor("empresa")] || geocodificar_(valor("ciudad"), valor("pais"));
+        if (!punto) {
+          omitidas.push(etiqueta + ": no se pudo ubicar la ciudad; escribe lat y lng a mano");
+          continue;
+        }
+        lat = punto.lat;
+        lng = punto.lng;
       }
-      hoja.getRange(i + 1, col("lat") + 1).setValue(punto.lat);
-      hoja.getRange(i + 1, col("lng") + 1).setValue(punto.lng);
-      fila[col("lat")] = punto.lat;
-      fila[col("lng")] = punto.lng;
+      // Siempre como números: si una celda queda como texto, Google borra los
+      // valores de esa columna al leerla.
+      hoja.getRange(i + 1, col("lat") + 1).setValue(lat);
+      hoja.getRange(i + 1, col("lng") + 1).setValue(lng);
+      fila[col("lat")] = lat;
+      fila[col("lng")] = lng;
     }
 
     filas.push(conf.publicas.map((c) => {
@@ -376,9 +387,31 @@ function publicarPestana_(libro, publico, nombre) {
   return { publicadas: filas.length, omitidas: omitidas };
 }
 
-function esNumero_(texto) {
-  return texto !== "" && isFinite(parseFloat(String(texto).replace(",", ".")));
+// Convierte una celda en número. Acepta coma o punto decimal.
+function aNumero_(valor) {
+  if (typeof valor === "number") return valor;
+  const texto = String(valor == null ? "" : valor).trim().replace(",", ".");
+  return texto === "" ? NaN : Number(texto);
 }
+
+function coordenadaValida_(lat, lng) {
+  return isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0);
+}
+
+// Coordenadas verificadas de las 9 empresas de la carga inicial. Reparan las
+// que la importación del CSV leyó mal (en una hoja en español, «10.409» se
+// convierte en 10409). Solo se usan si la celda tiene una coordenada imposible.
+const COORDENADAS_INICIALES = {
+  "3D3": { lat: 10.409, lng: -66.883 },
+  "AST SpaceMobile": { lat: 31.9974, lng: -102.0779 },
+  "Biofarm": { lat: 10.4806, lng: -66.9036 },
+  "Blue Orbit Space Systems": { lat: 53.1069, lng: 8.855 },
+  "Domotai": { lat: 10.455, lng: -66.93 },
+  "Kavak": { lat: 19.4326, lng: -99.1332 },
+  "Krill Energy": { lat: 10.51, lng: -66.85 },
+  "Scientific Lightning Solutions": { lat: 28.353, lng: -80.685 },
+  "Sistemas Gerenciales JPL & Asociados": { lat: 10.498, lng: -66.888 }
+};
 
 function geocodificar_(ciudad, pais) {
   try {

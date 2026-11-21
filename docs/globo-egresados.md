@@ -17,7 +17,7 @@ Hoja de respuestas (PRIVADA, no se publica)
 Archivo PÚBLICO «Ciudades CESEG», pestaña «Ciudades»
    columnas: pais, ciudad, lat, lng, egresados
    ↓ compartido como «Cualquier persona con el enlace: lector»,
-   ↓ leído como CSV por /gviz/tq?tqx=out:csv&sheet=Ciudades
+   ↓ leído como CSV por /gviz/tq?tqx=out:csv&headers=1&sheet=Ciudades
 cesegEgresados.html → atributo data-csv del globo
 ```
 
@@ -37,7 +37,7 @@ Las respuestas nunca salen del archivo privado. El archivo público es otro arch
 6. **Conectar el globo.** En `cesegEgresados.html`, el atributo `data-csv` lleva el ID de `Ciudades CESEG` en esta forma (el `&` se escribe `&amp;` dentro del HTML):
 
    ```html
-   <div id="globo-egresados" class="ceseg-globo" data-csv="https://docs.google.com/spreadsheets/d/ID_DE_CIUDADES_CESEG/gviz/tq?tqx=out:csv&amp;sheet=Ciudades" …>
+   <div id="globo-egresados" class="ceseg-globo" data-csv="https://docs.google.com/spreadsheets/d/ID_DE_CIUDADES_CESEG/gviz/tq?tqx=out:csv&amp;headers=1&amp;sheet=Ciudades" …>
    ```
 
    Hoy apunta a `12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM`. Esta dirección permite que otra página lea el CSV, y los cambios se ven casi al instante. «Publicar en la Web» también sirve, pero tarda unos 5 minutos en refrescar y es fácil publicar la pestaña equivocada.

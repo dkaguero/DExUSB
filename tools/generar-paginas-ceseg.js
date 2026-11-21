@@ -114,7 +114,7 @@ function llamado(id, titulo, texto, boton, enlace) {
 }
 
 // Pestaña «Ciudades» de «Ciudades CESEG», leída como CSV. Nunca la hoja de respuestas.
-const CSV_CIUDADES = "https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades";
+const CSV_CIUDADES = "https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;headers=1&amp;sheet=Ciudades";
 
 // Banner del censo. El contador lo llena src/components/censoBanner.js.
 function bannerCenso(id) {

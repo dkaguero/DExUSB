@@ -53,6 +53,8 @@ Luego:
 
 Para quitar algo ya publicado, cambia su estado a «Rechazado» y vuelve a pulsar «Publicar cambios».
 
+Las coordenadas `lat` y `lng` se aceptan con coma o con punto decimal. «Publicar cambios» siempre las guarda como números. Si una coordenada es imposible (por ejemplo, 10409), la repara: usa las coordenadas verificadas de la carga inicial o, para empresas nuevas, la ciudad y el país. Eso pasa al importar un CSV en una hoja configurada en español, donde «10.409» se lee como diez mil cuatrocientos nueve.
+
 ## Qué se publica y qué no
 
 | Pestaña | Columnas públicas | Columnas que nunca salen del archivo de edición |
@@ -72,6 +74,10 @@ Para quitar algo ya publicado, cambia su estado a «Rechazado» y vuelve a pulsa
 6. **Publicar por primera vez.** Recarga la hoja. Aparece el menú **CESEG**. Pulsa **Publicar cambios**. En `Ciudades CESEG` aparecen las pestañas `Orgullo` y `Empresas`.
 
 Mientras esas pestañas no existan, las páginas usan los datos del repositorio (`src/data/`). Cuando existen, usan la hoja.
+
+## Actualizar el script
+
+Cuando cambie `datosCeseg.gs` en el repositorio: **Extensiones › Apps Script**, borra todo el código, pega la versión nueva y guarda. No hace falta volver a ejecutar `instalar`; los formularios y el disparador siguen igual. Después, **CESEG › Publicar cambios**.
 
 ## Los formularios
 
