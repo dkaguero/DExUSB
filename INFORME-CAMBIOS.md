@@ -486,9 +486,9 @@ Los dos enlaces del censo en la página Egresados también llevan a «Censo de E
 Para que los egresados vean el censo y se registren, el formulario «Censo de Egresados CESEG» aparece en cuatro lugares:
 
 - **Banner** en Inicio (después de Impacto) y como primer bloque de Egresados. Es azul con borde dorado y botón dorado «Registrarme en el censo», y aclara que en el mapa solo aparece la ciudad. Un contador muestra cuántos egresados ya se registraron, en cuántas ciudades y países. Usa las mismas cifras del globo, de la hoja «Ciudades CESEG», y se oculta si no hay datos.
-- **«Soy Egresado»**, en el Inicio, abre el formulario.
+- **«Soy Egresado»**, en el Inicio, lleva a la página Egresados, donde el banner del censo es el primer bloque.
 - **Menú lateral**: «Censo de egresados», resaltado en dorado, debajo de Egresados.
 - **Globo de egresados**: botón «¿No ves tu ciudad? Agrégala» en la esquina superior derecha del mapa.
 
-`src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque.
+`src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque. Debajo del banner está también el carrusel Orgullo USBista, que se ve igual en Red Global. El filtro y el globo de empresas siguen solo en Red Global.
 
