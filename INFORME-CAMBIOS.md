@@ -524,3 +524,13 @@ Para recibir empresas de cualquier país, el filtro de región cubre todos los c
 
 - `tools/generar-paginas-ceseg.js` y `tools/plantilla/ceseg-original.html`: el generador de las páginas de la CESEG pasa al repositorio. Regenera exactamente las mismas páginas.
 - En el tema oscuro, las etiquetas del carrusel (categoría, ubicación) pasan a azul claro para que se lean.
+
+### Formularios conectados
+
+Los tres formularios ya existen y aceptan respuestas sin iniciar sesión. Las páginas los enlazan:
+
+- **Egresados**: bloque «Proponer un egresado destacado», debajo de Orgullo USBista.
+- **Red Global**: bloque «Registrar tu empresa», debajo del globo.
+- **Bolsa de Trabajo**: «Publicar una vacante» abre el formulario. Se quitó el formulario que armaba un correo a `ceseg@usb.ve`, y su código en `cesegComun.js`.
+
+Los enlaces también están en `docs/google-sites/CONTENIDO.md`, para los botones nativos de Sites.

@@ -17,7 +17,7 @@ Avísame qué se ve. Si algo falla, ajusto los widgets antes de seguir.
 ## 2. Datos y formularios
 
 Sigue [`../datos-ceseg.md`](../datos-ceseg.md), sección **Instalación**. Al terminar:
-- copia los **tres enlaces de los formularios** (menú **CESEG › Ver enlaces de los formularios**) y pásamelos: los pongo en las páginas del repositorio y en `CONTENIDO.md`;
+- ✅ Los tres formularios ya están creados y abiertos al público; sus enlaces están en las páginas del repositorio y en `CONTENIDO.md`;
 - comprueba que **Ciudades CESEG** tiene las pestañas `Orgullo` y `Empresas`.
 
 ## 3. Calendario de la CESEG

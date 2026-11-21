@@ -66,24 +66,6 @@
     });
   }
 
-  // Formulario de vacantes: abre un correo a la CESEG.
-  var vacante = document.getElementById("publicar-vacante");
-  if (vacante) {
-    vacante.addEventListener("submit", function (evento) {
-      evento.preventDefault();
-      var datos = new FormData(vacante);
-      var cuerpo = "Empresa o egresado: " + datos.get("quien") + "\n" +
-        "Correo: " + datos.get("correo") + "\n" +
-        "Área: " + datos.get("area") + "\n" +
-        "País: " + (datos.get("pais") || "") + "\n" +
-        "Modalidad: " + datos.get("mod") + "\n\n" +
-        datos.get("texto");
-      window.location.href = "mailto:ceseg@usb.ve?subject=" +
-        encodeURIComponent("Vacante para la bolsa de la CESEG") +
-        "&body=" + encodeURIComponent(cuerpo);
-    });
-  }
-
   // Filtros de la bolsa de trabajo.
   var form = document.getElementById("bolsa-filtros");
   if (form) {

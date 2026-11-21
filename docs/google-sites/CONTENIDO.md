@@ -113,7 +113,9 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 
 🧩 **Widget `orgullo-usbista.html`**, alto 470 px.
 
-**Botón** «Proponer un egresado destacado» → enlace del formulario *Proponer un egresado destacado* (menú **CESEG › Ver enlaces de los formularios**; ver `PENDIENTES.md`).
+**Proponer un egresado destacado**
+> ¿Conoces a un egresado o egresada de la USB con logros importantes a nivel nacional o internacional? Propónlo. La CESEG verifica cada propuesta con fuentes públicas antes de publicarla en Orgullo USBista.
+- **Botón** «Proponer un egresado destacado» → `https://docs.google.com/forms/d/e/1FAIpQLSeNROc95jTP4J0QS4cVL-99r1iZoQxvCxRtTRTrtIFEWIczng/viewform`
 
 🧩 **Widget `globo-egresados.html`**, alto 760 px. Ya incluye el título «Egresados por el mundo», su texto, el resumen, el botón «¿No ves tu ciudad? Agrégala» y la lista plegada de ciudades.
 
@@ -136,9 +138,9 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 
 🧩 **Widget `red-global.html`**, alto 1220 px. Incluye las cifras de la red publicada, el filtro y el globo «USBistas por el mundo» con su lista.
 
-**Botón** «Registrar tu empresa» → enlace del formulario *Registrar una empresa de egresados USB*.
-
-> ¿Fundaste una empresa y egresaste de la USB? Regístrala. La CESEG verifica los datos antes de publicarla en el mapa.
+**Registrar tu empresa**
+> ¿Fundaste o cofundaste una empresa y egresaste de la USB? Regístrala. La CESEG verifica los datos antes de publicarla en el mapa USBistas por el mundo.
+- **Botón** «Registrar tu empresa» → `https://docs.google.com/forms/d/e/1FAIpQLScm3sQ4qSHwwPqy9sHQZptGacbF1C9bogh19O3j1VMk2xQygA/viewform`
 
 ---
 
@@ -154,8 +156,8 @@ Opcional: en SoundCloud, **Compartir › Insertar** de cada audio da un código 
 Los filtros por área, país y modalidad de la página local no se llevan mientras haya una sola oportunidad. Cada vacante aprobada se agrega como un renglón más de esta lista.
 
 **Publicar una vacante**
-> Empresas y egresados envían la vacante a la CESEG, que la revisa antes de publicarla.
-- Botón «Publicar una vacante» → enlace del formulario *Publicar una vacante*, o **Insertar › Formularios** para mostrarlo dentro de la página.
+> Empresas y egresados envían la vacante a la CESEG, que la revisa antes de publicarla en esta bolsa.
+- **Botón** «Publicar una vacante» → `https://docs.google.com/forms/d/e/1FAIpQLSdXBsKlDU6kh9AkFB9g1eMvDhQieX4RhdvpW_jmOiEydlUFrA/viewform`, o **Insertar › Formularios** para mostrarlo dentro de la página.
 
 ### Subpágina: Feria Virtual
 

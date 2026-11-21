@@ -98,6 +98,21 @@ function pagina({ archivo, titulo, contenido, modulos = [] }) {
 const CENSO_VIEJO = "https://docs.google.com/forms/d/e/1FAIpQLSeJ-je68chbQBldDe4RiR2LIyZjBm91u55G-wSURRih7geLJg/viewform";
 const CENSO = "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform";
 
+// Formularios de propuesta. Las respuestas llegan a «Datos CESEG – edición» y la
+// Coordinación de la CESEG aprueba antes de publicar (docs/datos-ceseg.md).
+const FORM_ORGULLO = "https://docs.google.com/forms/d/e/1FAIpQLSeNROc95jTP4J0QS4cVL-99r1iZoQxvCxRtTRTrtIFEWIczng/viewform";
+const FORM_EMPRESAS = "https://docs.google.com/forms/d/e/1FAIpQLScm3sQ4qSHwwPqy9sHQZptGacbF1C9bogh19O3j1VMk2xQygA/viewform";
+const FORM_VACANTES = "https://docs.google.com/forms/d/e/1FAIpQLSdXBsKlDU6kh9AkFB9g1eMvDhQieX4RhdvpW_jmOiEydlUFrA/viewform";
+
+// Bloque con texto y botón a un formulario.
+function llamado(id, titulo, texto, boton, enlace) {
+  return `<article class="ceseg-panel ceseg-item" id="${id}">
+<h2 class="title">${titulo}</h2>
+<p>${texto}</p>
+<p class="ceseg-acciones"><a class="ceseg-primario" href="${enlace}" target="_blank" rel="noopener">${boton}</a></p>
+</article>`;
+}
+
 // Pestaña «Ciudades» de «Ciudades CESEG», leída como CSV. Nunca la hoja de respuestas.
 const CSV_CIUDADES = "https://docs.google.com/spreadsheets/d/12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM/gviz/tq?tqx=out:csv&amp;sheet=Ciudades";
 
@@ -185,6 +200,10 @@ ${bannerCenso("censo")}
 
 <section id="orgullo-usbista" class="ceseg-item" aria-label="Orgullo USBista"></section>
 
+${llamado("proponer", "Proponer un egresado destacado",
+  "¿Conoces a un egresado o egresada de la USB con logros importantes a nivel nacional o internacional? Propónlo. La CESEG verifica cada propuesta con fuentes públicas antes de publicarla en Orgullo USBista.",
+  "Proponer un egresado destacado", FORM_ORGULLO)}
+
 <section id="egresados-mundo" class="ceseg-item" aria-label="Egresados por el mundo">
 <h2 class="title">Egresados por el mundo</h2>
 <p>Cada cebolla es una ciudad donde vive al menos un egresado que respondió el <a href="${CENSO}" target="_blank" rel="noopener">Censo de Egresados CESEG</a>. La ficha muestra solo la ciudad, el país y cuántos egresados hay allí. No se publican nombres ni datos de contacto.</p>
@@ -213,6 +232,10 @@ ${SUBTITULO}
 
 ${L(556, 557)}
 ${L(559, 563)}
+
+${llamado("registrar-empresa", "Registrar tu empresa",
+  "¿Fundaste o cofundaste una empresa y egresaste de la USB? Regístrala. La CESEG verifica los datos antes de publicarla en el mapa USBistas por el mundo.",
+  "Registrar tu empresa", FORM_EMPRESAS)}
 `
   },
   {
@@ -222,7 +245,11 @@ ${L(559, 563)}
 <h1 class="title" id="page-title">Bolsa de Trabajo</h1>
 ${SUBTITULO}
 
-${L(581, 628)}
+${L(581, 610)}
+
+${llamado("publicar-vacante", "Publicar una vacante",
+  "Empresas y egresados envían la vacante a la CESEG, que la revisa antes de publicarla en esta bolsa.",
+  "Publicar una vacante", FORM_VACANTES)}
 `
   },
   {
