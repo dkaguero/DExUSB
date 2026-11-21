@@ -1,17 +1,29 @@
-import empresas from "../data/empresasUSBData.js";
+import { cargarEmpresas } from "../data/fuentes.js";
 
-const REGION = {
-  "Estados Unidos": "Norteamérica",
-  "Venezuela": "Latinoamérica",
-  "México": "Latinoamérica",
-  "Alemania": "Europa"
+// Región de cada país, para el filtro. Las empresas llegan del formulario de
+// la CESEG desde cualquier país, así que la lista cubre todos los continentes.
+const REGIONES = {
+  "Norteamérica": ["Estados Unidos", "Canadá"],
+  "Latinoamérica": ["Venezuela", "México", "Colombia", "Argentina", "Chile", "Perú", "Ecuador",
+    "Uruguay", "Paraguay", "Bolivia", "Brasil", "Panamá", "Costa Rica", "República Dominicana",
+    "Puerto Rico", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Cuba"],
+  "Europa": ["Alemania", "España", "Francia", "Italia", "Portugal", "Reino Unido", "Irlanda",
+    "Países Bajos", "Bélgica", "Suiza", "Austria", "Suecia", "Noruega", "Dinamarca", "Finlandia",
+    "Polonia", "Hungría", "República Checa", "Grecia"],
+  "Asia y Oceanía": ["Japón", "China", "Corea del Sur", "India", "Singapur", "Emiratos Árabes Unidos",
+    "Israel", "Australia", "Nueva Zelanda"],
+  "África": ["Sudáfrica", "Marruecos", "Egipto", "Nigeria", "Kenia"]
 };
+const REGION = {};
+Object.keys(REGIONES).forEach((region) => {
+  REGIONES[region].forEach((pais) => { REGION[pais] = region; });
+});
 
 const estado = { texto: "", rubro: "", region: "", fuente: "" };
 const oyentes = new Set();
 
 export function regionDe(pais) {
-  return REGION[pais] || "";
+  return REGION[pais] || (pais ? "Otras regiones" : "");
 }
 
 export function filtrarEmpresas(lista, filtro) {
@@ -41,7 +53,7 @@ function avisar() {
   oyentes.forEach((fn) => fn(copia));
 }
 
-function unicos(campo) {
+function unicos(empresas, campo) {
   return Array.from(new Set(empresas.map((empresa) => empresa[campo]).filter(Boolean)))
     .sort((a, b) => a.localeCompare(b, "es"));
 }
@@ -61,9 +73,9 @@ function opciones(valores, actual, etiquetaTodas) {
   ).join("");
 }
 
-function montar(raiz) {
-  const rubros = unicos("rubro");
-  const fuentes = unicos("fuenteTexto");
+function montar(raiz, empresas) {
+  const rubros = unicos(empresas, "rubro");
+  const fuentes = unicos(empresas, "fuenteTexto");
   const regiones = Array.from(new Set(empresas.map((empresa) => regionDe(empresa.pais)).filter(Boolean)))
     .sort((a, b) => a.localeCompare(b, "es"));
   const total = empresas.length;
@@ -141,5 +153,5 @@ function montar(raiz) {
 const raiz = document.getElementById("filtro-red");
 if (raiz && !raiz.dataset.listo) {
   raiz.dataset.listo = "1";
-  montar(raiz);
+  cargarEmpresas().then((empresas) => montar(raiz, empresas));
 }

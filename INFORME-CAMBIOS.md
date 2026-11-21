@@ -492,3 +492,35 @@ Para que los egresados vean el censo y se registren, el formulario «Censo de Eg
 
 `src/components/ciudadesCSV.js` lee la hoja una sola vez por página para el banner y el globo. `src/components/censoBanner.js` llena el contador. En Egresados, el párrafo del censo quedó dentro del banner; «Formación continua» pasó a su propio bloque. Debajo del banner está el carrusel Orgullo USBista, que ya no aparece en Red Global. Red Global queda con las cifras de la red, el filtro y el globo de empresas; el filtro ahora solo afecta al globo y a su lista. Su texto dice que las cifras cuentan lo que «publica la CESEG», porque los perfiles de Orgullo USBista ya no están en esa página.
 
+
+## 16. Preparación de la CESEG para Google Sites, 21 de noviembre de 2026
+
+Rama `google-sites-ceseg`, a partir de `main` (que ya incluye la rama `ceseg-subpaginas`). La migración a Google Sites es obligatoria; la CESEG va primero, en su propio sitio (https://sites.google.com/usb.ve/dex-ceseg/inicio, luego `ceseg.dex.usb.ve`), separado del sitio del DEx (https://sites.google.com/usb.ve/dexusb/inicio).
+
+### Enfoque mixto
+
+Los textos se escriben con los bloques nativos de Google Sites, para que la CESEG los edite sin código y el buscador los encuentre. Solo lo interactivo va con «Incorporar código», como widgets. El texto de cada página, los widgets y sus altos están en `docs/google-sites/CONTENIDO.md`. Las tareas manuales, en `docs/google-sites/PENDIENTES.md`.
+
+### Widgets
+
+`node tools/build-google-sites.js` genera en `dist-google-sites/ceseg/` (ignorada por git) cuatro archivos autocontenidos: `censo-banner.html`, `orgullo-usbista.html`, `globo-egresados.html` y `red-global.html`, de 23 a 68 KB. El HTML de cada uno se copia de las páginas de la CESEG; los módulos se unen en un solo script; el CSS va en `<style>`, sin Bootstrap ni jQuery; la cebolla va en base64. Siguen el tema claro u oscuro del sistema del visitante, no usan `localStorage` y abren sus enlaces fuera del iframe. `_prueba.html` los muestra juntos en iframes.
+
+Se probaron servidos desde una carpeta aparte, sin el repositorio: no piden ningún archivo local y funcionan en claro y en oscuro, a 800 y a 390 px.
+
+### Datos en Google Sheets
+
+Orgullo USBista y las empresas pasan a mantenerse en Google Sheets, como las ciudades del censo. El flujo está en `docs/datos-ceseg.md`:
+
+- Archivo privado **Datos CESEG – edición** con las pestañas `Orgullo`, `Empresas` y `Vacantes`.
+- Tres formularios, creados por `docs/apps-script/datosCeseg.gs`: **Proponer un egresado destacado** (cualquier persona propone a un egresado con logros nacionales o internacionales), **Registrar una empresa de egresados USB** (lo llena la empresa) y **Publicar una vacante**. Cada respuesta entra como «Borrador».
+- La **Coordinación de la CESEG** verifica con los criterios de las secciones 12 y 13 y marca «Aprobado» o «Rechazado».
+- El menú **CESEG › Publicar cambios** copia solo las filas aprobadas, y solo sus columnas públicas, a las pestañas `Orgullo` y `Empresas` del archivo público «Ciudades CESEG». Los datos de quien propone y de contacto nunca salen del archivo de edición.
+
+`src/data/fuentes.js` lee esas pestañas. Si no existen todavía o no traen las columnas esperadas, usa `src/data/egresadosData.js` y `empresasUSBData.js`, así que las páginas no cambian hasta la primera publicación. `node tools/exportar-datos-ceseg.js` genera los CSV para cargar las 21 fichas y las 9 empresas actuales.
+
+Para recibir empresas de cualquier país, el filtro de región cubre todos los continentes. El carrusel muestra también las categorías nuevas que apruebe la CESEG, después de las conocidas.
+
+### Otros cambios
+
+- `tools/generar-paginas-ceseg.js` y `tools/plantilla/ceseg-original.html`: el generador de las páginas de la CESEG pasa al repositorio. Regenera exactamente las mismas páginas.
+- En el tema oscuro, las etiquetas del carrusel (categoría, ubicación) pasan a azul claro para que se lean.

@@ -1,5 +1,4 @@
-import egresados from "../data/egresadosData.js";
-import empresas from "../data/empresasUSBData.js";
+import { cargarEgresados, cargarEmpresas } from "../data/fuentes.js";
 import { alCambiarFiltro, filtrarEmpresas } from "./filtroRed.js";
 
 const ORDEN = [
@@ -23,9 +22,13 @@ function ordenar(lista) {
   });
 }
 
-function categoriasPresentes() {
-  const usadas = new Set(egresados.map((persona) => persona.categoría));
-  return ORDEN.filter((nombre) => usadas.has(nombre));
+// Primero las categorías conocidas, en su orden; después cualquier categoría
+// nueva que la CESEG haya aprobado, en orden alfabético.
+function categoriasPresentes(egresados) {
+  const usadas = new Set(egresados.map((persona) => persona.categoría).filter(Boolean));
+  const nuevas = Array.from(usadas).filter((nombre) => ORDEN.indexOf(nombre) === -1)
+    .sort((a, b) => a.localeCompare(b, "es"));
+  return ORDEN.filter((nombre) => usadas.has(nombre)).concat(nuevas);
 }
 
 function escapar(texto) {
@@ -79,7 +82,7 @@ function pieFuente(persona) {
   return '<p class="ceseg-fuente">' + marca + '<a href="' + escapar(persona.fuente) + '" target="_blank" rel="noopener">Ver fuente</a> · ' + escapar(nombre) + "</p>";
 }
 
-export function OrgulloUSBistaCarousel(raiz) {
+export function OrgulloUSBistaCarousel(raiz, egresados, empresas) {
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let categoria = "Todos";
   let filtro = { texto: "", rubro: "", region: "", fuente: "" };
@@ -137,7 +140,7 @@ export function OrgulloUSBistaCarousel(raiz) {
   }
 
   function pintarFiltros() {
-    const nombres = ["Todos"].concat(categoriasPresentes());
+    const nombres = ["Todos"].concat(categoriasPresentes(egresados));
     filtros.innerHTML = nombres.map((nombre) =>
       '<button type="button" aria-pressed="' + (nombre === categoria) + '">' + escapar(nombre) + "</button>"
     ).join("");
@@ -265,4 +268,7 @@ export function OrgulloUSBistaCarousel(raiz) {
 }
 
 const raiz = document.getElementById("orgullo-usbista");
-if (raiz) OrgulloUSBistaCarousel(raiz);
+if (raiz) {
+  Promise.all([cargarEgresados(), cargarEmpresas()])
+    .then(([egresados, empresas]) => OrgulloUSBistaCarousel(raiz, egresados, empresas));
+}

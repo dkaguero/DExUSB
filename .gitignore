@@ -3,3 +3,6 @@ Desktop.ini
 .DS_Store
 *.log
 .vscode/
+
+# Widgets de Google Sites: se regeneran con node tools/build-google-sites.js
+dist-google-sites/

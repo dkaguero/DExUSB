@@ -1,6 +1,6 @@
 // Globo «USBistas por el mundo» de la página Red Global USBista:
 // empresas fundadas por egresados, con el filtro de la red.
-import empresas from "../data/empresasUSBData.js";
+import { cargarEmpresas } from "../data/fuentes.js";
 import { escapar, MINI, montarGlobo } from "./globoBase.js";
 import { alCambiarFiltro, filtrarEmpresas, filtroActivo } from "./filtroRed.js";
 
@@ -30,7 +30,7 @@ function indice(lista) {
   ).join("");
 }
 
-export function GlobeUSB(raiz) {
+export function GlobeUSB(raiz, empresas) {
   const globo = montarGlobo(raiz, {
     datos: empresas,
     etiqueta: (empresa) => empresa.empresa,
@@ -48,4 +48,4 @@ export function GlobeUSB(raiz) {
 }
 
 const raiz = document.getElementById("globe-usb");
-if (raiz) GlobeUSB(raiz);
+if (raiz) cargarEmpresas().then((empresas) => GlobeUSB(raiz, empresas));

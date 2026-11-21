@@ -495,3 +495,9 @@ body[data-tema="oscuro"] .ceseg-portal a.ceseg-globo-cta { color: var(--ceseg-no
   text-decoration: none;
   outline: 2px solid var(--ceseg-dorado);
 }
+
+/* Etiquetas en tema oscuro: el azul no se lee sobre el panel oscuro. */
+body[data-tema="oscuro"] .ceseg-portal .ceseg-badge:not(.ceseg-destacado) {
+  color: #9ec9ef;
+  border-color: #9ec9ef;
+}

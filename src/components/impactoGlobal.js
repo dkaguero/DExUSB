@@ -1,5 +1,4 @@
-import empresas from "../data/empresasUSBData.js";
-import egresados from "../data/egresadosData.js";
+import { cargarEgresados, cargarEmpresas } from "../data/fuentes.js";
 
 function paises(lista) {
   return new Set(lista.map((empresa) => empresa.pais).filter(Boolean)).size;
@@ -9,14 +8,13 @@ function conEnlace(lista) {
   return lista.filter((empresa) => typeof empresa.fuente === "string" && empresa.fuente.indexOf("http") === 0).length;
 }
 
-const metricas = [
-  { valor: empresas.length, etiqueta: "Empresas publicadas" },
-  { valor: paises(empresas), etiqueta: "Países en el mapa" },
-  { valor: egresados.length, etiqueta: "Perfiles de Orgullo USBista" },
-  { valor: conEnlace(empresas), etiqueta: "Con enlace de fuente" }
-];
-
-function montar(raiz) {
+function montar(raiz, egresados, empresas) {
+  const metricas = [
+    { valor: empresas.length, etiqueta: "Empresas publicadas" },
+    { valor: paises(empresas), etiqueta: "Países en el mapa" },
+    { valor: egresados.length, etiqueta: "Perfiles de Orgullo USBista" },
+    { valor: conEnlace(empresas), etiqueta: "Con enlace de fuente" }
+  ];
   const reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   raiz.innerHTML =
     '<h2 class="title">Red publicada</h2>' +
@@ -81,5 +79,6 @@ function montar(raiz) {
 const raiz = document.getElementById("impacto-global");
 if (raiz && !raiz.dataset.listo) {
   raiz.dataset.listo = "1";
-  montar(raiz);
+  Promise.all([cargarEgresados(), cargarEmpresas()])
+    .then(([egresados, empresas]) => montar(raiz, egresados, empresas));
 }
