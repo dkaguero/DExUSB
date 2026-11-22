@@ -125,10 +125,11 @@
       "<div><h2>CESEG</h2><p>Coordinación de Emprendimiento y Seguimiento de Egresados</p></div></div>" +
       "<p>Bienvenido a la Feria de Empleo USB. Recorre los pabellones, visita los stands y comparte tu CV con las empresas.</p>" +
       '<div class="fe-acciones">' +
-      boton("Servicios al Egresado", e.egresados, "", "_top") +
-      boton("Ruta Emprendedora", e.emprendimiento, "", "_top") +
-      boton("Atención CESEG", e.contacto, "", "_top") +
-      boton("Asistir a una charla", e.auditorio, "fe-boton--principal", "_top") +
+      // En pestaña nueva: Google Sites no deja que un widget cambie la página (target="_top").
+      boton("Servicios al Egresado", e.egresados) +
+      boton("Ruta Emprendedora", e.emprendimiento) +
+      boton("Atención CESEG", e.contacto) +
+      boton("Asistir a una charla", e.auditorio, "fe-boton--principal") +
       boton("Crear mi perfil de postulante", e.perfilPostulante) +
       "</div>";
     abrir(html, "#0055a5");
