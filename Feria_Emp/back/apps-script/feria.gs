@@ -39,7 +39,9 @@ const PESTANAS = {
       ["correo_admin", "ceseg@usb.ve", "Recibe los avisos de solicitudes nuevas"],
       ["youtube_canal", "", "Canal de YouTube de la CESEG"],
       ["calendario_id", "", "Calendario «CESEG – Eventos» (fase 5)"],
-      ["id_datos_ceseg", "", "Archivo «Datos CESEG – edición», para el mapa de empresas (fase 4)"],
+      ["id_datos_ceseg", "", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
+      ["id_censo", "1rde00EzCUdUByvFg1WZNOcAq4Ss1J8TaWTcX55qJHVQ", "ID de la hoja de respuestas del Censo de Egresados (fase 4)"],
+      ["url_censo", "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform", "Formulario del censo, para la invitación a egresados USB"],
       ["id_hoja_publica", "", "Lo llena instalar()"],
       ["id_carpeta", "", "Lo llena instalar()"]
     ]
@@ -67,7 +69,7 @@ const PESTANAS = {
   Empresas: {
     columnas: ["id", "estado", "pago", "especial", "razon_social", "nombre_comercial", "rif", "sector", "tamano", "web",
       "pabellon", "posicion", "plan", "contacto_nombre", "contacto_cargo", "correo_dueno", "correos_reclutadores",
-      "fundada_por_egresados", "fundadores", "carreras_fundadores", "ciudad", "pais", "logo_oficial", "manual_marca",
+      "fundada_por_egresados", "fundadores", "carreras_fundadores", "ciudad", "pais", "logo_oficial", "manual_marca", "enviada_mapa",
       "acepta_terminos", "acepta_marca", "version_textos", "motivo", "verificado_por", "notas", "fecha_solicitud", "demo"],
     listas: { estado: ["Pendiente", "Aprobada", "Rechazada", "Pausada"], pago: ["Pendiente", "Confirmado", "No aplica"],
       especial: SI_NO, fundada_por_egresados: SI_NO, plan: ["platinum", "gold", "silver"], demo: SI_NO }
@@ -89,7 +91,7 @@ const PESTANAS = {
   Perfiles: {
     columnas: ["id", "correo", "nombre", "apellido", "documento", "relacion_usb", "carnet", "universidad", "carrera", "estatus",
       "ciudad", "pais", "idiomas", "habilidades", "intereses", "linkedin", "correo_institucional", "cv", "cv_fecha",
-      "acepta_terminos", "acepta_cv", "acepta_comunicaciones", "version_textos", "en_censo", "fecha", "demo"],
+      "acepta_terminos", "acepta_cv", "acepta_comunicaciones", "version_textos", "en_censo", "invitado_censo", "fecha", "demo"],
     listas: { relacion_usb: ["Egresado o egresada de la USB", "Estudiante de la USB", "Egresado o estudiante de otra universidad", "Otra"],
       acepta_cv: SI_NO, acepta_comunicaciones: SI_NO, en_censo: SI_NO, demo: SI_NO }
   },
@@ -142,6 +144,8 @@ function onOpen() {
     .addSeparator()
     .addItem("Crear formularios", "instalarFormularios")
     .addItem("Ver formularios", "verFormularios")
+    .addSeparator()
+    .addItem("Conectar con el censo y el mapa", "conectar")
     .addSeparator()
     .addItem("Cargar datos de ejemplo", "cargarEjemplo")
     .addItem("Borrar datos de ejemplo", "borrarEjemplo")
@@ -837,14 +841,16 @@ function procesarRespuesta_(clave, respuesta) {
   const id = (prefijo) => prefijo + "-" + Utilities.getUuid().slice(0, 8);
 
   if (clave === "perfil") {
-    return guardarPorClave_("Perfiles", "correo", correo, {
+    const guardado = guardarPorClave_("Perfiles", "correo", correo, {
       id: id("per"), correo: correo, nombre: v.nombre, apellido: v.apellido, documento: v.documento, relacion_usb: v.relacion_usb,
       carnet: v.carnet, universidad: v.universidad, carrera: v.carrera, estatus: v.estatus, ciudad: v.ciudad, pais: v.pais,
       idiomas: v.idiomas, habilidades: v.habilidades, intereses: v.intereses, linkedin: v.linkedin,
       correo_institucional: v.correo_institucional, cv: v.cv, cv_fecha: v.cv ? fecha : "",
       acepta_terminos: acepta("ATTENDEE_TERMS"), acepta_cv: acepta("CV_SHARING"), acepta_comunicaciones: acepta("COMMUNICATIONS"),
       version_textos: VERSION_TEXTOS, fecha: fecha
-    }, ["id", "cv", "cv_fecha", "en_censo"]);
+    }, ["id", "cv", "cv_fecha", "en_censo", "invitado_censo"]);
+    conexiones_();
+    return guardado;
   }
 
   if (clave === "postulacion") {
@@ -873,7 +879,8 @@ function procesarRespuesta_(clave, respuesta) {
       acepta_terminos: acepta("COMPANY_TERMS"), acepta_marca: acepta("BRAND_USE"), version_textos: VERSION_TEXTOS, fecha_solicitud: fecha
     };
     // Un segundo envío del mismo dueño actualiza su solicitud sin tocar estado, pago ni ubicación.
-    const r = guardarPorClave_("Empresas", "correo_dueno", correo, fila, ["id", "estado", "pago", "especial", "posicion", "pabellon", "plan", "motivo", "verificado_por", "notas"]);
+    const r = guardarPorClave_("Empresas", "correo_dueno", correo, fila, ["id", "estado", "pago", "especial", "posicion", "pabellon", "plan", "motivo", "verificado_por", "notas", "enviada_mapa"]);
+    if (v.fundada_por_egresados === "Sí") conexiones_();
     avisarCesta_("Solicitud de empresa: " + (v.nombre_comercial || v.razon_social), "Plan " + v.plan + ", pabellón " + v.pabellon + ". Correo: " + correo);
     return r;
   }
@@ -994,4 +1001,129 @@ function avisarCesta_(asunto, cuerpo) {
   try {
     MailApp.sendEmail(para, "[Feria CESEG] " + asunto, cuerpo + "\n\nRevisar en: " + SpreadsheetApp.getActiveSpreadsheet().getUrl());
   } catch (e) { /* sin cupo de correo: la fila igual queda guardada */ }
+}
+
+// =====================================================================
+// FASE 4: CONEXIONES CON EL CENSO Y CON EL MAPA «USBistas por el mundo»
+// =====================================================================
+
+/** Agrega a Configuración las claves nuevas que falten (sin tocar las existentes). */
+function asegurarConfig_() {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Configuracion");
+  const claves = hoja.getDataRange().getValues().map((f) => f[0]);
+  PESTANAS.Configuracion.inicial.forEach((f) => { if (claves.indexOf(f[0]) === -1) hoja.appendRow(f); });
+}
+
+/** Menú «Conectar con el censo y el mapa»: prepara columnas y claves nuevas y cruza todo. */
+function conectar() {
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  ["Configuracion", "Empresas", "Perfiles"].forEach((n) => prepararPestana_(libro, n));
+  asegurarConfig_();
+  const avisos = conexiones_();
+  const texto = avisos.length ? avisos.join("\n") : "Conexiones al día.";
+  Logger.log(texto);
+  try { SpreadsheetApp.getUi().alert("Feria CESEG", texto, SpreadsheetApp.getUi().ButtonSet.OK); } catch (e) {}
+}
+
+/** Cruce con el censo y envío al mapa. Devuelve avisos; nunca detiene a quien lo llama. */
+function conexiones_() {
+  const avisos = [];
+  try { avisos.push.apply(avisos, cruzarCenso_()); } catch (e) { avisos.push("Censo: " + e.message); }
+  try { avisos.push.apply(avisos, enviarAlMapa_()); } catch (e) { avisos.push("Mapa: " + e.message); }
+  return avisos;
+}
+
+function normCarnet_(v) { return String(v || "").replace(/[^0-9a-z]/gi, "").toLowerCase(); }
+function normCorreo_(v) { return String(v || "").trim().toLowerCase(); }
+
+/**
+ * Perfil ↔ censo, por carnet o por correo:
+ *  - marca `en_censo` en cada perfil;
+ *  - invita una sola vez a llenar el censo al egresado USB que no está;
+ *  - escribe la pestaña «Perfiles de la feria» en el archivo del censo
+ *    (carnet, correo, país y ciudad de los egresados USB). El script del
+ *    censo la lee, descarta a quien ya está en el censo y suma el resto al globo.
+ */
+function cruzarCenso_() {
+  const id = config_("id_censo");
+  if (!id) return ["Falta id_censo en Configuración: no se cruzan los perfiles con el censo."];
+  const censo = SpreadsheetApp.openById(id);
+  const respuestas = censo.getSheets().filter((h) => h.getFormUrl && h.getFormUrl())[0] || censo.getSheets()[0];
+  const datos = respuestas.getDataRange().getValues();
+  const cab = datos[0].map((c) => String(c).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase());
+  const iCarnet = cab.indexOf("carnet");
+  const iCorreos = cab.map((c, i) => (/^indique un correo personal|direccion de correo electronico|email address/.test(c) ? i : -1)).filter((i) => i >= 0);
+  const carnets = {}, correos = {};
+  datos.slice(1).forEach((f) => {
+    if (iCarnet >= 0 && normCarnet_(f[iCarnet])) carnets[normCarnet_(f[iCarnet])] = true;
+    iCorreos.forEach((i) => { if (normCorreo_(f[i])) correos[normCorreo_(f[i])] = true; });
+  });
+
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  const hoja = libro.getSheetByName("Perfiles");
+  const filas = leerTabla_("Perfiles");
+  const cabP = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  const col = (c) => cabP.indexOf(c) + 1;
+  const egresados = [];
+  let invitados = 0;
+  filas.forEach((p) => {
+    const en = !!(carnets[normCarnet_(p.carnet)] || correos[normCorreo_(p.correo)] || correos[normCorreo_(p.correo_institucional)]);
+    if (col("en_censo") && p.en_censo !== (en ? "Sí" : "No")) hoja.getRange(p._fila, col("en_censo")).setValue(en ? "Sí" : "No");
+    if (p.relacion_usb !== RELACION_USB[0]) return;
+    egresados.push([p.carnet, p.correo, p.pais, p.ciudad]);
+    if (!en && !p.invitado_censo && p.correo && col("invitado_censo")) {
+      if (invitarAlCenso_(p)) { hoja.getRange(p._fila, col("invitado_censo")).setValue(new Date()); invitados++; }
+    }
+  });
+
+  let destino = censo.getSheetByName("Perfiles de la feria");
+  if (!destino) destino = censo.insertSheet("Perfiles de la feria");
+  destino.clearContents();
+  const todo = [["carnet", "correo", "pais", "ciudad"]].concat(egresados);
+  destino.getRange(1, 1, todo.length, 4).setValues(todo);
+  return invitados ? [invitados + " invitación(es) al censo enviadas."] : [];
+}
+
+function invitarAlCenso_(p) {
+  const url = config_("url_censo");
+  if (!url) return false;
+  try {
+    MailApp.sendEmail(p.correo, "Censo de Egresados CESEG USB",
+      "Hola " + (p.nombre || "") + ",\n\nGracias por registrarte en la Feria de Empleo de la USB. Como egresado o egresada de la USB, " +
+      "te invitamos a llenar también el Censo de Egresados de la CESEG: así tu ciudad aparece en el mapa de egresados por el mundo y " +
+      "podemos mantenerte informado.\n\n" + url + "\n\nCoordinación de Emprendimiento y Seguimiento de Egresados (CESEG)\nUniversidad Simón Bolívar");
+    return true;
+  } catch (e) { return false; }
+}
+
+/**
+ * Empresas fundadas por egresados USB → pestaña Empresas de «Datos CESEG –
+ * edición», como Borrador. La Coordinación la verifica y la publica en el mapa
+ * con su flujo de siempre. Se envía una sola vez (`enviada_mapa`).
+ */
+function enviarAlMapa_() {
+  const pendientes = leerTabla_("Empresas").filter((e) => e.fundada_por_egresados === "Sí" && !e.enviada_mapa && e.fundadores && e.demo !== "Sí");
+  if (!pendientes.length) return [];
+  const id = config_("id_datos_ceseg");
+  if (!id) return ["Hay " + pendientes.length + " empresa(s) de egresados para el mapa, pero falta id_datos_ceseg en Configuración."];
+  const mapa = SpreadsheetApp.openById(id).getSheetByName("Empresas");
+  if (!mapa) return ["El archivo id_datos_ceseg no tiene la pestaña Empresas."];
+  const cabM = mapa.getRange(1, 1, 1, mapa.getLastColumn()).getValues()[0].map(String);
+  const stands = leerTabla_("Stands");
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Empresas");
+  const cabE = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  pendientes.forEach((e) => {
+    const stand = stands.filter((s) => s.empresa_id === e.id).pop() || {};
+    const fila = {
+      estado: "Borrador", empresa: e.nombre_comercial || e.razon_social, fundador: e.fundadores, carrera: e.carreras_fundadores,
+      ciudad: e.ciudad, pais: e.pais, rubro: e.sector, descripcion: stand.descripcion || "", fuente: e.web || "",
+      fuente_texto: "Registro en la Feria de Empleo CESEG",
+      verificacion: "La empresa declaró en su registro de la Feria de Empleo que la fundaron egresados de la USB.",
+      notas: "Desde la Feria de Empleo (" + e.id + "). Verificar con una fuente pública o con la CESEG antes de aprobar.",
+      fecha_propuesta: new Date(), contacto_nombre: e.contacto_nombre, contacto_correo: e.correo_dueno
+    };
+    mapa.appendRow(cabM.map((c) => (c in fila && fila[c] != null ? fila[c] : "")));
+    hoja.getRange(e._fila, cabE.indexOf("enviada_mapa") + 1).setValue(new Date());
+  });
+  return [pendientes.length + " empresa(s) de egresados enviada(s) al mapa como Borrador."];
 }

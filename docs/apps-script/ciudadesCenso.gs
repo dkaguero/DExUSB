@@ -14,7 +14,7 @@
  */
 
 // ID del archivo PÚBLICO «Ciudades CESEG» (lo que va entre /d/ y /edit en su dirección).
-const ID_HOJA_PUBLICA = "PEGAR_AQUI_EL_ID_DE_LA_HOJA_PUBLICA";
+const ID_HOJA_PUBLICA = "12z13lgy7Z_Em34rRlHqD8ckCrf-NTZo6zGDwk7JwMZM";
 
 // Textos de las preguntas del formulario. Se comparan sin acentos ni mayúsculas.
 const PREGUNTA_PAIS = "Indique en que país reside actualmente";
@@ -29,9 +29,11 @@ const CABECERA_CACHE = ["clave", "pais_escrito", "ciudad_escrita", "pais", "ciud
 function instalar() {
   const libro = SpreadsheetApp.getActiveSpreadsheet();
   ScriptApp.getProjectTriggers()
-    .filter((t) => t.getHandlerFunction() === "alRecibirRespuesta")
+    .filter((t) => ["alRecibirRespuesta", "actualizarCiudades"].indexOf(t.getHandlerFunction()) !== -1)
     .forEach((t) => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger("alRecibirRespuesta").forSpreadsheet(libro).onFormSubmit().create();
+  // Cada hora: recoge los egresados USB que llegan por la Feria de Empleo.
+  ScriptApp.newTrigger("actualizarCiudades").timeBased().everyHours(1).create();
   actualizarCiudades();
 }
 
@@ -70,6 +72,11 @@ function actualizarCiudades() {
       if (previo) previo.n += 1;
       else escritas.set(clave, { pais: pais, ciudad: ciudad, n: 1 });
     });
+
+    // Egresados USB que llenaron el Perfil de postulante de la Feria de Empleo
+    // (pestaña que escribe el script de la feria). Se descarta a quien ya
+    // respondió el censo, por carnet o por correo: nadie se cuenta dos veces.
+    sumarPerfilesDeLaFeria_(libro, valores, escritas);
 
     const cache = leerCache_(libro);
     const nuevas = [];
@@ -211,3 +218,34 @@ function escribirPublica_(filas) {
   const todo = [["pais", "ciudad", "lat", "lng", "egresados"]].concat(filas);
   hoja.getRange(1, 1, todo.length, 5).setValues(todo);
 }
+
+const PESTANA_FERIA = "Perfiles de la feria";
+
+function sumarPerfilesDeLaFeria_(libro, valores, escritas) {
+  const hoja = libro.getSheetByName(PESTANA_FERIA);
+  if (!hoja || hoja.getLastRow() < 2) return 0;
+  const cab = valores[0].map(normal_);
+  const iCarnet = cab.indexOf("carnet");
+  const iCorreos = cab.map((c, i) => (/^indique un correo personal|direccion de correo electronico|email address/.test(c) ? i : -1)).filter((i) => i >= 0);
+  const carnet = (v) => String(v || "").replace(/[^0-9a-z]/gi, "").toLowerCase();
+  const correo = (v) => String(v || "").trim().toLowerCase();
+  const enCenso = {};
+  valores.slice(1).forEach((f) => {
+    if (iCarnet >= 0 && carnet(f[iCarnet])) enCenso["c:" + carnet(f[iCarnet])] = true;
+    iCorreos.forEach((i) => { if (correo(f[i])) enCenso["m:" + correo(f[i])] = true; });
+  });
+  let sumados = 0;
+  hoja.getDataRange().getValues().slice(1).forEach((f) => {
+    const [c, m, pais, ciudad] = f;
+    if ((carnet(c) && enCenso["c:" + carnet(c)]) || (correo(m) && enCenso["m:" + correo(m)])) return;
+    const p = String(pais || "").trim(), ci = String(ciudad || "").trim();
+    if (!p || !ci) return;
+    const clave = normal_(ci) + "|" + normal_(p);
+    const previo = escritas.get(clave);
+    if (previo) previo.n += 1;
+    else escritas.set(clave, { pais: p, ciudad: ci, n: 1 });
+    sumados++;
+  });
+  return sumados;
+}
+

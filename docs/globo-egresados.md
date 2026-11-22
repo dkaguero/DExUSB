@@ -70,3 +70,7 @@ Para corregir una ciudad mal ubicada, edita su fila de la misma forma.
 - El mismo CSV alimenta el contador del banner del censo (Inicio y Egresados), con el atributo `data-csv` del banner. Las páginas las genera la misma plantilla, así que los dos usan la misma dirección.
 - El atributo `data-censo` del globo es la dirección del formulario del censo, para el botón «¿No ves tu ciudad? Agrégala».
 
+## Egresados que llegan por la Feria de Empleo (fase 4 de la feria)
+
+Desde el 22 de noviembre de 2026, el globo suma también a quienes llenaron el **Perfil de postulante** de la feria declarándose egresados de la USB **y no respondieron el censo**. El script de la feria escribe la pestaña **«Perfiles de la feria»** en este mismo archivo de respuestas; `ciudadesCenso.gs` la lee, descarta por carnet o correo a quien ya está en el censo y suma el resto. Corre al recibir cada respuesta y **cada hora** (disparador que crea `instalar`). Detalle: `Feria_Emp/docs/conexiones.md`.
+
