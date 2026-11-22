@@ -23,10 +23,12 @@
     if (!url) return '<span class="fe-boton fe-boton--off ' + (clase || "") + '" title="Disponible pronto">' + esc(texto) + "<small>Disponible pronto</small></span>";
     return '<a class="fe-boton ' + (clase || "") + '" href="' + esc(url) + '" target="' + (destino || "_blank") + '" rel="noopener">' + esc(texto) + "</a>";
   }
-  function enlacePostular(vacante, empresa) {
+  // Formulario de postulación prellenado con los códigos de la vacante y de la
+  // empresa. Sin vacante, es «Compartir mi CV» con esa empresa.
+  function enlacePostular(vacante, empresaId) {
     var base = FE.DATOS.enlaces.postular;
-    if (!base) return null;
-    return base.replace("{vacante}", encodeURIComponent(vacante.id || vacante.titulo)).replace("{empresa}", encodeURIComponent(empresa));
+    if (!base || !empresaId) return null;
+    return base.replace("{vacante}", encodeURIComponent(vacante ? vacante.id || "" : "")).replace("{empresa}", encodeURIComponent(empresaId));
   }
 
   function abrir(html, color) {
@@ -58,7 +60,7 @@
     }).join("");
     var vacantes = (s.vacantes || []).map(function (v) {
       return '<li><div><strong>' + esc(v.titulo) + "</strong><small>" + esc([v.modalidad, v.contrato].filter(Boolean).join(" · ")) +
-        "</small></div>" + boton("Postular", s.ejemplo ? null : enlacePostular(v, s.empresa), "fe-boton--chico") + "</li>";
+        "</small></div>" + boton("Postular", s.ejemplo ? null : enlacePostular(v, s.id), "fe-boton--chico") + "</li>";
     }).join("");
     var wa = s.whatsapp ? "https://wa.me/" + String(s.whatsapp).replace(/\D/g, "") +
       (s.whatsappMensaje ? "?text=" + encodeURIComponent(s.whatsappMensaje) : "") : null;
@@ -75,7 +77,7 @@
       aviso +
       (s.descripcion ? "<p>" + esc(s.descripcion) + "</p>" : "") +
       '<div class="fe-acciones">' +
-      boton("Compartir mi CV", s.ejemplo ? null : FE.DATOS.enlaces.compartirCv, "fe-boton--principal") +
+      boton("Compartir mi CV", s.ejemplo ? null : enlacePostular(null, s.id), "fe-boton--principal") +
       (s.ejemplo ? boton("WhatsApp", null) : wa ? boton("WhatsApp", wa) : "") +
       (s.sala ? boton("Sala de entrevistas", s.ejemplo ? null : s.sala) : "") +
       (s.web ? boton("Sitio web", s.ejemplo ? null : s.web) : "") +

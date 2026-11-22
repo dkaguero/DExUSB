@@ -69,6 +69,13 @@
       if (edicion.edicion_nombre) D.edicion.nombre = edicion.edicion_nombre;
       D.edicion.fechas = edicion.feria_inicio ? { inicio: edicion.feria_inicio, fin: edicion.feria_fin } : null;
       if (edicion.youtube_canal) D.enlaces.youtubeCanal = edicion.youtube_canal;
+      // Formularios (fase 2): activan los botones «Disponible pronto».
+      if (edicion.url_perfil) D.enlaces.perfilPostulante = edicion.url_perfil;
+      if (edicion.url_empresa) D.enlaces.registroEmpresa = edicion.url_empresa;
+      if (edicion.url_postular) {
+        D.enlaces.postular = edicion.url_postular;
+        D.enlaces.compartirCv = edicion.url_postular;
+      }
 
       if (t[1].length) {
         D.planes = t[1].map(function (p) {

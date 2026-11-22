@@ -67,7 +67,7 @@ const PESTANAS = {
   Empresas: {
     columnas: ["id", "estado", "pago", "especial", "razon_social", "nombre_comercial", "rif", "sector", "tamano", "web",
       "pabellon", "posicion", "plan", "contacto_nombre", "contacto_cargo", "correo_dueno", "correos_reclutadores",
-      "fundada_por_egresados", "fundadores", "carreras_fundadores", "ciudad", "pais",
+      "fundada_por_egresados", "fundadores", "carreras_fundadores", "ciudad", "pais", "logo_oficial", "manual_marca",
       "acepta_terminos", "acepta_marca", "version_textos", "motivo", "verificado_por", "notas", "fecha_solicitud", "demo"],
     listas: { estado: ["Pendiente", "Aprobada", "Rechazada", "Pausada"], pago: ["Pendiente", "Confirmado", "No aplica"],
       especial: SI_NO, fundada_por_egresados: SI_NO, plan: ["platinum", "gold", "silver"], demo: SI_NO }
@@ -94,7 +94,7 @@ const PESTANAS = {
       acepta_cv: SI_NO, acepta_comunicaciones: SI_NO, en_censo: SI_NO, demo: SI_NO }
   },
   Postulaciones: {
-    columnas: ["id", "fecha", "tipo", "vacante_id", "empresa_id", "perfil_correo", "nota", "estado", "cv_copiado", "demo"],
+    columnas: ["id", "fecha", "tipo", "vacante_id", "empresa_id", "perfil_correo", "nota", "estado", "cv_copiado", "notas", "demo"],
     listas: { tipo: ["Postulación", "CV compartido"], estado: ["Recibido", "En revisión", "Entrevista", "Descartado"],
       cv_copiado: SI_NO, demo: SI_NO }
   },
@@ -139,6 +139,9 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("Feria CESEG")
     .addItem("Publicar cambios", "publicar")
+    .addSeparator()
+    .addItem("Crear formularios", "instalarFormularios")
+    .addItem("Ver formularios", "verFormularios")
     .addSeparator()
     .addItem("Cargar datos de ejemplo", "cargarEjemplo")
     .addItem("Borrar datos de ejemplo", "borrarEjemplo")
@@ -282,9 +285,10 @@ function calcularPublicacion_(t) {
   const pabellones = t.Pabellones.slice().sort((a, b) => Number(a.orden) - Number(b.orden));
   const nombreDe = (e) => e.nombre_comercial || e.razon_social || e.id;
 
-  // Stands
+  // Stands: la versión aprobada más reciente de cada empresa. Una edición en
+  // borrador no quita la versión aprobada mientras la CESEG la revisa.
   const standDe = {};
-  t.Stands.forEach((s) => { standDe[s.empresa_id] = s; });
+  t.Stands.forEach((s) => { if (s.estado === "Aprobado") standDe[s.empresa_id] = s; });
   const ocupadas = {};
   const publicadas = {};
   const stands = [];
@@ -293,7 +297,7 @@ function calcularPublicacion_(t) {
     const nombre = nombreDe(e);
     if (e.pago !== "Confirmado" && e.especial !== "Sí") { avisos.push(nombre + ": pago sin confirmar"); return; }
     const s = standDe[e.id];
-    if (!s || s.estado !== "Aprobado") { avisos.push(nombre + ": stand sin aprobar"); return; }
+    if (!s) { avisos.push(nombre + ": stand sin aprobar"); return; }
     const pab = pabellones.filter((p) => p.slug === e.pabellon)[0];
     const pos = Number(e.posicion);
     if (!pab || !(pos >= 1 && pos <= Number(pab.posiciones))) { avisos.push(nombre + ": pabellón o posición no válidos"); return; }
@@ -355,7 +359,8 @@ function calcularPublicacion_(t) {
   return {
     avisos: avisos,
     tablas: {
-      Edicion: ["edicion_nombre", "convocatoria_inicio", "convocatoria_fin", "feria_inicio", "feria_fin", "consulta_dias", "youtube_canal"]
+      Edicion: ["edicion_nombre", "convocatoria_inicio", "convocatoria_fin", "feria_inicio", "feria_fin", "consulta_dias", "youtube_canal",
+        "url_perfil", "url_postular", "url_empresa", "url_stand", "url_vacante", "url_charla"]
         .map((k) => ({ clave: k, valor: cfg[k] instanceof Date ? fechaTexto_(cfg[k]) : (cfg[k] == null ? "" : cfg[k]) })),
       Planes: planes.map((p) => ({ id: p.id, nombre: p.nombre, precio: p.precio, desde: p.posicion_desde, hasta: p.posicion_hasta, forma: p.forma, beneficios: p.beneficios })),
       Pabellones: pabellones.map((p) => ({ slug: p.slug, nombre: p.nombre, sector: p.sector, color: p.color, posiciones: p.posiciones })),
@@ -478,4 +483,507 @@ function borrarEjemplo(silencioso) {
     for (let r = datos.length - 1; r >= 1; r--) if (datos[r][i] === "Sí") hoja.deleteRow(r + 1);
   });
   if (silencioso !== true) publicar();
+}
+
+// =====================================================================
+// FASE 2: TEXTOS LEGALES Y FORMULARIOS
+// =====================================================================
+
+/*
+ * Textos legales aprobados por la CESEG el 2026-11-03 (proyecto original,
+ * base-seed.ts y brand-use-text.ts), reutilizados. Cambios mínimos para la
+ * versión en Google, marcados en Feria_Emp/back/textos-legales/README.md:
+ * los datos se guardan en Google Workspace de la USB, y la eliminación de los
+ * datos o el retiro de la autorización se piden por correo a la CESEG (no hay
+ * cuentas ni perfil en la plataforma).
+ */
+const VERSION_TEXTOS = "v1 (2026-11-03) adaptada a Google Workspace";
+
+const TEXTOS = {
+  ATTENDEE_TERMS: {
+    titulo: "Términos y Condiciones de Uso y Política de Privacidad para Usuarios",
+    texto: [
+      "Al registrarse en la Feria de Empleo Virtual de la Universidad Simón Bolívar (USB), el usuario acepta de manera expresa, voluntaria e informada los siguientes términos:",
+      "Responsable del Tratamiento: La Universidad Simón Bolívar (USB), a través de la Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG), adscrita al Decanato de Extensión (DEx), es la única entidad responsable de la recolección y resguardo de sus datos de contacto y perfil profesional, que se guardan en Google Workspace de la USB.",
+      "Finalidad Exclusiva de los Datos: De conformidad con las garantías de protección a la privacidad y el honor previstas en el Artículo 60 de la Constitución de la República Bolivariana de Venezuela, los datos suministrados (incluyendo correos electrónicos de uso frecuente y CV) serán utilizados únicamente para:\n- Gestionar su participación y postulaciones dentro de la Feria de Empleo Virtual actual.\n- Poner su perfil profesional y su CV a disposición de las empresas participantes de la feria, según el plan de patrocinio de cada una.\n- Mantener el contacto institucional entre la USB y sus egresados o estudiantes.",
+      "Principio de No Cesión a Terceros: La CESEG garantiza que su información personal no será compartida, vendida ni transferida a terceros distintos de las empresas participantes de la feria. Al cargar su CV, el usuario autoriza que su perfil profesional y su CV sean consultados y descargados por las empresas participantes, según el plan de patrocinio de cada empresa, incluso si no se ha postulado a sus ofertas, durante la feria y los quince (15) días posteriores a su cierre. Este acceso tiene el único fin de evaluar su candidatura y está sujeto a las obligaciones de confidencialidad que dichas empresas aceptan.",
+      "Actualización de Datos: El usuario se compromete a suministrar una dirección de correo electrónico de uso frecuente, que será su correo principal en la feria, y a mantener actualizados sus datos. Si lo tuviera, podrá indicar además su correo institucional. Ambos aseguran una comunicación efectiva y bidireccional con la institución.",
+      "Conservación de los Datos: La información suministrada se conserva bajo resguardo de la USB una vez finalizada la feria. Las empresas participantes dejan de tener acceso a ella a los quince (15) días del cierre de la feria. El usuario puede solicitar en cualquier momento la eliminación de sus datos escribiendo a ceseg@usb.ve; en ese caso, su CV y sus datos personales se eliminan de la feria. La eliminación no alcanza los CVs que las empresas hayan descargado antes de la solicitud, que siguen sujetos a las obligaciones de confidencialidad de dichas empresas."
+    ].join("\n\n")
+  },
+  COMPANY_TERMS: {
+    titulo: "Términos y Condiciones de Uso y Confidencialidad para Empresas Registradas",
+    texto: [
+      "Al registrarse como entidad empleadora en la Feria de Empleo Virtual de la Universidad Simón Bolívar (USB), la empresa acepta cumplir las siguientes disposiciones sobre el manejo de la información:",
+      "Uso Exclusivo de los Datos: La Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG) autoriza a la empresa el acceso a los datos de los asistentes que hayan autorizado compartir su CV, según el plan de patrocinio contratado, con el único propósito de evaluar perfiles para sus procesos de reclutamiento, durante la feria y los quince (15) días posteriores a su cierre.",
+      "Confidencialidad y Limitación Legal: En estricto cumplimiento del marco legal venezolano sobre la protección de datos personales, la empresa se compromete a no transferir, comercializar ni difundir la base de datos o la información de los usuarios a ninguna filial, tercero o entidad externa sin el consentimiento expreso del titular. Esta obligación se extiende a los CVs y datos descargados o exportados, que la empresa deberá resguardar y no podrá utilizar para fines distintos al reclutamiento.",
+      "Planes de Patrocinio y Pagos: La participación de la empresa está sujeta al plan de patrocinio seleccionado en su registro, cuyos beneficios, límites y precio publica la CESEG. El pago se coordina directamente con la CESEG fuera de la plataforma. La aprobación de la CESEG y la confirmación del pago son requisitos para habilitar el stand. La CESEG se reserva la facultad de aprobar, rechazar, pausar o modificar el contenido de los stands para asegurar el cumplimiento de estos términos y de los lineamientos de la feria.",
+      "Comunicaciones Futuras por la CESEG: La empresa acepta que los datos de contacto suministrados en su registro corporativo serán incorporados a los sistemas de la CESEG para:\n- Coordinar los aspectos logísticos y operativos de la presente feria.\n- Contactarles en el futuro e invitarles a participar en próximas ediciones, ferias de empleo, proyectos de emprendimiento o alianzas estratégicas organizadas por la CESEG.",
+      "Veracidad de la Información: La empresa garantiza que toda la información provista sobre su identidad legal y las ofertas de empleo publicadas es fidedigna y cumple con la legislación laboral venezolana vigente."
+    ].join("\n\n")
+  },
+  CV_SHARING: {
+    titulo: "Autorización para compartir tu CV",
+    texto: "Al cargar tu CV autorizas a la CESEG a mostrar y permitir la descarga de tu perfil profesional y tu currículum a las empresas participantes de la Feria de Empleo Virtual USB, con el único fin de evaluar tu candidatura, de acuerdo con los Términos y Condiciones de la feria."
+  },
+  COMMUNICATIONS: {
+    titulo: "Comunicaciones de la CESEG",
+    texto: "Acepto recibir información de la CESEG sobre futuros eventos académicos, profesionales, de emprendimiento o empleo. Puedo retirar esta autorización en cualquier momento escribiendo a ceseg@usb.ve."
+  },
+  BRAND_USE: {
+    titulo: "Cláusula de autorización de uso de marca e imagen comercial",
+    texto: [
+      "Al marcar esta casilla, el Solicitante (Patrocinador) otorga a la Organización de la Feria una licencia y autorización de carácter no exclusivo, gratuito, mundial y limitado en el tiempo hasta la finalización de la edición actual del evento (incluyendo las memorias posteriores del mismo), para reproducir, exhibir y publicar su nombre comercial, marca registrada y logotipos en el sitio web oficial de la feria, redes sociales, folletos digitales y material publicitario impreso exclusivamente vinculado a la promoción y difusión del evento.",
+      "La CESEG se compromete a respetar la integridad del logotipo provisto por el Patrocinador y a no modificar sus colores, proporciones o diseño sin consentimiento previo por escrito, alineándose en la medida de lo posible con el manual de identidad corporativa facilitado por el expositor. El Patrocinador garantiza que es el titular legítimo de los derechos sobre dicha marca o que cuenta con la facultad legal para otorgar esta autorización."
+    ].join("\n\n")
+  }
+};
+
+// Preguntas de subida de archivos: Apps Script no puede crearlas. Se agregan a
+// mano en cada formulario con ESTOS títulos exactos (Feria_Emp/docs/formularios.md).
+const ARCHIVOS = {
+  perfil: [{ titulo: "Tu CV (PDF)", columna: "cv" }],
+  empresa: [{ titulo: "Logotipo oficial", columna: "logo_oficial" }, { titulo: "Manual de marca", columna: "manual_marca" }],
+  stand: [{ titulo: "Logo", columna: "logo" }, { titulo: "Banner", columna: "banner" },
+    { titulo: "Galería (hasta 6 fotos)", columna: "galeria" }, { titulo: "Folleto (PDF)", columna: "folleto" }]
+};
+
+const URL_RE = "^https?://\\S+$";
+const ESTATUS = ["Estudiante activo (pasantías)", "Último año (carga completa)", "Egresado / graduado"];
+const RELACION_USB = ["Egresado o egresada de la USB", "Estudiante de la USB", "Egresado o estudiante de otra universidad", "Otra"];
+const TAMANOS = ["1 a 10 personas", "11 a 50 personas", "51 a 200 personas", "Más de 200 personas"];
+
+/**
+ * Definición de los formularios. Cada pregunta con «columna» cae en esa
+ * columna de su pestaña. Tipos: texto, parrafo, url, correo, opcion (radio),
+ * lista (desplegable), casilla (obligatoria para aceptar), fecha, hora, seccion.
+ */
+function definicionFormularios_() {
+  const uni = leerTabla_("Universidades").map((u) => u.nombre).filter(Boolean);
+  const pabs = leerTabla_("Pabellones").map((p) => p.nombre);
+  const planes = leerTabla_("Planes").map((p) => p.nombre + " (" + p.precio + " $, posiciones " + p.posicion_desde + "-" + p.posicion_hasta + ")");
+  const legal = (clave, casilla) => [
+    { seccion: TEXTOS[clave].titulo, ayuda: TEXTOS[clave].texto },
+    { titulo: casilla, tipo: "casilla", requerida: true, opciones: ["Acepto"], columna: "_" + clave }
+  ];
+  return {
+    perfil: {
+      pestana: "Perfiles",
+      titulo: "Perfil de postulante – Feria de Empleo CESEG USB",
+      descripcion: "Se llena una sola vez. Con este perfil y tu CV puedes postular a las vacantes de la feria y de la Bolsa de Trabajo de la CESEG. " +
+        "Pueden registrarse egresados y estudiantes de la USB y de otras universidades. Si vuelves a enviarlo, se actualiza tu perfil.",
+      confirmacion: "Listo: tu perfil quedó guardado. Ya puedes postular desde los stands de la feria y la Bolsa de Trabajo.",
+      preguntas: [
+        { titulo: "Nombre", columna: "nombre", tipo: "texto", requerida: true },
+        { titulo: "Apellido", columna: "apellido", tipo: "texto", requerida: true },
+        { titulo: "Documento de identidad", columna: "documento", tipo: "texto", requerida: true, ayuda: "V-12345678, E-12345678 o número de pasaporte." },
+        { titulo: "¿Cuál es tu relación con la USB?", columna: "relacion_usb", tipo: "opcion", requerida: true, opciones: RELACION_USB },
+        { titulo: "Carnet USB", columna: "carnet", tipo: "texto", ayuda: "Solo si eres egresado o estudiante de la USB." },
+        { titulo: "Universidad", columna: "universidad", tipo: "opcion", requerida: true, opciones: uni, otra: true },
+        { titulo: "Carrera", columna: "carrera", tipo: "texto", requerida: true },
+        { titulo: "Estatus académico", columna: "estatus", tipo: "opcion", requerida: true, opciones: ESTATUS },
+        { titulo: "Ciudad donde vives", columna: "ciudad", tipo: "texto", requerida: true },
+        { titulo: "País donde vives", columna: "pais", tipo: "texto", requerida: true },
+        { titulo: "Idiomas y nivel", columna: "idiomas", tipo: "parrafo", ayuda: "Por ejemplo: Inglés avanzado, Portugués básico." },
+        { titulo: "Habilidades", columna: "habilidades", tipo: "parrafo", ayuda: "Separadas por coma. Por ejemplo: Python, SQL, SAP." },
+        { titulo: "Áreas de interés", columna: "intereses", tipo: "parrafo", ayuda: "Por ejemplo: Desarrollo, Datos, Auditoría, Planta." },
+        { titulo: "LinkedIn", columna: "linkedin", tipo: "url" },
+        { titulo: "Correo institucional", columna: "correo_institucional", tipo: "correo", ayuda: "Opcional." }
+      ].concat(legal("ATTENDEE_TERMS", "Acepto los Términos y Condiciones y la Política de Privacidad"))
+        .concat(legal("CV_SHARING", "Autorizo compartir mi CV con las empresas de la feria"))
+        .concat([{ seccion: TEXTOS.COMMUNICATIONS.titulo },
+          { titulo: TEXTOS.COMMUNICATIONS.texto, tipo: "casilla", opciones: ["Sí, acepto"], columna: "_COMMUNICATIONS" }])
+    },
+    postulacion: {
+      pestana: "Postulaciones",
+      titulo: "Postular o compartir mi CV – Feria de Empleo CESEG USB",
+      descripcion: "Este formulario se abre desde la feria con la vacante o la empresa ya marcada. Usa tu perfil de postulante y tu CV: si aún no los tienes, llena primero el Perfil de postulante.",
+      confirmacion: "Listo: la empresa recibirá tu perfil y tu CV.",
+      preguntas: [
+        { titulo: "Código de la vacante", columna: "vacante_id", tipo: "texto", ayuda: "Se llena solo desde la feria. Vacío = compartir tu CV con la empresa." },
+        { titulo: "Código de la empresa", columna: "empresa_id", tipo: "texto", ayuda: "Se llena solo desde la feria." },
+        { titulo: "Nota para la empresa", columna: "nota", tipo: "parrafo", ayuda: "Opcional." },
+        { titulo: "Confirmación", tipo: "casilla", requerida: true, opciones: ["Confirmo que la empresa podrá ver mi perfil y mi CV"] }
+      ]
+    },
+    empresa: {
+      pestana: "Empresas",
+      titulo: "Registro de empresa – Feria de Empleo CESEG USB",
+      descripcion: "Solicitud para participar en la feria. La CESEG revisa cada solicitud, asigna el pabellón y la posición, y confirma el pago antes de habilitar el stand.",
+      confirmacion: "Gracias. La CESEG revisará tu solicitud y te escribirá para coordinar el pago y la ubicación de tu stand.",
+      preguntas: [
+        { titulo: "Razón social", columna: "razon_social", tipo: "texto", requerida: true },
+        { titulo: "Nombre comercial", columna: "nombre_comercial", tipo: "texto", requerida: true },
+        { titulo: "RIF", columna: "rif", tipo: "texto", requerida: true, ayuda: "Por ejemplo: J-12345678-9." },
+        { titulo: "Sector", columna: "sector", tipo: "opcion", requerida: true, opciones: pabs, otra: true },
+        { titulo: "Tamaño de la empresa", columna: "tamano", tipo: "opcion", requerida: true, opciones: TAMANOS },
+        { titulo: "Sitio web", columna: "web", tipo: "url" },
+        { titulo: "Pabellón que prefieres", columna: "pabellon", tipo: "opcion", requerida: true, opciones: pabs },
+        { titulo: "Plan que solicitas", columna: "plan", tipo: "opcion", requerida: true, opciones: planes,
+          ayuda: "Platinum: vacantes sin límite, toda la base de CV, analítica completa y charla garantizada. Gold: hasta 10 vacantes y charla a solicitud. Silver: hasta 3 vacantes." },
+        { titulo: "Persona de contacto", columna: "contacto_nombre", tipo: "texto", requerida: true },
+        { titulo: "Cargo de la persona de contacto", columna: "contacto_cargo", tipo: "texto", requerida: true },
+        { titulo: "Correos de los reclutadores", columna: "correos_reclutadores", tipo: "parrafo",
+          ayuda: "Cuentas de Google de quienes verán los CV de la empresa, separadas por coma. Tu correo ya queda como dueño." },
+        { seccion: "Empresas fundadas por egresados de la USB", ayuda: "Si la empresa la fundaron egresados de la USB, puede aparecer en el mapa «USBistas por el mundo» del sitio de la CESEG, después de la verificación." },
+        { titulo: "¿La fundaron egresados de la USB?", columna: "fundada_por_egresados", tipo: "opcion", requerida: true, opciones: ["Sí", "No"] },
+        { titulo: "Fundadores egresados de la USB", columna: "fundadores", tipo: "texto", ayuda: "Nombre y apellido, separados por coma." },
+        { titulo: "Carreras de los fundadores en la USB", columna: "carreras_fundadores", tipo: "texto" },
+        { titulo: "Ciudad de la sede principal", columna: "ciudad", tipo: "texto", requerida: true },
+        { titulo: "País de la sede principal", columna: "pais", tipo: "texto", requerida: true }
+      ].concat(legal("COMPANY_TERMS", "Acepto los Términos y Condiciones para empresas"))
+        .concat(legal("BRAND_USE", "Autorizo el uso de marca e imagen comercial"))
+    },
+    stand: {
+      pestana: "Stands",
+      titulo: "Mi stand – Feria de Empleo CESEG USB",
+      descripcion: "Contenido del stand de tu empresa. Llénalo con la cuenta de Google registrada como dueño o reclutador. Cada envío queda pendiente hasta que la CESEG lo aprueba; mientras tanto se sigue viendo la versión aprobada.",
+      confirmacion: "Gracias. La CESEG revisará los cambios de tu stand antes de publicarlos.",
+      preguntas: [
+        { titulo: "Color de la marca", columna: "color", tipo: "texto", ayuda: "Código hexadecimal, por ejemplo #0055a5.", patron: "^#[0-9A-Fa-f]{6}$" },
+        { titulo: "Descripción de la empresa", columna: "descripcion", tipo: "parrafo", requerida: true },
+        { titulo: "Video (YouTube o Vimeo)", columna: "video", tipo: "url" },
+        { titulo: "Sitio web", columna: "web", tipo: "url" },
+        { titulo: "Instagram", columna: "instagram", tipo: "url" },
+        { titulo: "LinkedIn", columna: "linkedin", tipo: "url" },
+        { titulo: "Facebook", columna: "facebook", tipo: "url" },
+        { titulo: "X (Twitter)", columna: "x", tipo: "url" },
+        { titulo: "TikTok", columna: "tiktok", tipo: "url" },
+        { titulo: "YouTube", columna: "youtube", tipo: "url" },
+        { titulo: "Otras redes", columna: "otras_redes", tipo: "parrafo", ayuda: "Una dirección por línea." },
+        { titulo: "WhatsApp", columna: "whatsapp", tipo: "texto", ayuda: "Con código de país, por ejemplo +58 412 0000000." },
+        { titulo: "Mensaje inicial de WhatsApp", columna: "whatsapp_mensaje", tipo: "texto" },
+        { titulo: "Sala de entrevistas (Meet, Zoom o Teams)", columna: "sala_entrevistas", tipo: "url" }
+      ]
+    },
+    vacante: {
+      pestana: "Vacantes",
+      titulo: "Publicar una vacante – Feria de Empleo y Bolsa de Trabajo CESEG",
+      descripcion: "Empresas de la feria y empresas o egresados que publican en la Bolsa de Trabajo. La CESEG revisa cada vacante antes de publicarla.",
+      confirmacion: "Gracias. La CESEG revisará la vacante antes de publicarla.",
+      preguntas: [
+        { titulo: "Empresa o egresado que publica", columna: "empresa_nombre", tipo: "texto", requerida: true },
+        { titulo: "Título de la vacante", columna: "titulo", tipo: "texto", requerida: true },
+        { titulo: "Descripción", columna: "descripcion", tipo: "parrafo", requerida: true },
+        { titulo: "Requisitos", columna: "requisitos", tipo: "parrafo" },
+        { titulo: "Ubicación", columna: "ubicacion", tipo: "texto" },
+        { titulo: "Modalidad", columna: "modalidad", tipo: "opcion", requerida: true, opciones: PESTANAS.Vacantes.listas.modalidad },
+        { titulo: "Tipo de contrato", columna: "contrato", tipo: "opcion", requerida: true, opciones: PESTANAS.Vacantes.listas.contrato },
+        { titulo: "Rango salarial", columna: "salario", tipo: "texto", ayuda: "Opcional." },
+        { titulo: "Área o sector", columna: "sector", tipo: "texto" },
+        { titulo: "Correo de contacto", columna: "correo_contacto", tipo: "correo", requerida: true },
+        { titulo: "Enlace para postularse", columna: "enlace_postulacion", tipo: "url", ayuda: "Opcional. En la feria se postula con el perfil de postulante." }
+      ]
+    },
+    charla: {
+      pestana: "Charlas",
+      titulo: "Solicitar una charla – Auditorio de la Feria de Empleo CESEG",
+      descripcion: "Para empresas con plan Gold o Platinum. Charlas de 15 o 30 minutos, de lunes a viernes, de 9:00 a 16:00, hasta 3 por empresa. " +
+        "Platinum: se confirma sola si el turno está libre. Gold: la confirma la CESEG.",
+      confirmacion: "Gracias. Recibirás la confirmación de la charla por correo.",
+      preguntas: [
+        { titulo: "Título de la charla", columna: "titulo", tipo: "texto", requerida: true },
+        { titulo: "Ponente", columna: "ponente", tipo: "texto", requerida: true },
+        { titulo: "Fecha", columna: "fecha", tipo: "fecha", requerida: true },
+        { titulo: "Hora de inicio", columna: "hora", tipo: "hora", requerida: true, ayuda: "En punto, :15, :30 o :45." },
+        { titulo: "Duración (minutos)", columna: "duracion", tipo: "opcion", requerida: true, opciones: ["15", "30"] }
+      ]
+    }
+  };
+}
+
+function crearFormulario_(def) {
+  const form = FormApp.create(def.titulo);
+  form.setDescription(def.descripcion);
+  form.setConfirmationMessage(def.confirmacion);
+  try { form.setRequireLogin(false); } catch (e) { /* solo en Workspace */ }
+  // Correo verificado: identifica a la persona o empresa sin pedir el correo a mano.
+  try { form.setEmailCollectionType(FormApp.EmailCollectionType.VERIFIED); } catch (e) { form.setCollectEmail(true); }
+  def.preguntas.forEach((p) => {
+    if (p.seccion) {
+      const s = form.addSectionHeaderItem().setTitle(p.seccion);
+      if (p.ayuda) s.setHelpText(p.ayuda);
+      return;
+    }
+    let item;
+    if (p.tipo === "parrafo") item = form.addParagraphTextItem();
+    else if (p.tipo === "opcion") { item = form.addMultipleChoiceItem().setChoiceValues(p.opciones); if (p.otra) item.showOtherOption(true); }
+    else if (p.tipo === "lista") item = form.addListItem().setChoiceValues(p.opciones);
+    else if (p.tipo === "casilla") item = form.addCheckboxItem().setChoiceValues(p.opciones);
+    else if (p.tipo === "fecha") item = form.addDateItem();
+    else if (p.tipo === "hora") item = form.addTimeItem();
+    else {
+      item = form.addTextItem();
+      if (p.tipo === "url") item.setValidation(FormApp.createTextValidation().requireTextIsUrl().build());
+      if (p.tipo === "correo") item.setValidation(FormApp.createTextValidation().requireTextIsEmail().build());
+      if (p.patron) item.setValidation(FormApp.createTextValidation().requireTextMatchesPattern(p.patron).build());
+    }
+    item.setTitle(p.titulo);
+    if (p.ayuda) item.setHelpText(p.ayuda);
+    if (p.requerida) item.setRequired(true);
+  });
+  return form;
+}
+
+/** Crea los formularios que falten, el disparador y los enlaces. Se puede repetir. */
+function instalarFormularios() {
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  const props = PropertiesService.getScriptProperties();
+  const defs = definicionFormularios_();
+  Object.keys(defs).forEach((clave) => {
+    if (props.getProperty("form_" + clave)) return;
+    const form = crearFormulario_(defs[clave]);
+    form.setDestination(FormApp.DestinationType.SPREADSHEET, libro.getId());
+    props.setProperty("form_" + clave, form.getId());
+    SpreadsheetApp.flush();
+    renombrarRespuestas_(libro, form, "Respuestas – " + clave);
+  });
+
+  ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === "alRecibirRespuesta")
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("alRecibirRespuesta").forSpreadsheet(libro).onFormSubmit().create();
+
+  guardarEnlaces_();
+  publicar();
+  verFormularios();
+}
+
+function renombrarRespuestas_(libro, form, nombre) {
+  if (libro.getSheetByName(nombre)) return;
+  libro.getSheets().forEach((h) => {
+    const url = h.getFormUrl && h.getFormUrl();
+    if (url && url.indexOf(form.getId()) !== -1) h.setName(nombre);
+  });
+}
+
+/** Guarda en Configuración los enlaces públicos que usan los widgets. */
+function guardarEnlaces_() {
+  const props = PropertiesService.getScriptProperties();
+  const abrir = (clave) => { const id = props.getProperty("form_" + clave); return id ? FormApp.openById(id) : null; };
+  ["perfil", "empresa", "stand", "vacante", "charla"].forEach((clave) => {
+    const f = abrir(clave);
+    if (f) guardarConfig_("url_" + clave, f.getPublishedUrl());
+  });
+  // Postulación: enlace prellenado con marcadores {vacante} y {empresa} que el widget reemplaza.
+  const f = abrir("postulacion");
+  if (f) {
+    const items = f.getItems();
+    const buscar = (t) => items.filter((i) => i.getTitle() === t)[0].asTextItem();
+    const url = f.createResponse()
+      .withItemResponse(buscar("Código de la vacante").createResponse("VACANTEXYZ"))
+      .withItemResponse(buscar("Código de la empresa").createResponse("EMPRESAXYZ"))
+      .toPrefilledUrl();
+    guardarConfig_("url_postular", url.replace("VACANTEXYZ", "{vacante}").replace("EMPRESAXYZ", "{empresa}"));
+  }
+}
+
+function verFormularios() {
+  const props = PropertiesService.getScriptProperties();
+  const texto = Object.keys(definicionFormularios_()).map((clave) => {
+    const id = props.getProperty("form_" + clave);
+    if (!id) return clave + ": (sin crear)";
+    const f = FormApp.openById(id);
+    const faltan = (ARCHIVOS[clave] || []).filter((a) => !f.getItems().some((i) => i.getTitle() === a.titulo)).map((a) => "«" + a.titulo + "»");
+    return f.getTitle() + "\n  " + f.getPublishedUrl() + "\n  Editar: " + f.getEditUrl() +
+      (faltan.length ? "\n  FALTA agregar a mano la subida de archivos: " + faltan.join(", ") : "");
+  }).join("\n\n");
+  Logger.log(texto);
+  try { SpreadsheetApp.getUi().alert("Formularios de la feria", texto, SpreadsheetApp.getUi().ButtonSet.OK); } catch (e) {}
+}
+
+// ---------------- respuestas ----------------
+
+/** Disparador: cada respuesta se guarda en su pestaña, pendiente de la CESEG. */
+function alRecibirRespuesta(e) {
+  const hoja = e.range.getSheet();
+  const url = hoja.getFormUrl ? hoja.getFormUrl() : "";
+  const props = PropertiesService.getScriptProperties();
+  const clave = Object.keys(definicionFormularios_()).filter((k) => {
+    const id = props.getProperty("form_" + k);
+    return id && url && url.indexOf(id) !== -1;
+  })[0];
+  if (!clave) return;
+  const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  const val = e.range.getValues()[0];
+  const respuesta = {};
+  cab.forEach((c, i) => { respuesta[c] = val[i]; });
+  procesarRespuesta_(clave, respuesta);
+}
+
+/** Lógica de cada formulario, separada del disparador para poder probarla. */
+function procesarRespuesta_(clave, respuesta) {
+  const defs = definicionFormularios_();
+  const def = defs[clave];
+  const correo = String(Object.keys(respuesta).filter((k) => /correo electr[oó]nico|email address/i.test(k)).map((k) => respuesta[k])[0] || "").trim().toLowerCase();
+  const fecha = respuesta["Marca temporal"] || respuesta["Timestamp"] || new Date();
+  const v = { fecha: fecha };
+  def.preguntas.forEach((p) => {
+    if (!p.columna || !(p.titulo in respuesta)) return;
+    v[p.columna] = typeof respuesta[p.titulo] === "string" ? respuesta[p.titulo].trim() : respuesta[p.titulo];
+  });
+  (ARCHIVOS[clave] || []).forEach((a) => {
+    if (respuesta[a.titulo]) v[a.columna] = String(respuesta[a.titulo]).split(/\s*,\s*/).filter(Boolean).join(" | ");
+  });
+  const acepta = (k) => (String(v["_" + k] || "") ? "Sí" : "No");
+  const empresa = empresaDeCorreo_(correo);
+  const id = (prefijo) => prefijo + "-" + Utilities.getUuid().slice(0, 8);
+
+  if (clave === "perfil") {
+    return guardarPorClave_("Perfiles", "correo", correo, {
+      id: id("per"), correo: correo, nombre: v.nombre, apellido: v.apellido, documento: v.documento, relacion_usb: v.relacion_usb,
+      carnet: v.carnet, universidad: v.universidad, carrera: v.carrera, estatus: v.estatus, ciudad: v.ciudad, pais: v.pais,
+      idiomas: v.idiomas, habilidades: v.habilidades, intereses: v.intereses, linkedin: v.linkedin,
+      correo_institucional: v.correo_institucional, cv: v.cv, cv_fecha: v.cv ? fecha : "",
+      acepta_terminos: acepta("ATTENDEE_TERMS"), acepta_cv: acepta("CV_SHARING"), acepta_comunicaciones: acepta("COMMUNICATIONS"),
+      version_textos: VERSION_TEXTOS, fecha: fecha
+    }, ["id", "cv", "cv_fecha", "en_censo"]);
+  }
+
+  if (clave === "postulacion") {
+    const perfil = leerTabla_("Perfiles").filter((p) => String(p.correo).toLowerCase() === correo)[0];
+    const vac = v.vacante_id ? leerTabla_("Vacantes").filter((x) => x.id === v.vacante_id)[0] : null;
+    const notas = [];
+    if (!perfil) notas.push("Sin perfil de postulante con este correo");
+    if (v.vacante_id && !vac) notas.push("Código de vacante desconocido");
+    return agregarFila_("Postulaciones", {
+      id: id("pos"), fecha: fecha, tipo: v.vacante_id ? "Postulación" : "CV compartido", vacante_id: v.vacante_id,
+      empresa_id: v.empresa_id || (vac ? vac.empresa_id : ""), perfil_correo: correo, nota: v.nota, estado: "Recibido",
+      cv_copiado: "No", notas: notas.join(". ")
+    });
+  }
+
+  if (clave === "empresa") {
+    const plan = String(v.plan || "").split(" ")[0].toLowerCase();
+    const pab = leerTabla_("Pabellones").filter((p) => p.nombre === v.pabellon)[0];
+    const fila = {
+      id: id("emp"), estado: "Pendiente", pago: "Pendiente", especial: "No", razon_social: v.razon_social,
+      nombre_comercial: v.nombre_comercial, rif: v.rif, sector: v.sector, tamano: v.tamano, web: v.web,
+      pabellon: pab ? pab.slug : "", plan: plan, contacto_nombre: v.contacto_nombre, contacto_cargo: v.contacto_cargo,
+      correo_dueno: correo, correos_reclutadores: v.correos_reclutadores, fundada_por_egresados: v.fundada_por_egresados,
+      fundadores: v.fundadores, carreras_fundadores: v.carreras_fundadores, ciudad: v.ciudad, pais: v.pais,
+      logo_oficial: v.logo_oficial, manual_marca: v.manual_marca,
+      acepta_terminos: acepta("COMPANY_TERMS"), acepta_marca: acepta("BRAND_USE"), version_textos: VERSION_TEXTOS, fecha_solicitud: fecha
+    };
+    // Un segundo envío del mismo dueño actualiza su solicitud sin tocar estado, pago ni ubicación.
+    const r = guardarPorClave_("Empresas", "correo_dueno", correo, fila, ["id", "estado", "pago", "especial", "posicion", "pabellon", "plan", "motivo", "verificado_por", "notas"]);
+    avisarCesta_("Solicitud de empresa: " + (v.nombre_comercial || v.razon_social), "Plan " + v.plan + ", pabellón " + v.pabellon + ". Correo: " + correo);
+    return r;
+  }
+
+  if (clave === "stand") {
+    const notas = empresa ? "" : "El correo " + correo + " no es dueño ni reclutador de ninguna empresa registrada";
+    const r = agregarFila_("Stands", {
+      empresa_id: empresa ? empresa.id : "", estado: "Borrador", color: v.color, logo: v.logo, banner: v.banner,
+      descripcion: v.descripcion, video: v.video, web: v.web, instagram: v.instagram, linkedin: v.linkedin, facebook: v.facebook,
+      x: v.x, tiktok: v.tiktok, youtube: v.youtube, otras_redes: v.otras_redes, whatsapp: v.whatsapp, whatsapp_mensaje: v.whatsapp_mensaje,
+      galeria: v.galeria, folleto: v.folleto, sala_entrevistas: v.sala_entrevistas, notas: notas, fecha: fecha
+    });
+    avisarCesta_("Stand para revisar: " + (empresa ? (empresa.nombre_comercial || empresa.razon_social) : correo), notas || "Cambios pendientes de aprobación.");
+    return r;
+  }
+
+  if (clave === "vacante") {
+    const r = agregarFila_("Vacantes", {
+      id: id("vac"), estado: "Borrador", origen: empresa ? "Feria" : "Bolsa", empresa_id: empresa ? empresa.id : "",
+      empresa_nombre: v.empresa_nombre, titulo: v.titulo, descripcion: v.descripcion, requisitos: v.requisitos, ubicacion: v.ubicacion,
+      modalidad: v.modalidad, contrato: v.contrato, salario: v.salario, sector: v.sector, correo_contacto: v.correo_contacto,
+      enlace_postulacion: v.enlace_postulacion, fecha: fecha
+    });
+    avisarCesta_("Vacante para revisar: " + v.titulo, (empresa ? "Feria, " : "Bolsa, ") + v.empresa_nombre);
+    return r;
+  }
+
+  if (clave === "charla") {
+    const fila = { id: id("ch"), empresa_id: empresa ? empresa.id : "", titulo: v.titulo, ponente: v.ponente, fecha: v.fecha,
+      hora: v.hora, duracion: Number(v.duracion) || 30, fecha_solicitud: fecha };
+    const revision = revisarCharla_(fila, empresa);
+    fila.estado = revision.aprobar ? "Aprobada" : "Solicitada";
+    fila.verificado_por = revision.aprobar ? "Automático (Platinum, turno libre)" : "";
+    fila.notas = revision.problemas.join(". ");
+    const r = agregarFila_("Charlas", fila);
+    if (revision.aprobar) publicar();
+    avisarCesta_("Charla " + (revision.aprobar ? "confirmada" : "solicitada") + ": " + v.titulo, fila.notas || "Sin observaciones.");
+    return r;
+  }
+}
+
+/** Empresa cuyo dueño o reclutador tiene ese correo. */
+function empresaDeCorreo_(correo) {
+  if (!correo) return null;
+  return leerTabla_("Empresas").filter((e) => String(e.correo_dueno).toLowerCase() === correo ||
+    String(e.correos_reclutadores || "").toLowerCase().split(/[\s,;]+/).indexOf(correo) !== -1)[0] || null;
+}
+
+/**
+ * Reglas de las charlas: plan Gold o Platinum, empresa aprobada y con pago,
+ * lunes a viernes, de 9:00 a 16:00 en turnos de 15 min, 15 o 30 min, hasta 3
+ * por empresa y sin chocar con otra charla aprobada o un bloqueo. Platinum sin
+ * problemas se aprueba sola.
+ */
+function revisarCharla_(c, empresa) {
+  const problemas = [];
+  const cfg = {};
+  leerTabla_("Configuracion").forEach((f) => { cfg[f.clave] = f.valor; });
+  if (!empresa) return { aprobar: false, problemas: ["El correo no corresponde a ninguna empresa registrada"] };
+  const plan = leerTabla_("Planes").filter((p) => p.id === empresa.plan)[0];
+  if (!plan || plan.charlas === "No") problemas.push("El plan de la empresa no incluye charlas");
+  if (empresa.estado !== "Aprobada" || (empresa.pago !== "Confirmado" && empresa.especial !== "Sí")) problemas.push("Empresa sin aprobar o sin pago confirmado");
+  const inicio = inicioISO_(c.fecha, c.hora);
+  if (!inicio) return { aprobar: false, problemas: problemas.concat(["Fecha u hora no válidas"]) };
+  const ini = new Date(inicio);
+  const dia = Number(Utilities.formatDate(ini, ZONA, "u"));
+  if (dia > 5) problemas.push("Solo de lunes a viernes");
+  const hm = Utilities.formatDate(ini, ZONA, "HH:mm");
+  const minutos = (s) => { const p = String(s || "").split(":"); return Number(p[0]) * 60 + Number(p[1] || 0); };
+  const desde = minutos(cfg.charlas_hora_inicio || "09:00"), hasta = minutos(cfg.charlas_hora_fin || "16:00");
+  const m0 = minutos(hm), m1 = m0 + c.duracion;
+  if (m0 < desde || m1 > hasta) problemas.push("Fuera del horario " + (cfg.charlas_hora_inicio || "09:00") + "-" + (cfg.charlas_hora_fin || "16:00"));
+  if (m0 % 15 !== 0) problemas.push("La hora debe ser en punto, :15, :30 o :45");
+  if ([15, 30].indexOf(c.duracion) === -1) problemas.push("Duración de 15 o 30 minutos");
+  const charlas = leerTabla_("Charlas");
+  const deEmpresa = charlas.filter((x) => x.empresa_id === empresa.id && x.estado !== "Rechazada").length;
+  if (deEmpresa >= Number(cfg.charlas_max_por_empresa || 3)) problemas.push("La empresa ya tiene " + deEmpresa + " charlas");
+  const choca = charlas.some((x) => {
+    if (x.estado !== "Aprobada" && x.estado !== "Bloqueo") return false;
+    const xi = inicioISO_(x.fecha, x.hora);
+    if (!xi) return false;
+    const a0 = new Date(xi).getTime(), a1 = a0 + (Number(x.duracion) || 30) * 60000;
+    return ini.getTime() < a1 && a0 < ini.getTime() + c.duracion * 60000;
+  });
+  if (choca) problemas.push("El turno choca con otra charla o un bloqueo");
+  return { aprobar: problemas.length === 0 && empresa.plan === "platinum", problemas: problemas };
+}
+
+function agregarFila_(nombre, valores) {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nombre);
+  const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  hoja.appendRow(cab.map((c) => (c in valores && valores[c] != null ? valores[c] : "")));
+  return valores;
+}
+
+/** Actualiza la fila cuya `columna` vale `valor` (sin tocar `conservar`) o agrega una nueva. */
+function guardarPorClave_(nombre, columna, valor, valores, conservar) {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nombre);
+  const datos = hoja.getDataRange().getValues();
+  const cab = datos[0].map(String);
+  const i = cab.indexOf(columna);
+  for (let r = 1; r < datos.length && valor; r++) {
+    if (String(datos[r][i]).toLowerCase() !== String(valor).toLowerCase()) continue;
+    const fila = cab.map((c, j) => {
+      if (conservar.indexOf(c) !== -1 && datos[r][j] !== "" && !(c in valores && valores[c] && (c === "cv" || c === "cv_fecha"))) return datos[r][j];
+      return c in valores && valores[c] != null && valores[c] !== "" ? valores[c] : datos[r][j];
+    });
+    hoja.getRange(r + 1, 1, 1, cab.length).setValues([fila]);
+    return valores;
+  }
+  return agregarFila_(nombre, valores);
+}
+
+/** Aviso por correo a la CESEG (correo_admin de Configuración). */
+function avisarCesta_(asunto, cuerpo) {
+  const para = config_("correo_admin");
+  if (!para) return;
+  try {
+    MailApp.sendEmail(para, "[Feria CESEG] " + asunto, cuerpo + "\n\nRevisar en: " + SpreadsheetApp.getActiveSpreadsheet().getUrl());
+  } catch (e) { /* sin cupo de correo: la fila igual queda guardada */ }
 }
