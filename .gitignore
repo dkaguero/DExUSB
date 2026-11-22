@@ -6,3 +6,6 @@ Desktop.ini
 
 # Widgets de Google Sites: se regeneran con node tools/build-google-sites.js
 dist-google-sites/
+
+# Widgets de la feria: se regeneran desde Feria_Emp/front/tools
+Feria_Emp/dist/
