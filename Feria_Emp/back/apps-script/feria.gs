@@ -71,6 +71,7 @@ const PESTANAS = {
     columnas: ["id", "estado", "pago", "especial", "razon_social", "nombre_comercial", "rif", "sector", "tamano", "web",
       "pabellon", "posicion", "plan", "contacto_nombre", "contacto_cargo", "correo_dueno", "correos_reclutadores",
       "fundada_por_egresados", "fundadores", "carreras_fundadores", "ciudad", "pais", "logo_oficial", "manual_marca", "enviada_mapa",
+      "carpeta_cv", "panel", "compartido_con", "acceso_retirado",
       "acepta_terminos", "acepta_marca", "version_textos", "motivo", "verificado_por", "notas", "fecha_solicitud", "demo"],
     listas: { estado: ["Pendiente", "Aprobada", "Rechazada", "Pausada"], pago: ["Pendiente", "Confirmado", "No aplica"],
       especial: SI_NO, fundada_por_egresados: SI_NO, plan: ["platinum", "gold", "silver"], demo: SI_NO }
@@ -117,6 +118,10 @@ const PESTANAS = {
   },
   Eventos: {
     columnas: ["fecha", "tipo", "empresa_id", "vacante_id", "visitante", "detalle"]
+  },
+  // Copias de CV entregadas: una fila por destino y perfil (fase 7).
+  CV_Entregados: {
+    columnas: ["destino", "perfil_correo", "cv_origen", "copia", "fecha"]
   }
 };
 
@@ -147,6 +152,8 @@ function onOpen() {
     .addItem("Ver formularios", "verFormularios")
     .addSeparator()
     .addItem("Conectar con el censo y el mapa", "conectar")
+    .addItem("Entregar CV y actualizar paneles", "sincronizarEmpresas")
+    .addItem("Activar tareas automáticas (cada hora)", "activarAutomatico")
     .addSeparator()
     .addItem("Cargar datos de ejemplo", "cargarEjemplo")
     .addItem("Borrar datos de ejemplo", "borrarEjemplo")
@@ -1234,4 +1241,323 @@ function avisarEmpresa_(para, asunto, cuerpo) {
   try {
     MailApp.sendEmail(para, "[Feria de Empleo CESEG] " + asunto, cuerpo + "\n\nCoordinación de Emprendimiento y Seguimiento de Egresados (CESEG)\nUniversidad Simón Bolívar");
   } catch (e) { /* sin cupo: el estado queda igual en la hoja */ }
+}
+
+// =====================================================================
+// FASE 7A: CV A LAS EMPRESAS Y PANEL DE CANDIDATOS
+// =====================================================================
+
+const ESTADOS_CANDIDATO = PESTANAS.Postulaciones.listas.estado;
+const COLUMNAS_PANEL = ["id", "fecha", "tipo", "vacante", "nombre", "apellido", "correo", "universidad", "carrera", "estatus",
+  "ciudad", "pais", "idiomas", "habilidades", "linkedin", "cv", "estado", "notas"];
+const COLUMNAS_BASE = ["nombre", "apellido", "correo", "universidad", "carrera", "estatus", "ciudad", "pais",
+  "idiomas", "habilidades", "intereses", "linkedin", "cv"];
+
+/** Menú «Activar tareas automáticas»: entrega de CV, paneles y cierre, cada hora. */
+function activarAutomatico() {
+  ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === "sincronizarEmpresas")
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("sincronizarEmpresas").timeBased().everyHours(1).create();
+  sincronizarEmpresas();
+}
+
+/**
+ * Cada hora (o con el menú): a cada empresa aprobada y con pago confirmado le
+ * crea su carpeta privada de CV y su panel de candidatos, los comparte con su
+ * dueño y sus reclutadores, copia los CV que le corresponden según su plan y
+ * trae de vuelta los cambios de estado que haga en su panel. Lo mismo con los
+ * contactos de las vacantes de la Bolsa. Al terminar el periodo de consulta,
+ * retira los accesos (fase 7C).
+ */
+function sincronizarEmpresas() {
+  const candado = LockService.getScriptLock();
+  candado.waitLock(30000);
+  const resumen = [];
+  try {
+    const libro = SpreadsheetApp.getActiveSpreadsheet();
+    ["Empresas", "Postulaciones", "CV_Entregados"].forEach((n) => prepararPestana_(libro, n));
+    if (estadoEdicion_() === "Cerrada") {
+      resumen.push.apply(resumen, retirarAccesos_());
+    } else {
+      resumen.push.apply(resumen, entregarATodos_());
+    }
+  } finally {
+    candado.releaseLock();
+  }
+  const texto = resumen.length ? resumen.join("\n") : "Todo al día.";
+  Logger.log(texto);
+  try { SpreadsheetApp.getUi().alert("Feria CESEG", texto, SpreadsheetApp.getUi().ButtonSet.OK); } catch (e) {}
+}
+
+function correosDe_(e) {
+  return [e.correo_dueno].concat(String(e.correos_reclutadores || "").split(/[\s,;]+/))
+    .map(normCorreo_).filter((c) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c))
+    .filter((c, i, a) => a.indexOf(c) === i);
+}
+
+// Registro de copias leído una sola vez por pasada (se reinicia en cada entrega).
+let registroCv_ = null;
+
+function entregarATodos_() {
+  const resumen = [];
+  registroCv_ = null;
+  const raiz = DriveApp.getFolderById(config_("id_carpeta"));
+  const perfiles = {};
+  leerTabla_("Perfiles").forEach((p) => { perfiles[normCorreo_(p.correo)] = p; });
+  const conCv = (correo) => { const p = perfiles[normCorreo_(correo)]; return p && p.acepta_cv === "Sí" && idDrive_(p.cv) ? p : null; };
+  const vacantes = {};
+  leerTabla_("Vacantes").forEach((v) => { vacantes[v.id] = v; });
+  const postulaciones = leerTabla_("Postulaciones");
+  const planes = {};
+  leerTabla_("Planes").forEach((p) => { planes[p.id] = p; });
+
+  // Destinos: empresas habilitadas y contactos de vacantes de la Bolsa.
+  const destinos = [];
+  leerTabla_("Empresas").forEach((e) => {
+    if (!e.id || e.demo === "Sí" || e.estado !== "Aprobada" || (e.pago !== "Confirmado" && e.especial !== "Sí")) return;
+    destinos.push({ tipo: "empresa", clave: e.id, nombre: e.nombre_comercial || e.razon_social, correos: correosDe_(e), plan: e.plan, fila: e,
+      postulaciones: postulaciones.filter((p) => p.empresa_id === e.id || (vacantes[p.vacante_id] && vacantes[p.vacante_id].empresa_id === e.id)) });
+  });
+  const bolsa = {};
+  postulaciones.forEach((p) => {
+    const v = vacantes[p.vacante_id];
+    if (!v || v.origen !== "Bolsa" || !v.correo_contacto) return;
+    const c = normCorreo_(v.correo_contacto);
+    (bolsa[c] = bolsa[c] || { tipo: "bolsa", clave: "bolsa:" + c, nombre: v.empresa_nombre || c, correos: [c], plan: "bolsa", postulaciones: [] }).postulaciones.push(p);
+  });
+  Object.keys(bolsa).forEach((c) => destinos.push(bolsa[c]));
+
+  let copias = 0, cambios = 0;
+  destinos.forEach((d) => {
+    const acceso = accesoDe_(d, raiz);
+    // CV de quienes se postularon o compartieron su CV con este destino.
+    const filas = d.postulaciones.map((p) => {
+      const perfil = conCv(p.perfil_correo);
+      let cv = "";
+      if (perfil) {
+        const r = entregarCV_(d.clave, perfil, acceso.carpeta);
+        cv = r.url; if (r.nueva) copias++;
+        if (p.cv_copiado !== "Sí") marcarPostulacion_(p, { cv_copiado: "Sí" });
+      }
+      const pf = perfil || perfiles[normCorreo_(p.perfil_correo)] || {};
+      const v = vacantes[p.vacante_id];
+      return { id: p.id, fecha: p.fecha, tipo: p.tipo, vacante: v ? v.titulo : "", nombre: pf.nombre, apellido: pf.apellido, correo: p.perfil_correo,
+        universidad: pf.universidad, carrera: pf.carrera, estatus: pf.estatus, ciudad: pf.ciudad, pais: pf.pais, idiomas: pf.idiomas,
+        habilidades: pf.habilidades, linkedin: pf.linkedin, cv: cv || (perfil ? "" : "Sin CV autorizado"), estado: p.estado, _postulacion: p, _vacante: v };
+    });
+    cambios += escribirPanel_(acceso.panel, filas, d);
+    if (d.tipo === "empresa" && typeof escribirMetricas_ === "function") escribirMetricas_(acceso.panel, d, planes[d.plan]);
+  });
+
+  // Platinum: toda la base que autorizó compartir su CV, en una carpeta común.
+  const platinum = destinos.filter((d) => d.plan === "platinum");
+  if (platinum.length) {
+    const base = baseDeCv_(raiz, platinum);
+    const filas = Object.keys(perfiles).map((c) => conCv(c)).filter(Boolean).map((p) => {
+      const r = entregarCV_("base-platinum", p, base);
+      if (r.nueva) copias++;
+      return { nombre: p.nombre, apellido: p.apellido, correo: p.correo, universidad: p.universidad, carrera: p.carrera, estatus: p.estatus,
+        ciudad: p.ciudad, pais: p.pais, idiomas: p.idiomas, habilidades: p.habilidades, intereses: p.intereses, linkedin: p.linkedin, cv: r.url };
+    });
+    platinum.forEach((d) => escribirTabla_(SpreadsheetApp.openById(accesoDe_(d, raiz).panelId), "Base de CV", COLUMNAS_BASE, filas));
+  }
+  resumen.push(destinos.length + " destino(s) al día: " + copias + " CV copiado(s), " + cambios + " cambio(s) de estado traído(s) de los paneles.");
+  return resumen;
+}
+
+/**
+ * Carpeta privada y panel de un destino: los crea la primera vez, los comparte
+ * con los correos que falten y les manda un aviso con los enlaces.
+ */
+function accesoDe_(d, raiz) {
+  if (d._acceso) return d._acceso;
+  const guardado = d.tipo === "empresa"
+    ? { carpeta: d.fila.carpeta_cv, panel: d.fila.panel, compartido: String(d.fila.compartido_con || "") }
+    : JSON.parse(PropertiesService.getScriptProperties().getProperty(d.clave) || "{}");
+  let carpeta = guardado.carpeta ? DriveApp.getFolderById(guardado.carpeta) : null;
+  if (!carpeta) carpeta = raiz.createFolder("CV – " + d.nombre + " (privado)");
+  let panelId = guardado.panel;
+  if (!panelId) {
+    const ss = SpreadsheetApp.create("Panel de candidatos – " + d.nombre);
+    panelId = ss.getId();
+    DriveApp.getFileById(panelId).moveTo(carpeta);
+    ss.getSheets()[0].setName("Candidatos");
+  }
+  const ya = String(guardado.compartido || "").split(/\s*,\s*/).filter(Boolean);
+  const nuevos = d.correos.filter((c) => ya.indexOf(c) === -1);
+  if (nuevos.length) {
+    nuevos.forEach((c) => {
+      try { carpeta.addViewer(c); } catch (e) { /* correo sin cuenta de Google */ }
+      try { DriveApp.getFileById(panelId).addEditor(c); } catch (e) {}
+    });
+    avisarEmpresa_(nuevos.join(","), "Tu carpeta de CV y tu panel de candidatos",
+      "Ya puedes ver los CV de quienes se postulan" + (d.tipo === "empresa" ? " a " + d.nombre : " a tus vacantes de la Bolsa de Trabajo CESEG") + ".\n\n" +
+      "Carpeta de CV (privada): " + carpeta.getUrl() + "\nPanel de candidatos: https://docs.google.com/spreadsheets/d/" + panelId + "/edit\n\n" +
+      "En el panel puedes cambiar el estado de cada candidato (Recibido, En revisión, Entrevista, Descartado); el postulante recibe un aviso. " +
+      "Los datos son confidenciales y solo pueden usarse para reclutamiento, según los Términos y Condiciones para empresas.");
+  }
+  const compartido = ya.concat(nuevos).join(", ");
+  if (d.tipo === "empresa") {
+    const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Empresas");
+    const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+    hoja.getRange(d.fila._fila, cab.indexOf("carpeta_cv") + 1).setValue(carpeta.getId());
+    hoja.getRange(d.fila._fila, cab.indexOf("panel") + 1).setValue(panelId);
+    hoja.getRange(d.fila._fila, cab.indexOf("compartido_con") + 1).setValue(compartido);
+  } else {
+    PropertiesService.getScriptProperties().setProperty(d.clave, JSON.stringify({ carpeta: carpeta.getId(), panel: panelId, compartido: compartido }));
+  }
+  d._acceso = { carpeta: carpeta, panel: SpreadsheetApp.openById(panelId), panelId: panelId };
+  return d._acceso;
+}
+
+/** Carpeta común de la base de CV para las empresas Platinum. */
+function baseDeCv_(raiz, platinum) {
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty("base_platinum");
+  let carpeta = id ? DriveApp.getFolderById(id) : null;
+  if (!carpeta) { carpeta = raiz.createFolder("Base de CV – Platinum (privado)"); props.setProperty("base_platinum", carpeta.getId()); }
+  const ya = String(props.getProperty("base_platinum_compartido") || "").split(/\s*,\s*/).filter(Boolean);
+  const todos = [];
+  platinum.forEach((d) => d.correos.forEach((c) => { if (todos.indexOf(c) === -1) todos.push(c); }));
+  todos.filter((c) => ya.indexOf(c) === -1).forEach((c) => { try { carpeta.addViewer(c); } catch (e) {} ya.push(c); });
+  props.setProperty("base_platinum_compartido", ya.join(", "));
+  return carpeta;
+}
+
+/** Copia el CV del perfil a la carpeta del destino (una vez; si el CV cambió, reemplaza la copia). */
+function entregarCV_(destino, perfil, carpeta) {
+  const origen = idDrive_(String(perfil.cv).split(/\s*\|\s*/)[0]);
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("CV_Entregados");
+  if (!registroCv_) {
+    registroCv_ = {};
+    leerTabla_("CV_Entregados").forEach((f) => { registroCv_[f.destino + "|" + normCorreo_(f.perfil_correo)] = f; });
+  }
+  const clave = destino + "|" + normCorreo_(perfil.correo);
+  const previa = registroCv_[clave];
+  if (previa && previa.cv_origen === origen) return { url: "https://drive.google.com/file/d/" + previa.copia + "/view", nueva: false };
+  const nombre = [perfil.documento, perfil.apellido, perfil.nombre].filter(Boolean).join("-").replace(/[^\w\-áéíóúñÁÉÍÓÚÑ]+/g, "_") + ".pdf";
+  const copia = DriveApp.getFileById(origen).makeCopy(nombre, carpeta);
+  if (previa) {
+    try { DriveApp.getFileById(previa.copia).setTrashed(true); } catch (e) {}
+    hoja.getRange(previa._fila, 3, 1, 3).setValues([[origen, copia.getId(), new Date()]]);
+    previa.cv_origen = origen; previa.copia = copia.getId();
+  } else {
+    hoja.appendRow([destino, perfil.correo, origen, copia.getId(), new Date()]);
+    registroCv_[clave] = { destino: destino, perfil_correo: perfil.correo, cv_origen: origen, copia: copia.getId(), _fila: hoja.getLastRow() };
+  }
+  return { url: "https://drive.google.com/file/d/" + copia.getId() + "/view", nueva: true };
+}
+
+function marcarPostulacion_(p, valores) {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Postulaciones");
+  const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  Object.keys(valores).forEach((c) => { if (cab.indexOf(c) !== -1) hoja.getRange(p._fila, cab.indexOf(c) + 1).setValue(valores[c]); });
+}
+
+/**
+ * Escribe la pestaña «Candidatos» del panel conservando el estado y las notas
+ * que puso la empresa, y trae de vuelta los cambios de estado: actualiza la
+ * postulación y avisa al postulante. Devuelve cuántos estados cambiaron.
+ */
+function escribirPanel_(panel, filas, d) {
+  let hoja = panel.getSheetByName("Candidatos");
+  if (!hoja) hoja = panel.insertSheet("Candidatos");
+  const previos = {};
+  if (hoja.getLastRow() > 1) {
+    const datos = hoja.getDataRange().getValues();
+    const cab = datos[0].map(String);
+    datos.slice(1).forEach((f) => { previos[f[cab.indexOf("id")]] = { estado: f[cab.indexOf("estado")], notas: f[cab.indexOf("notas")] }; });
+  }
+  let cambios = 0;
+  filas.forEach((f) => {
+    const previo = previos[f.id];
+    if (previo) f.notas = previo.notas;
+    if (previo && previo.estado && ESTADOS_CANDIDATO.indexOf(previo.estado) !== -1 && previo.estado !== f._postulacion.estado) {
+      marcarPostulacion_(f._postulacion, { estado: previo.estado });
+      avisarPostulante_(f.correo, f.nombre, f._vacante, d.nombre, previo.estado);
+      f.estado = previo.estado;
+      cambios++;
+    }
+  });
+  hoja.clear();
+  const todo = [COLUMNAS_PANEL].concat(filas.map((f) => COLUMNAS_PANEL.map((c) => (f[c] == null ? "" : f[c]))));
+  hoja.getRange(1, 1, todo.length, COLUMNAS_PANEL.length).setValues(todo);
+  hoja.setFrozenRows(1);
+  hoja.getRange(1, 1, 1, COLUMNAS_PANEL.length).setFontWeight("bold").setBackground("#dbe7f5");
+  if (todo.length > 1) {
+    const regla = SpreadsheetApp.newDataValidation().requireValueInList(ESTADOS_CANDIDATO, true).setAllowInvalid(false).build();
+    hoja.getRange(2, COLUMNAS_PANEL.indexOf("estado") + 1, todo.length - 1, 1).setDataValidation(regla);
+  }
+  return cambios;
+}
+
+function avisarPostulante_(correo, nombre, vacante, empresa, estado) {
+  if (!correo) return;
+  const que = vacante ? "tu postulación a «" + vacante.titulo + "»" : "tu CV compartido";
+  try {
+    MailApp.sendEmail(correo, "Feria de Empleo CESEG: " + empresa + " actualizó " + que,
+      "Hola " + (nombre || "") + ",\n\n" + empresa + " cambió el estado de " + que + " a: " + estado + ".\n\n" +
+      "Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG)\nUniversidad Simón Bolívar");
+  } catch (e) {}
+}
+
+// =====================================================================
+// FASE 7C: CIERRE DE LA EDICIÓN Y RETIRO DE ACCESOS
+// =====================================================================
+
+/**
+ * Estado de la edición según las fechas de Configuración (vacías = por definir):
+ * Preparación, Convocatoria, Feria, Consulta (hasta consulta_dias después) o Cerrada.
+ */
+function estadoEdicion_(ahora) {
+  const cfg = {};
+  leerTabla_("Configuracion").forEach((f) => { cfg[f.clave] = f.valor; });
+  const fecha = (v, finDelDia) => {
+    if (!v) return null;
+    const d = v instanceof Date ? new Date(v) : new Date(String(v) + "T00:00:00-04:00");
+    if (isNaN(d)) return null;
+    if (finDelDia) d.setTime(d.getTime() + 86400000 - 1);
+    return d;
+  };
+  const t = ahora || new Date();
+  const ci = fecha(cfg.convocatoria_inicio), fi = fecha(cfg.feria_inicio), ff = fecha(cfg.feria_fin, true);
+  const dias = Number(cfg.consulta_dias) || 15;
+  if (ff && t > new Date(ff.getTime() + dias * 86400000)) return "Cerrada";
+  if (ff && t > ff) return "Consulta";
+  if (fi && t >= fi) return "Feria";
+  if (ci && t >= ci) return "Convocatoria";
+  return "Preparación";
+}
+
+/** Al cerrar la edición: quita a las empresas el acceso a sus carpetas, paneles y a la base Platinum. */
+function retirarAccesos_() {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Empresas");
+  const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  let retirados = 0;
+  const quitar = (carpetaId, panelId, correos) => {
+    correos.forEach((c) => {
+      try { if (carpetaId) DriveApp.getFolderById(carpetaId).removeViewer(c); } catch (e) {}
+      try { if (panelId) DriveApp.getFileById(panelId).removeEditor(c); } catch (e) {}
+    });
+  };
+  leerTabla_("Empresas").forEach((e) => {
+    if (e.acceso_retirado || !e.compartido_con) return;
+    quitar(e.carpeta_cv, e.panel, String(e.compartido_con).split(/\s*,\s*/).filter(Boolean));
+    hoja.getRange(e._fila, cab.indexOf("acceso_retirado") + 1).setValue(new Date());
+    retirados++;
+  });
+  const props = PropertiesService.getScriptProperties();
+  props.getKeys().filter((k) => k.indexOf("bolsa:") === 0).forEach((k) => {
+    const g = JSON.parse(props.getProperty(k) || "{}");
+    if (g.retirado) return;
+    quitar(g.carpeta, g.panel, String(g.compartido || "").split(/\s*,\s*/).filter(Boolean));
+    g.retirado = new Date().toISOString();
+    props.setProperty(k, JSON.stringify(g));
+    retirados++;
+  });
+  if (props.getProperty("base_platinum") && props.getProperty("base_platinum_compartido")) {
+    quitar(props.getProperty("base_platinum"), null, props.getProperty("base_platinum_compartido").split(/\s*,\s*/).filter(Boolean));
+    props.deleteProperty("base_platinum_compartido");
+  }
+  return retirados ? ["Edición cerrada: se retiró el acceso de " + retirados + " empresa(s) o contacto(s). Los datos quedan bajo resguardo de la CESEG."] : ["Edición cerrada."];
 }
