@@ -34,3 +34,15 @@ El script del censo (`docs/apps-script/ciudadesCenso.gs`), cada vez que recibe u
 - lee «Perfiles de la feria», **descarta a quien ya respondió el censo** (por carnet o por correo) y suma el resto.
 
 Así nadie se cuenta dos veces, aunque llene el censo después de la feria. Los estudiantes y las personas de otras universidades no van al globo.
+
+## Charlas del auditorio → Google Calendar (fase 5)
+
+Cada vez que se publica (**Feria CESEG › Publicar cambios**, o sola cuando una charla Platinum se aprueba automáticamente), el script sincroniza el calendario **«CESEG – Eventos»**:
+
+- Lo busca por `calendario_id`, luego por su nombre, y si no existe lo crea. Guarda su ID y su enlace público (`url_calendario`), que usa el botón «Agenda completa» del auditorio.
+- **Aprobada:** crea el evento («Charla: título — empresa») con ponente, enlace de YouTube (columna `youtube`, que pone la CESEG) y la página del auditorio (`url_auditorio_sitio`). Si después cambian la fecha, la hora, la duración, el título o el YouTube, actualiza el evento.
+- **Rechazada** o vuelta a **Solicitada:** borra el evento si lo tenía.
+- Avisa **una vez** al dueño de la empresa cuando su charla se confirma o se rechaza (columna `notificada`).
+- Las charlas de ejemplo (`demo = Sí`) no van al calendario ni mandan correos.
+
+**Paso manual, una sola vez:** Google no deja que un script haga público un calendario. En Google Calendar › **CESEG – Eventos › Configuración y uso compartido › Permisos de acceso a los eventos** › marcar **Hacer disponible públicamente** (ver todos los detalles). Sin eso, «Agenda completa» y el calendario de la página Calendario solo los ve la CESEG.

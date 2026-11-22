@@ -73,6 +73,8 @@
       if (edicion.url_perfil) D.enlaces.perfilPostulante = edicion.url_perfil;
       if (edicion.url_empresa) D.enlaces.registroEmpresa = edicion.url_empresa;
       if (edicion.url_vacante) D.enlaces.vacante = edicion.url_vacante;
+      if (edicion.url_calendario) D.enlaces.calendario = edicion.url_calendario;
+      if (edicion.url_auditorio_sitio) D.enlaces.auditorio = edicion.url_auditorio_sitio;
       if (edicion.url_postular) {
         D.enlaces.postular = edicion.url_postular;
         D.enlaces.compartirCv = edicion.url_postular;

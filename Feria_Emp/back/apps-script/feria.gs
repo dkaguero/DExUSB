@@ -38,7 +38,8 @@ const PESTANAS = {
       ["charlas_max_por_empresa", 3, "Charlas por empresa"],
       ["correo_admin", "ceseg@usb.ve", "Recibe los avisos de solicitudes nuevas"],
       ["youtube_canal", "", "Canal de YouTube de la CESEG"],
-      ["calendario_id", "", "Calendario «CESEG – Eventos» (fase 5)"],
+      ["calendario_id", "", "ID del calendario «CESEG – Eventos»: lo llena solo la publicación (fase 5)"],
+      ["url_auditorio_sitio", "", "Dirección de la página Auditorio en Google Sites (para los correos y el pórtico)"],
       ["id_datos_ceseg", "1eE7ja2kscREl-6MkUs2XAZqS-i64r44wb7OuaW00Zvo", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
       ["id_censo", "1rde00EzCUdUByvFg1WZNOcAq4Ss1J8TaWTcX55qJHVQ", "ID de la hoja de respuestas del Censo de Egresados (fase 4)"],
       ["url_censo", "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform", "Formulario del censo, para la invitación a egresados USB"],
@@ -102,7 +103,7 @@ const PESTANAS = {
   },
   Charlas: {
     columnas: ["id", "estado", "empresa_id", "titulo", "ponente", "fecha", "hora", "duracion", "youtube",
-      "evento_calendario", "verificado_por", "notas", "fecha_solicitud", "demo"],
+      "evento_calendario", "notificada", "verificado_por", "notas", "fecha_solicitud", "demo"],
     listas: { estado: ["Solicitada", "Aprobada", "Rechazada", "Bloqueo"], duracion: [15, 30], demo: SI_NO }
   },
   Universidades: {
@@ -261,7 +262,10 @@ function publicar() {
   let r;
   try {
     const publico = SpreadsheetApp.openById(config_("id_hoja_publica"));
+    let avisosCal = [];
+    try { avisosCal = sincronizarCalendario_(); } catch (e) { avisosCal = ["Calendario: " + e.message]; }
     r = calcularPublicacion_(leerTodo_());
+    r.avisos = r.avisos.concat(avisosCal);
     Object.keys(PUBLICAS).forEach((nombre) => escribirTabla_(publico, nombre, PUBLICAS[nombre], r.tablas[nombre]));
     const sobra = publico.getSheetByName("Hoja 1") || publico.getSheetByName("Sheet1");
     if (sobra && publico.getSheets().length > 1) publico.deleteSheet(sobra);
@@ -372,7 +376,7 @@ function calcularPublicacion_(t) {
     avisos: avisos,
     tablas: {
       Edicion: ["edicion_nombre", "convocatoria_inicio", "convocatoria_fin", "feria_inicio", "feria_fin", "consulta_dias", "youtube_canal",
-        "url_perfil", "url_postular", "url_empresa", "url_stand", "url_vacante", "url_charla"]
+        "url_perfil", "url_postular", "url_empresa", "url_stand", "url_vacante", "url_charla", "url_calendario", "url_auditorio_sitio"]
         .map((k) => ({ clave: k, valor: cfg[k] instanceof Date ? fechaTexto_(cfg[k]) : (cfg[k] == null ? "" : cfg[k]) })),
       Planes: planes.map((p) => ({ id: p.id, nombre: p.nombre, precio: p.precio, desde: p.posicion_desde, hasta: p.posicion_hasta, forma: p.forma, beneficios: p.beneficios })),
       Pabellones: pabellones.map((p) => ({ slug: p.slug, nombre: p.nombre, sector: p.sector, color: p.color, posiciones: p.posiciones })),
@@ -1134,4 +1138,100 @@ function enviarAlMapa_() {
     hoja.getRange(e._fila, cabE.indexOf("enviada_mapa") + 1).setValue(new Date());
   });
   return [pendientes.length + " empresa(s) de egresados enviada(s) al mapa como Borrador."];
+}
+
+// =====================================================================
+// FASE 5: CHARLAS DEL AUDITORIO → GOOGLE CALENDAR «CESEG – Eventos»
+// =====================================================================
+
+const NOMBRE_CALENDARIO = "CESEG – Eventos";
+
+/** Calendario de la CESEG: el de Configuración, o uno con ese nombre, o uno nuevo. */
+function calendario_() {
+  const id = config_("calendario_id");
+  let cal = id ? CalendarApp.getCalendarById(id) : null;
+  if (!cal) cal = CalendarApp.getCalendarsByName(NOMBRE_CALENDARIO)[0] || null;
+  if (!cal) {
+    cal = CalendarApp.createCalendar(NOMBRE_CALENDARIO, { timeZone: ZONA, summary: "Eventos de la Coordinación de Emprendimiento y Seguimiento de Egresados (CESEG), USB" });
+  }
+  if (cal.getId() !== id) guardarConfig_("calendario_id", cal.getId());
+  guardarConfig_("url_calendario", "https://calendar.google.com/calendar/embed?src=" + encodeURIComponent(cal.getId()) + "&ctz=" + encodeURIComponent(ZONA));
+  return cal;
+}
+
+/**
+ * Charlas → calendario. Aprobada: crea o actualiza su evento. Rechazada (o
+ * vuelta a Solicitada): borra el evento si lo tenía. Avisa a la empresa una
+ * vez cuando su charla se confirma o se rechaza.
+ */
+function sincronizarCalendario_() {
+  // Columnas y claves nuevas de la fase 5 en una hoja ya instalada.
+  prepararPestana_(SpreadsheetApp.getActiveSpreadsheet(), "Charlas");
+  asegurarConfig_();
+  // Las charlas de ejemplo no van al calendario real ni mandan correos.
+  const charlas = leerTabla_("Charlas").filter((c) => c.id && c.demo !== "Sí");
+  if (!charlas.length) return [];
+  const cal = calendario_();
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Charlas");
+  const cab = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0].map(String);
+  const col = (c) => cab.indexOf(c) + 1;
+  const empresas = {};
+  leerTabla_("Empresas").forEach((e) => { empresas[e.id] = e; });
+  const auditorio = config_("url_auditorio_sitio");
+  const avisos = [];
+  let creados = 0, cambiados = 0, borrados = 0;
+
+  charlas.forEach((c) => {
+    const emp = empresas[c.empresa_id];
+    const nombre = emp ? (emp.nombre_comercial || emp.razon_social) : "CESEG";
+    let evento = c.evento_calendario ? cal.getEventById(c.evento_calendario) : null;
+
+    if (c.estado === "Aprobada") {
+      const inicio = inicioISO_(c.fecha, c.hora);
+      if (!inicio) { avisos.push("Charla «" + c.titulo + "»: falta la fecha o la hora para el calendario"); return; }
+      const ini = new Date(inicio), fin = new Date(ini.getTime() + (Number(c.duracion) || 30) * 60000);
+      const titulo = "Charla: " + c.titulo + " — " + nombre;
+      const descripcion = [
+        "Feria de Empleo CESEG USB · Auditorio virtual",
+        c.ponente ? "Ponente: " + c.ponente : "",
+        c.youtube ? "Transmisión: " + c.youtube : "El enlace de la transmisión se publicará en el auditorio.",
+        auditorio ? "Auditorio: " + auditorio : ""
+      ].filter(Boolean).join("\n");
+      if (!evento) {
+        evento = cal.createEvent(titulo, ini, fin, { description: descripcion, location: auditorio || "Auditorio virtual de la Feria de Empleo CESEG" });
+        hoja.getRange(c._fila, col("evento_calendario")).setValue(evento.getId());
+        creados++;
+      } else if (evento.getTitle() !== titulo || evento.getDescription() !== descripcion ||
+          evento.getStartTime().getTime() !== ini.getTime() || evento.getEndTime().getTime() !== fin.getTime()) {
+        evento.setTitle(titulo);
+        evento.setDescription(descripcion);
+        evento.setTime(ini, fin);
+        cambiados++;
+      }
+      if (c.notificada !== "Confirmada" && emp && emp.correo_dueno) {
+        avisarEmpresa_(emp.correo_dueno, "Charla confirmada: " + c.titulo,
+          "Tu charla «" + c.titulo + "» quedó confirmada en el auditorio de la Feria de Empleo CESEG, el " +
+          Utilities.formatDate(ini, ZONA, "dd/MM/yyyy 'a las' HH:mm") + " (" + (Number(c.duracion) || 30) + " min)." +
+          (auditorio ? "\n\nAuditorio: " + auditorio : ""));
+        hoja.getRange(c._fila, col("notificada")).setValue("Confirmada");
+      }
+    } else {
+      if (evento) { evento.deleteEvent(); borrados++; }
+      if (c.evento_calendario) hoja.getRange(c._fila, col("evento_calendario")).setValue("");
+      if (c.estado === "Rechazada" && c.notificada !== "Rechazada" && emp && emp.correo_dueno) {
+        avisarEmpresa_(emp.correo_dueno, "Charla no confirmada: " + c.titulo,
+          "La CESEG no pudo confirmar tu charla «" + c.titulo + "»." + (c.notas ? "\n\nMotivo: " + c.notas : "") +
+          "\n\nPuedes solicitar otro turno con el formulario de charlas.");
+        hoja.getRange(c._fila, col("notificada")).setValue("Rechazada");
+      }
+    }
+  });
+  if (creados || cambiados || borrados) avisos.push("Calendario: " + creados + " evento(s) nuevo(s), " + cambiados + " actualizado(s), " + borrados + " borrado(s).");
+  return avisos;
+}
+
+function avisarEmpresa_(para, asunto, cuerpo) {
+  try {
+    MailApp.sendEmail(para, "[Feria de Empleo CESEG] " + asunto, cuerpo + "\n\nCoordinación de Emprendimiento y Seguimiento de Egresados (CESEG)\nUniversidad Simón Bolívar");
+  } catch (e) { /* sin cupo: el estado queda igual en la hoja */ }
 }
