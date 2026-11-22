@@ -40,7 +40,7 @@ const PESTANAS = {
       ["youtube_canal", "", "Canal de YouTube de la CESEG"],
       ["calendario_id", "", "ID del calendario «CESEG – Eventos»: lo llena solo la publicación (fase 5)"],
       ["url_auditorio_sitio", "", "Dirección de la página Auditorio en Google Sites (para los correos y el pórtico)"],
-      ["url_receptor", "", "Dirección de la aplicación web que recibe las visitas (fase 7B: Implementar › Aplicación web)"],
+      ["url_receptor", "https://script.google.com/macros/s/AKfycbzVu0xC7OyauBRiB0a8jxt3gXd3y5mOc05VMyTjyo2yBCJirUBsZQvbFfd_X4OCz5ds/exec", "Dirección de la aplicación web que recibe las visitas (fase 7B: Implementar › Aplicación web)"],
       ["id_datos_ceseg", "1eE7ja2kscREl-6MkUs2XAZqS-i64r44wb7OuaW00Zvo", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
       ["id_censo", "1rde00EzCUdUByvFg1WZNOcAq4Ss1J8TaWTcX55qJHVQ", "ID de la hoja de respuestas del Censo de Egresados (fase 4)"],
       ["url_censo", "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform", "Formulario del censo, para la invitación a egresados USB"],

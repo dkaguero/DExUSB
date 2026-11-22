@@ -56,7 +56,8 @@
       youtubeCanal: null,
       registroEmpresa: null,
       vacante: null,
-      receptor: null,
+      // Receptor de visitas (aplicación web de Apps Script). La hoja puede reemplazarlo con url_receptor.
+      receptor: "https://script.google.com/macros/s/AKfycbzVu0xC7OyauBRiB0a8jxt3gXd3y5mOc05VMyTjyo2yBCJirUBsZQvbFfd_X4OCz5ds/exec",
       perfilPostulante: null,
       postular: null,
       compartirCv: null
