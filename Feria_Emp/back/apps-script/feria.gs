@@ -232,12 +232,20 @@ function leerTabla_(nombre, libro) {
   });
 }
 
+/**
+ * Escribe una pestaña del archivo público. Todo va como TEXTO: al leer la hoja,
+ * Google adivina el tipo de cada columna y, si la cree numérica, borra los
+ * textos (pasó con «valor» en Edicion: el nombre de la edición salía vacío).
+ */
 function escribirTabla_(libro, nombre, columnas, filas) {
   let hoja = libro.getSheetByName(nombre);
   if (!hoja) hoja = libro.insertSheet(nombre);
-  hoja.clearContents();
-  const todo = [columnas].concat(filas.map((f) => columnas.map((c) => (f[c] == null ? "" : f[c]))));
-  hoja.getRange(1, 1, todo.length, columnas.length).setValues(todo);
+  hoja.clear();
+  const texto = (v) => (v == null ? "" : v instanceof Date ? fechaTexto_(v) : String(v));
+  const todo = [columnas].concat(filas.map((f) => columnas.map((c) => texto(f[c]))));
+  const rango = hoja.getRange(1, 1, todo.length, columnas.length);
+  rango.setNumberFormat("@");
+  rango.setValues(todo);
 }
 
 // ---------------- publicación ----------------
