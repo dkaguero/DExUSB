@@ -117,6 +117,15 @@
     actualizar();
     colocar();
     setInterval(actualizar, 30000);
+    // Agenda real desde la hoja pública (si está configurada).
+    FE.cargarDatos().then(function (ok) {
+      if (!ok) return;
+      D = FE.DATOS;
+      document.getElementById("au-acciones").innerHTML =
+        boton("Ver en vivo en el canal de CESEG", D.enlaces.youtubeCanal, "au-boton--principal") +
+        boton("Agenda completa", D.enlaces.calendario);
+      actualizar();
+    });
   }
 
   FE.auditorio = { actualizar: function () { actualizar(); colocar(); } };

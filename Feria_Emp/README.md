@@ -109,4 +109,5 @@ Cada fase termina con pruebas, y se pide aprobación antes de la siguiente.
   - `auditorio.html` (0,33 MB): sala desde las gradas con el video de YouTube de la charla en curso en la pantalla, cuenta regresiva de la próxima y agenda del día.
   - Los botones que dependen de formularios o enlaces que aún no existen dicen «Disponible pronto». Los datos llegarán de la hoja pública en las fases 6 y 7.
 - Generar: `node Feria_Emp/front/tools/build.js` → `Feria_Emp/dist/`.
+- **22 de noviembre de 2026, fase 1 (base de datos):** `back/apps-script/feria.gs` crea el archivo de edición (12 pestañas, listas desplegables, planes, pabellones, universidades), el archivo público y la carpeta privada; publica con reglas (pago confirmado antes de ubicar a la empresa, plan por posición, límite de vacantes, charlas solo en los planes que las incluyen) y carga o borra datos de ejemplo. Reglas probadas con una simulación. Los widgets leen el archivo público (`front/src/comun/hoja.js`) y, sin él, muestran los datos de muestra; probado de punta a punta con la salida simulada. Instalación: `docs/instalacion.md`.
 

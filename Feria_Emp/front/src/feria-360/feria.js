@@ -196,8 +196,9 @@
       return;
     }
     var ancho = window.innerWidth * (window.devicePixelRatio || 1) > 1200 ? 4096 : 2048;
-    FE.compositor.cargarArte(ancho).then(function (a) {
-      arte = a;
+    Promise.all([FE.compositor.cargarArte(ancho), FE.cargarDatos()]).then(function (r) {
+      arte = r[0];
+      D = FE.DATOS;
       irA(0);
     }).catch(function (err) {
       cargando.textContent = "No se pudo armar la feria: " + err.message;
