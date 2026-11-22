@@ -9,7 +9,13 @@ body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; colo
 #au-app { height: 100%; display: flex; flex-direction: column; }
 #au-barra { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: var(--au-azul); color: #fff; }
 #au-barra b { white-space: nowrap; }
-#au-envivo { color: #ffd1d1; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#au-envivo { color: #ffd1d1; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; }
+.au-pantalla {
+  flex: 0 0 auto; margin-left: auto; font: inherit; font-size: 11px; font-weight: bold; padding: 4px 8px; cursor: pointer;
+  border: 1px solid #fff; background: transparent; color: #fff;
+}
+.au-pantalla:hover, .au-pantalla:focus { background: #fff; color: var(--au-azul); }
+#au-app:fullscreen, #au-app:-webkit-full-screen { width: 100%; height: 100%; background: var(--au-noche); }
 
 #au-caja { flex: 1 1 auto; position: relative; min-height: 120px; }
 #au-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }

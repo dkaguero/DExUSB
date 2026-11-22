@@ -107,6 +107,7 @@
     cartel = document.getElementById("au-cartel");
     agenda = document.getElementById("au-agenda");
     enVivo = document.getElementById("au-envivo");
+    FE.pantallaCompleta(document.getElementById("au-pantalla"), document.getElementById("au-app"));
     var grande = window.innerWidth * (window.devicePixelRatio || 1) > 1400;
     img.src = SALA.imagenes[grande ? "2560" : "1280"] || SALA.imagenes["1280"];
     img.onload = colocar;

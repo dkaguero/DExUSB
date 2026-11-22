@@ -176,6 +176,7 @@
     pills = document.getElementById("fe-pabellones");
     directorio = document.getElementById("fe-directorio");
     FE.ficha.montar(document.getElementById("fe-ficha"));
+    FE.pantallaCompleta(document.getElementById("fe-pantalla"), document.getElementById("fe-app"));
 
     pills.addEventListener("click", function (e) {
       var b = e.target.closest("button[data-i]");

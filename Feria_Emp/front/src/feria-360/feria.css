@@ -45,6 +45,12 @@ body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; colo
 }
 #fe-pabellones button[aria-pressed="true"] { background: #fff; color: var(--fe-azul); }
 #fe-abrir-directorio { border-left-width: 1px; background: var(--fe-dorado); color: var(--fe-noche); border-color: var(--fe-dorado); }
+.fe-pantalla {
+  flex: 0 0 auto; font: inherit; font-size: 11px; font-weight: bold; padding: 4px 8px; cursor: pointer;
+  border: 1px solid #fff; background: transparent; color: #fff;
+}
+.fe-pantalla:hover, .fe-pantalla:focus { background: #fff; color: var(--fe-azul); }
+#fe-app:fullscreen, #fe-app:-webkit-full-screen { width: 100%; height: 100%; background: var(--fe-noche); }
 @media (max-width: 520px) { #fe-titulo { display: none; } }
 
 #fe-escena { flex: 1 1 auto; position: relative; min-height: 0; }
