@@ -56,6 +56,18 @@ const AUDITORIO = {
 if (fs.existsSync(path.join(SRC, AUDITORIO.plantilla))) WIDGETS.push(AUDITORIO);
 
 WIDGETS.push({
+  archivo: "portada-feria.html",
+  plantilla: "portada/plantilla.html",
+  css: ["portada/portada.css"],
+  js: () => [leer("comun/datos.js"), leer("comun/hoja.js"), leer("portada/portada.js")]
+});
+WIDGETS.push({
+  archivo: "directorio.html",
+  plantilla: "directorio/plantilla.html",
+  css: ["directorio/directorio.css"],
+  js: () => [leer("comun/datos.js"), leer("comun/hoja.js"), leer("comun/analitica.js"), leer("directorio/directorio.js")]
+});
+WIDGETS.push({
   archivo: "bolsa-vacantes.html",
   plantilla: "bolsa/plantilla.html",
   css: ["bolsa/bolsa.css"],

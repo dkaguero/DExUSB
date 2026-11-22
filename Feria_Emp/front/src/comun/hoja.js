@@ -61,13 +61,16 @@
       pestana("Pabellones", ["slug", "nombre", "color", "posiciones"]),
       pestana("Stands", ["empresa_id", "pabellon", "posicion", "empresa"]),
       pestana("Vacantes", ["id", "empresa_id", "titulo"]),
-      pestana("Charlas", ["titulo", "inicio"])
+      pestana("Charlas", ["titulo", "inicio"]),
+      pestana("Patrocinantes", ["nombre"]).catch(function () { return []; })
     ]).then(function (t) {
       var D = FE.DATOS;
       var edicion = {};
       t[0].forEach(function (f) { edicion[f.clave] = f.valor; });
       if (edicion.edicion_nombre) D.edicion.nombre = edicion.edicion_nombre;
       D.edicion.fechas = edicion.feria_inicio ? { inicio: edicion.feria_inicio, fin: edicion.feria_fin } : null;
+      D.edicion.convocatoria = edicion.convocatoria_inicio ? { inicio: edicion.convocatoria_inicio, fin: edicion.convocatoria_fin } : null;
+      D.edicion.consultaDias = numero(edicion.consulta_dias) || 15;
       if (edicion.youtube_canal) D.enlaces.youtubeCanal = edicion.youtube_canal;
       // Formularios (fase 2): activan los botones «Disponible pronto».
       if (edicion.url_perfil) D.enlaces.perfilPostulante = edicion.url_perfil;
@@ -99,13 +102,15 @@
       });
       D.stands = t[3].map(function (s) {
         return {
-          id: s.empresa_id, pabellon: s.pabellon, posicion: numero(s.posicion), empresa: s.empresa, color: s.color,
+          id: s.empresa_id, pabellon: s.pabellon, posicion: numero(s.posicion), plan: s.plan, empresa: s.empresa, color: s.color,
           logo: s.logo, banner: s.banner, descripcion: s.descripcion, video: s.video, web: s.web,
           redes: json(s.redes, []), whatsapp: s.whatsapp, whatsappMensaje: s.whatsapp_mensaje,
           galeria: json(s.galeria, []), folleto: s.folleto, sala: s.sala, vacantes: vacantesDe[s.empresa_id] || []
         };
       });
       D.vacantes = t[4];
+      D.patrocinantes = (t[6] || []).filter(function (p) { return p.nombre; })
+        .sort(function (a, b) { return numero(a.orden || 99) - numero(b.orden || 99); });
       D.charlas = t[5].map(function (c) {
         return { titulo: c.titulo, empresa: c.empresa, inicio: c.inicio, duracion: numero(c.duracion) || 30, youtube: c.youtube };
       });

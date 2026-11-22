@@ -44,6 +44,9 @@
     // Caracas), duracion (min), youtube }. Vacío hasta que haya agenda.
     charlas: [],
 
+    // Patrocinantes de la portada: { nombre, logo, web }.
+    patrocinantes: [],
+
     // Accesos del pórtico CESEG y enlaces del sitio. null = aún no existe:
     // el botón se muestra como «Disponible pronto».
     enlaces: {
