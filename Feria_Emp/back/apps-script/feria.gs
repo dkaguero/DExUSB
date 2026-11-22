@@ -40,6 +40,7 @@ const PESTANAS = {
       ["youtube_canal", "", "Canal de YouTube de la CESEG"],
       ["calendario_id", "", "ID del calendario «CESEG – Eventos»: lo llena solo la publicación (fase 5)"],
       ["url_auditorio_sitio", "", "Dirección de la página Auditorio en Google Sites (para los correos y el pórtico)"],
+      ["url_receptor", "", "Dirección de la aplicación web que recibe las visitas (fase 7B: Implementar › Aplicación web)"],
       ["id_datos_ceseg", "1eE7ja2kscREl-6MkUs2XAZqS-i64r44wb7OuaW00Zvo", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
       ["id_censo", "1rde00EzCUdUByvFg1WZNOcAq4Ss1J8TaWTcX55qJHVQ", "ID de la hoja de respuestas del Censo de Egresados (fase 4)"],
       ["url_censo", "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform", "Formulario del censo, para la invitación a egresados USB"],
@@ -383,7 +384,7 @@ function calcularPublicacion_(t) {
     avisos: avisos,
     tablas: {
       Edicion: ["edicion_nombre", "convocatoria_inicio", "convocatoria_fin", "feria_inicio", "feria_fin", "consulta_dias", "youtube_canal",
-        "url_perfil", "url_postular", "url_empresa", "url_stand", "url_vacante", "url_charla", "url_calendario", "url_auditorio_sitio"]
+        "url_perfil", "url_postular", "url_empresa", "url_stand", "url_vacante", "url_charla", "url_calendario", "url_auditorio_sitio", "url_receptor"]
         .map((k) => ({ clave: k, valor: cfg[k] instanceof Date ? fechaTexto_(cfg[k]) : (cfg[k] == null ? "" : cfg[k]) })),
       Planes: planes.map((p) => ({ id: p.id, nombre: p.nombre, precio: p.precio, desde: p.posicion_desde, hasta: p.posicion_hasta, forma: p.forma, beneficios: p.beneficios })),
       Pabellones: pabellones.map((p) => ({ slug: p.slug, nombre: p.nombre, sector: p.sector, color: p.color, posiciones: p.posiciones })),
@@ -1301,6 +1302,7 @@ let registroCv_ = null;
 function entregarATodos_() {
   const resumen = [];
   registroCv_ = null;
+  eventos_ = null;
   const raiz = DriveApp.getFolderById(config_("id_carpeta"));
   const perfiles = {};
   leerTabla_("Perfiles").forEach((p) => { perfiles[normCorreo_(p.correo)] = p; });
@@ -1361,6 +1363,7 @@ function entregarATodos_() {
     });
     platinum.forEach((d) => escribirTabla_(SpreadsheetApp.openById(accesoDe_(d, raiz).panelId), "Base de CV", COLUMNAS_BASE, filas));
   }
+  try { escribirAnaliticaCeseg_(); } catch (e) { resumen.push("Analítica: " + e.message); }
   resumen.push(destinos.length + " destino(s) al día: " + copias + " CV copiado(s), " + cambios + " cambio(s) de estado traído(s) de los paneles.");
   return resumen;
 }
@@ -1560,4 +1563,132 @@ function retirarAccesos_() {
     props.deleteProperty("base_platinum_compartido");
   }
   return retirados ? ["Edición cerrada: se retiró el acceso de " + retirados + " empresa(s) o contacto(s). Los datos quedan bajo resguardo de la CESEG."] : ["Edición cerrada."];
+}
+
+// =====================================================================
+// FASE 7B: ANALÍTICA POR PLAN
+// =====================================================================
+
+// Eventos que pueden mandar los widgets. No llevan datos personales: solo un
+// identificador anónimo del visitante, generado en su navegador.
+const TIPOS_EVENTO = ["feria_vista", "pabellon_vista", "stand_vista", "clic_web", "clic_whatsapp", "clic_red", "clic_video",
+  "clic_folleto", "clic_sala", "clic_postular", "clic_cv", "auditorio_vista", "charla_vista", "bolsa_vista"];
+
+/**
+ * Receptor de visitas. Se publica con Implementar › Nueva implementación ›
+ * Aplicación web (Ejecutar como: yo; Quién tiene acceso: cualquier persona).
+ * Recibe un lote de eventos en JSON: [{ t: tipo, e: empresa_id, v: vacante_id, u: visitante, d: detalle }].
+ */
+function doPost(e) {
+  try {
+    const lote = JSON.parse(e && e.postData ? e.postData.contents : "[]");
+    guardarEventos_(Array.isArray(lote) ? lote : []);
+  } catch (err) { /* un lote mal formado se descarta */ }
+  return ContentService.createTextOutput("ok");
+}
+
+function doGet() {
+  return ContentService.createTextOutput("Receptor de visitas de la Feria de Empleo CESEG.");
+}
+
+function guardarEventos_(lote) {
+  const limpio = (v, n) => String(v == null ? "" : v).replace(/[\r\n\t]/g, " ").slice(0, n);
+  const filas = lote.slice(0, 50).filter((x) => x && TIPOS_EVENTO.indexOf(x.t) !== -1).map((x) =>
+    [new Date(), x.t, limpio(x.e, 40), limpio(x.v, 40), limpio(x.u, 40), limpio(x.d, 80)]);
+  if (!filas.length) return 0;
+  const candado = LockService.getScriptLock();
+  candado.waitLock(20000);
+  try {
+    const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Eventos");
+    hoja.getRange(hoja.getLastRow() + 1, 1, filas.length, 6).setValues(filas);
+  } finally {
+    candado.releaseLock();
+  }
+  return filas.length;
+}
+
+// Eventos agregados una sola vez por pasada.
+let eventos_ = null;
+
+function eventosAgregados_() {
+  if (eventos_) return eventos_;
+  const porEmpresa = {};
+  leerTabla_("Eventos").forEach((f) => {
+    if (!f.empresa_id) return;
+    const m = porEmpresa[f.empresa_id] = porEmpresa[f.empresa_id] || { visitas: 0, unicos: {}, clics: 0, porTipo: {}, porDia: {} };
+    if (f.tipo === "stand_vista") {
+      m.visitas++;
+      if (f.visitante) m.unicos[f.visitante] = true;
+      const dia = f.fecha instanceof Date ? Utilities.formatDate(f.fecha, ZONA, "yyyy-MM-dd") : String(f.fecha).slice(0, 10);
+      m.porDia[dia] = (m.porDia[dia] || 0) + 1;
+    } else if (f.tipo.indexOf("clic_") === 0) {
+      m.clics++;
+      m.porTipo[f.tipo] = (m.porTipo[f.tipo] || 0) + 1;
+    }
+  });
+  eventos_ = porEmpresa;
+  return eventos_;
+}
+
+const NOMBRES_CLIC = { clic_web: "Sitio web", clic_whatsapp: "WhatsApp", clic_red: "Redes sociales", clic_video: "Video",
+  clic_folleto: "Folleto", clic_sala: "Sala de entrevistas", clic_postular: "Postular", clic_cv: "Compartir mi CV" };
+
+/** Pestaña «Métricas» del panel de una empresa, según su plan (básica o completa). */
+function escribirMetricas_(panel, d, plan) {
+  const m = eventosAgregados_()[d.clave] || { visitas: 0, unicos: {}, clics: 0, porTipo: {}, porDia: {} };
+  const posts = d.postulaciones;
+  const completa = plan && plan.analitica === "Completa";
+  const filas = [
+    ["Métrica", "Valor"],
+    ["Visitas al stand", m.visitas],
+    ["Visitantes únicos", Object.keys(m.unicos).length],
+    ["Clics en el stand", m.clics],
+    ["Postulaciones", posts.filter((p) => p.tipo === "Postulación").length],
+    ["CV compartidos", posts.filter((p) => p.tipo === "CV compartido").length]
+  ];
+  if (completa) {
+    filas.push(["", ""], ["Clics por tipo", ""]);
+    Object.keys(NOMBRES_CLIC).forEach((k) => filas.push(["  " + NOMBRES_CLIC[k], m.porTipo[k] || 0]));
+    filas.push(["", ""], ["Postulaciones por vacante", ""]);
+    const porVac = {};
+    const vacantes = {};
+    leerTabla_("Vacantes").forEach((v) => { vacantes[v.id] = v.titulo; });
+    posts.filter((p) => p.vacante_id).forEach((p) => { porVac[p.vacante_id] = (porVac[p.vacante_id] || 0) + 1; });
+    Object.keys(porVac).forEach((id) => filas.push(["  " + (vacantes[id] || id), porVac[id]]));
+    filas.push(["", ""], ["Puesto en su pabellón por visitas", puestoEnPabellon_(d)]);
+    filas.push(["", ""], ["Visitas por día", ""]);
+    Object.keys(m.porDia).sort().forEach((dia) => filas.push(["  " + dia, m.porDia[dia]]));
+  }
+  filas.push(["", ""], ["Análisis " + (completa ? "completo" : "básico") + " (plan " + (plan ? plan.nombre : "") + ")",
+    "Actualizado: " + Utilities.formatDate(new Date(), ZONA, "dd/MM/yyyy HH:mm") + ". Para CSV: Archivo › Descargar."]);
+  escribirTabla_(panel, "Métricas", ["metrica", "valor"], filas.slice(1).map((f) => ({ metrica: f[0], valor: f[1] })));
+}
+
+function puestoEnPabellon_(d) {
+  const ev = eventosAgregados_();
+  const mismas = leerTabla_("Empresas").filter((e) => e.pabellon === d.fila.pabellon && e.estado === "Aprobada");
+  const orden = mismas.map((e) => ({ id: e.id, v: (ev[e.id] || { visitas: 0 }).visitas })).sort((a, b) => b.v - a.v);
+  const i = orden.findIndex((x) => x.id === d.clave);
+  return i === -1 ? "" : (i + 1) + " de " + orden.length;
+}
+
+/** Pestaña «Analítica» del archivo de edición: todas las empresas, ordenadas por visitas. */
+function escribirAnaliticaCeseg_() {
+  const ev = eventosAgregados_();
+  const posts = leerTabla_("Postulaciones");
+  const filas = leerTabla_("Empresas").filter((e) => e.id && e.estado === "Aprobada").map((e) => {
+    const m = ev[e.id] || { visitas: 0, unicos: {}, clics: 0 };
+    const p = posts.filter((x) => x.empresa_id === e.id);
+    return { empresa: e.nombre_comercial || e.razon_social, plan: e.plan, pabellon: e.pabellon, visitas: m.visitas,
+      unicos: Object.keys(m.unicos).length, clics: m.clics, postulaciones: p.filter((x) => x.tipo === "Postulación").length,
+      cv_compartidos: p.filter((x) => x.tipo === "CV compartido").length };
+  }).sort((a, b) => b.visitas - a.visitas);
+  const totales = {};
+  leerTabla_("Eventos").forEach((f) => { totales[f.tipo] = (totales[f.tipo] || 0) + 1; });
+  filas.push({}, { empresa: "Totales de la feria", plan: "", pabellon: "", visitas: totales.stand_vista || 0, unicos: "",
+    clics: Object.keys(totales).filter((k) => k.indexOf("clic_") === 0).reduce((s, k) => s + totales[k], 0),
+    postulaciones: posts.filter((x) => x.tipo === "Postulación").length, cv_compartidos: posts.filter((x) => x.tipo === "CV compartido").length });
+  filas.push({ empresa: "Visitas a la feria (pabellones)", visitas: totales.pabellon_vista || 0 },
+    { empresa: "Visitas al auditorio", visitas: totales.auditorio_vista || 0 }, { empresa: "Visitas a la Bolsa", visitas: totales.bolsa_vista || 0 });
+  escribirTabla_(SpreadsheetApp.getActiveSpreadsheet(), "Analítica", ["empresa", "plan", "pabellon", "visitas", "unicos", "clics", "postulaciones", "cv_compartidos"], filas);
 }

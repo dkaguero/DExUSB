@@ -59,7 +59,10 @@
     var id = actual && idYouTube(actual.youtube);
     if (id) {
       var src = "https://www.youtube.com/embed/" + id + "?autoplay=1&mute=1&rel=0";
-      if (iframe.getAttribute("src") !== src) iframe.setAttribute("src", src);
+      if (iframe.getAttribute("src") !== src) {
+        iframe.setAttribute("src", src);
+        if (FE.registrar) FE.registrar("charla_vista", "", "", actual.titulo);
+      }
       iframe.hidden = false;
       cartel.hidden = true;
       enVivo.textContent = "En vivo: " + actual.titulo;
@@ -120,6 +123,7 @@
     setInterval(actualizar, 30000);
     // Agenda real desde la hoja pública (si está configurada).
     FE.cargarDatos().then(function (ok) {
+      if (FE.registrar) FE.registrar("auditorio_vista");
       if (!ok) return;
       D = FE.DATOS;
       document.getElementById("au-acciones").innerHTML =

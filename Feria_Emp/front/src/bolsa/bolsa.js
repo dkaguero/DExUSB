@@ -28,6 +28,12 @@
     if (!url) return '<span class="bo-boton bo-boton--off ' + (clase || "") + '">' + esc(texto) + "<small>Disponible pronto</small></span>";
     return '<a class="bo-boton ' + (clase || "") + '" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(texto) + "</a>";
   }
+  function botonPostular(v) {
+    var url = enlacePostular(v);
+    if (!url) return boton("Postular", null, "bo-boton--principal");
+    return '<a class="bo-boton bo-boton--principal" href="' + esc(url) + '" target="_blank" rel="noopener" data-ev="clic_postular" data-emp="' +
+      esc(v.empresa_id || "") + '" data-vac="' + esc(v.id || "") + '">Postular</a>';
+  }
 
   function filtradas() {
     var q = normal(estado.texto);
@@ -52,7 +58,7 @@
       ' <span class="bo-origen bo-origen--' + (v.origen === "Bolsa" ? "bolsa" : "feria") + '">' + (v.origen === "Bolsa" ? "Bolsa de Trabajo" : "Feria de Empleo") + "</span></p>" +
       (meta ? '<p class="bo-meta">' + meta + "</p>" : "") +
       (v.salario ? '<p class="bo-meta">Salario: ' + esc(v.salario) + "</p>" : "") +
-      "</div>" + boton("Postular", enlacePostular(v), "bo-boton--principal") + "</div>" +
+      "</div>" + botonPostular(v) + "</div>" +
       (detalle ? '<details class="bo-detalle"><summary>Ver detalle</summary>' + detalle +
         (v.enlace_postulacion ? "<p>" + boton("Postular también en su sitio", v.enlace_postulacion) + "</p>" : "") + "</details>" : "") +
       "</li>";
@@ -109,8 +115,13 @@
     pintarFiltros();
     pintar();
     lista.setAttribute("aria-busy", "true");
+    lista.addEventListener("click", function (e) {
+      var a = e.target.closest ? e.target.closest("a[data-ev]") : null;
+      if (a && FE.registrar) FE.registrar(a.getAttribute("data-ev"), a.getAttribute("data-emp"), a.getAttribute("data-vac"));
+    });
     FE.cargarDatos().then(function () {
       D = FE.DATOS;
+      if (FE.registrar) FE.registrar("bolsa_vista");
       D.vacantes = D.vacantes || [];
       lista.removeAttribute("aria-busy");
       acciones();

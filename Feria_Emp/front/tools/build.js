@@ -42,7 +42,7 @@ const WIDGETS = [
     archivo: "feria-360.html",
     plantilla: "feria-360/plantilla.html",
     css: ["feria-360/feria.css"],
-    js: () => [leer("comun/pantalla.js"), artePanorama(), leer("comun/datos.js"), leer("comun/hoja.js"), leer("feria-360/escena.js"),
+    js: () => [leer("comun/pantalla.js"), artePanorama(), leer("comun/datos.js"), leer("comun/hoja.js"), leer("comun/analitica.js"), leer("feria-360/escena.js"),
       leer("feria-360/compositor.js"), leer("feria-360/ficha.js"), leer("feria-360/feria.js")]
   }
 ];
@@ -51,7 +51,7 @@ const AUDITORIO = {
   archivo: "auditorio.html",
   plantilla: "auditorio/plantilla.html",
   css: ["auditorio/auditorio.css"],
-  js: () => [leer("comun/pantalla.js"), arteAuditorio(), leer("comun/datos.js"), leer("comun/hoja.js"), leer("auditorio/auditorio.js")]
+  js: () => [leer("comun/pantalla.js"), arteAuditorio(), leer("comun/datos.js"), leer("comun/hoja.js"), leer("comun/analitica.js"), leer("auditorio/auditorio.js")]
 };
 if (fs.existsSync(path.join(SRC, AUDITORIO.plantilla))) WIDGETS.push(AUDITORIO);
 
@@ -59,7 +59,7 @@ WIDGETS.push({
   archivo: "bolsa-vacantes.html",
   plantilla: "bolsa/plantilla.html",
   css: ["bolsa/bolsa.css"],
-  js: () => [leer("comun/datos.js"), leer("comun/hoja.js"), leer("bolsa/bolsa.js")]
+  js: () => [leer("comun/datos.js"), leer("comun/hoja.js"), leer("comun/analitica.js"), leer("bolsa/bolsa.js")]
 });
 
 fs.mkdirSync(SALIDA, { recursive: true });

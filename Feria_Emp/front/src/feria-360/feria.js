@@ -142,6 +142,7 @@
     directorio.hidden = true;
     cargando.hidden = false;
     titulo.textContent = "Pabellón " + pab.nombre;
+    if (FE.registrar) FE.registrar("pabellon_vista", "", "", pab.slug);
     pintarPills();
     // Deja pintar el aviso de carga antes de componer.
     setTimeout(function () {
@@ -200,6 +201,7 @@
     Promise.all([FE.compositor.cargarArte(ancho), FE.cargarDatos()]).then(function (r) {
       arte = r[0];
       D = FE.DATOS;
+      if (FE.registrar) FE.registrar("feria_vista");
       irA(0);
     }).catch(function (err) {
       cargando.textContent = "No se pudo armar la feria: " + err.message;

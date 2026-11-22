@@ -56,6 +56,7 @@
       youtubeCanal: null,
       registroEmpresa: null,
       vacante: null,
+      receptor: null,
       perfilPostulante: null,
       postular: null,
       compartirCv: null

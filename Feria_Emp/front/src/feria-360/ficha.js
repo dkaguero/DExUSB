@@ -7,6 +7,7 @@
   "use strict";
 
   var panel, cuerpo;
+  var empresaActual = "";
 
   function esc(t) {
     return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -19,9 +20,11 @@
     return FE.DATOS.planes.filter(function (p) { return p.id === id; })[0];
   }
   // Botón a un enlace; si aún no existe, queda deshabilitado con «Disponible pronto».
-  function boton(texto, url, clase, destino) {
+  // `evento`: tipo de clic para la analítica (data-ev); `vacante`: su id (data-vac).
+  function boton(texto, url, clase, destino, evento, vacante) {
     if (!url) return '<span class="fe-boton fe-boton--off ' + (clase || "") + '" title="Disponible pronto">' + esc(texto) + "<small>Disponible pronto</small></span>";
-    return '<a class="fe-boton ' + (clase || "") + '" href="' + esc(url) + '" target="' + (destino || "_blank") + '" rel="noopener">' + esc(texto) + "</a>";
+    return '<a class="fe-boton ' + (clase || "") + '" href="' + esc(url) + '" target="' + (destino || "_blank") + '" rel="noopener"' +
+      (evento ? ' data-ev="' + evento + '"' : "") + (vacante ? ' data-vac="' + esc(vacante) + '"' : "") + ">" + esc(texto) + "</a>";
   }
   // Formulario de postulación prellenado con los códigos de la vacante y de la
   // empresa. Sin vacante, es «Compartir mi CV» con esa empresa.
@@ -49,9 +52,11 @@
 
   // Stand de una empresa (o la ficha de ejemplo).
   function stand(s, pabellon, posicion, tier) {
+    empresaActual = s.ejemplo ? "" : (s.id || "");
+    if (empresaActual && FE.registrar) FE.registrar("stand_vista", empresaActual, "", pabellon.slug);
     var p = plan(tier);
     var redes = (s.redes || []).map(function (r) {
-      return '<a class="fe-red" href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.red) + "</a>";
+      return '<a class="fe-red" href="' + esc(r.url) + '" target="_blank" rel="noopener" data-ev="clic_red">' + esc(r.red) + "</a>";
     }).join("");
     var galeria = (s.galeria || []).slice(0, 6).map(function (g) {
       return typeof g === "number"
@@ -60,7 +65,7 @@
     }).join("");
     var vacantes = (s.vacantes || []).map(function (v) {
       return '<li><div><strong>' + esc(v.titulo) + "</strong><small>" + esc([v.modalidad, v.contrato].filter(Boolean).join(" · ")) +
-        "</small></div>" + boton("Postular", s.ejemplo ? null : enlacePostular(v, s.id), "fe-boton--chico") + "</li>";
+        "</small></div>" + boton("Postular", s.ejemplo ? null : enlacePostular(v, s.id), "fe-boton--chico", "", "clic_postular", v.id) + "</li>";
     }).join("");
     var wa = s.whatsapp ? "https://wa.me/" + String(s.whatsapp).replace(/\D/g, "") +
       (s.whatsappMensaje ? "?text=" + encodeURIComponent(s.whatsappMensaje) : "") : null;
@@ -77,12 +82,12 @@
       aviso +
       (s.descripcion ? "<p>" + esc(s.descripcion) + "</p>" : "") +
       '<div class="fe-acciones">' +
-      boton("Compartir mi CV", s.ejemplo ? null : enlacePostular(null, s.id), "fe-boton--principal") +
-      (s.ejemplo ? boton("WhatsApp", null) : wa ? boton("WhatsApp", wa) : "") +
-      (s.sala ? boton("Sala de entrevistas", s.ejemplo ? null : s.sala) : "") +
-      (s.web ? boton("Sitio web", s.ejemplo ? null : s.web) : "") +
-      (s.folleto ? boton("Folleto (PDF)", s.ejemplo ? null : s.folleto) : "") +
-      (s.video ? boton("Ver video", s.ejemplo ? null : s.video) : "") +
+      boton("Compartir mi CV", s.ejemplo ? null : enlacePostular(null, s.id), "fe-boton--principal", "", "clic_cv") +
+      (s.ejemplo ? boton("WhatsApp", null) : wa ? boton("WhatsApp", wa, "", "", "clic_whatsapp") : "") +
+      (s.sala ? boton("Sala de entrevistas", s.ejemplo ? null : s.sala, "", "", "clic_sala") : "") +
+      (s.web ? boton("Sitio web", s.ejemplo ? null : s.web, "", "", "clic_web") : "") +
+      (s.folleto ? boton("Folleto (PDF)", s.ejemplo ? null : s.folleto, "", "", "clic_folleto") : "") +
+      (s.video ? boton("Ver video", s.ejemplo ? null : s.video, "", "", "clic_video") : "") +
       "</div>" +
       (redes ? '<h3>Redes</h3><div class="fe-redes">' + (s.ejemplo ? redes.replace(/href="[^"]*"/g, 'href="#" aria-disabled="true"') : redes) + "</div>" : "") +
       (galeria ? '<h3>Galería</h3><div class="fe-galeria">' + galeria + "</div>" : "") +
@@ -142,6 +147,11 @@
       panel.innerHTML = '<button type="button" class="fe-ficha-cerrar" aria-label="Cerrar la ficha">×</button><div class="fe-ficha-cuerpo"></div>';
       cuerpo = panel.querySelector(".fe-ficha-cuerpo");
       panel.querySelector(".fe-ficha-cerrar").addEventListener("click", cerrar);
+      // Clics de la ficha → analítica de la empresa.
+      panel.addEventListener("click", function (e) {
+        var a = e.target.closest ? e.target.closest("a[data-ev]") : null;
+        if (a && empresaActual && FE.registrar) FE.registrar(a.getAttribute("data-ev"), empresaActual, a.getAttribute("data-vac") || "");
+      });
       document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) cerrar(); });
     },
     stand: stand,
