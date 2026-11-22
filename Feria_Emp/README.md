@@ -16,13 +16,15 @@ Versión de la **Feria Virtual de Empleo Inmersiva** para Google Sites, Google F
 | CV para empresas | Carpeta privada por empresa en el Drive de la CESEG, compartida con las cuentas de Google de la empresa, según su plan y el consentimiento del postulante. La USB permite compartir fuera |
 | Planes | Silver 150 $, Gold 200 $ y Platinum 250 $, con sus límites, y 15 posiciones por pabellón. **Pago informativo:** la CESEG confirma el pago **antes** de ubicar a la empresa en su stand y de que disfrute los beneficios |
 | Stand | La empresa lo envía por formulario y la CESEG lo aprueba antes de publicarlo |
-| Registro de participantes | **Un solo registro: el Censo de Egresados ampliado.** Pueden registrarse egresados de la USB, estudiantes (para pasantías) y personas de otras universidades. **El globo cuenta solo a los egresados de la USB** |
+| Registro de participantes | **El censo no cambia.** La feria tiene su propio formulario, **Perfil de postulante** (con inicio de sesión de Google y CV), para egresados de la USB, estudiantes y personas de otras universidades. Se llena una vez; cada postulación es un formulario mínimo. El script **cruza perfil y censo por carnet o correo**: marca a quien ya está en el censo e invita a llenarlo al egresado USB que no lo está. **El globo cuenta solo a los egresados de la USB**, sin contar dos veces a nadie. Las 240 respuestas actuales del censo cuentan como egresados de la USB |
 | Auditorio | Canal de YouTube de la CESEG, con YouTube Live (en proceso) |
 | Charlas | 15 o 30 min, de 9:00 a 16:00, de lunes a viernes, hasta 3 por empresa, solo Gold y Platinum |
 | Mensajería | El buzón se reemplaza por correo, WhatsApp y el enlace de entrevista del stand |
 | Imágenes | Dentro de los widgets: todo se maneja desde Google Sites. Las imágenes que suben las empresas quedan en Drive, con permiso de solo lectura |
 | Stands especiales, patrocinantes, universidades | Se mantienen por ahora (FUNINDES, AJEUSB, Asociación de Egresados) |
 | Analítica | Cada empresa recibe las métricas de su plan (BASIC o FULL) |
+| Relación con la USB | Pregunta del Perfil de postulante: egresado o egresada de la USB / estudiante de la USB / egresado o estudiante de otra universidad / otra |
+| Fechas de la próxima edición | Por definir; configurables en la hoja de la feria |
 | Textos legales | Se reutilizan los 5 textos que la CESEG aprobó el 3 de noviembre de 2026, adaptados a Google Workspace, sin nueva revisión |
 
 ## Cómo se replica cada función
@@ -49,7 +51,7 @@ Versión de la **Feria Virtual de Empleo Inmersiva** para Google Sites, Google F
 
 - **Vacantes:** un solo flujo. El formulario «Publicar una vacante» se amplía y alimenta la Bolsa de Trabajo y el stand de cada empresa.
 - **Mapa «USBistas por el mundo»:** el registro de empresa tiene una sección opcional, «¿La fundaron egresados de la USB?». Si se marca, entra como Borrador en la pestaña Empresas de *Datos CESEG – edición* y sigue la aprobación que ya existe.
-- **Censo y globo:** el censo ampliado sirve de registro. El globo cuenta solo a quienes declaran ser egresados de la USB.
+- **Censo y globo:** el Perfil de postulante se cruza con el censo por carnet o correo. El globo suma a los egresados de la USB del perfil que no estén en el censo.
 - **Calendario:** cada charla aprobada se crea en «CESEG – Eventos».
 
 ## Páginas nuevas de Google Sites
@@ -60,7 +62,7 @@ Versión de la **Feria Virtual de Empleo Inmersiva** para Google Sites, Google F
 | ↳ Recorrido 360 | Widget `feria-360` en un recuadro vertical, para que en el teléfono quede alto |
 | ↳ Auditorio | Widget `auditorio` y el calendario |
 | ↳ Empresas participantes | Widget `directorio` |
-| ↳ Participa | Botones a los formularios: registro (censo), empresa, stand, vacante, charla |
+| ↳ Participa | Botones a los formularios: perfil de postulante, empresa, stand, vacante, charla; enlace al censo |
 | ↳ Términos y privacidad | Los 5 textos legales |
 | ↳ Preguntas frecuentes | Desplegables |
 | **Bolsa de Trabajo** (existe) | Widget `bolsa-vacantes` |
@@ -89,9 +91,9 @@ Feria_Emp/
 |---|---|---|
 | 0 | Decisiones | ✅ 22 de noviembre de 2026 |
 | 1 | Datos: archivos *Feria CESEG – edición* (privado) y *Feria CESEG – público*, Apps Script con `instalar`, datos de prueba. **Prueba temprana:** un widget de ~1 MB en Sites, para confirmar que acepta el tamaño del 360 | Base lista |
-| 2 | Formularios: empresa, stand, vacante, postulación, charla; ampliación del censo | Formularios creados por script |
+| 2 | Formularios: perfil de postulante, postulación, empresa, stand, vacante, charla | Formularios creados por script |
 | 3 | Bolsa de Trabajo unificada | Widget `bolsa-vacantes` |
-| 4 | Conexiones: empresas → mapa, censo → globo (solo egresados USB) | Integración con lo ya migrado |
+| 4 | Conexiones: empresas → mapa; perfil ↔ censo (carnet o correo) → globo, solo egresados USB y sin duplicados | Integración con lo ya migrado |
 | 5 | Auditorio y charlas → Calendar | Widget `auditorio` |
 | 6 | Feria 360 | Widget `feria-360` |
 | 7 | CV y paneles de empresa, analítica por plan, estados por fecha | Flujo de candidatos y métricas |
