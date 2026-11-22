@@ -1,0 +1,44 @@
+/* Widget auditorio: llena el recuadro de Google Sites. */
+:root { --au-azul: #0055a5; --au-dorado: #d4af37; --au-noche: #0b1329; --au-panel: #ffffff; --au-texto: #0f172a; --au-suave: #64748b; --au-linea: #e2e8f0; }
+@media (prefers-color-scheme: dark) { :root { --au-panel: #1e293b; --au-texto: #f1f5f9; --au-suave: #94a3b8; --au-linea: #334155; } }
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--au-noche); }
+body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: var(--au-texto); }
+
+#au-app { height: 100%; display: flex; flex-direction: column; }
+#au-barra { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: var(--au-azul); color: #fff; }
+#au-barra b { white-space: nowrap; }
+#au-envivo { color: #ffd1d1; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+#au-caja { flex: 1 1 auto; position: relative; min-height: 120px; }
+#au-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+#au-video, #au-cartel { position: absolute; border: 0; }
+#au-cartel {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2px;
+  background: #0b1329; color: #fff; padding: 4px; overflow: hidden; font-size: clamp(8px, 1.6vw, 14px);
+}
+#au-cartel small { color: var(--au-dorado); font-size: .8em; text-transform: uppercase; letter-spacing: .06em; }
+#au-cartel b { font-size: 1.15em; }
+#au-cartel em { color: #9ec9ef; font-style: normal; }
+
+#au-pie { flex: 0 1 auto; max-height: 45%; overflow-y: auto; background: var(--au-panel); padding: 8px 10px; scrollbar-width: thin; }
+#au-acciones { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.au-boton {
+  display: inline-flex; flex-direction: column; align-items: center; text-decoration: none; font-weight: bold; font-size: 11px;
+  padding: 5px 10px; border: 1px solid var(--au-azul); border-radius: 3px; color: var(--au-azul);
+}
+.au-boton--principal { background: var(--au-azul); color: #fff; }
+.au-boton--off { opacity: .55; border-style: dashed; }
+.au-boton small { font-weight: normal; font-size: 9px; }
+#au-agenda h2 { margin: 6px 0 4px; font-size: 12px; color: var(--au-azul); }
+@media (prefers-color-scheme: dark) { #au-agenda h2, .au-boton { color: #9ec9ef; border-color: #9ec9ef; } .au-boton--principal { color: #fff; } }
+#au-agenda p { margin: 4px 0; color: var(--au-suave); }
+#au-agenda ul { list-style: none; margin: 0; padding: 0; }
+#au-agenda li { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; border-bottom: 1px solid var(--au-linea); }
+#au-agenda time { flex: 0 0 auto; min-width: 64px; color: var(--au-suave); font-weight: bold; }
+#au-agenda li div { flex: 1 1 auto; }
+#au-agenda small { display: block; color: var(--au-suave); }
+.au-vivo { background: #e5484d; color: #fff; font-size: 10px; font-weight: bold; padding: 1px 6px; border-radius: 2px; }
+.au-fin { color: var(--au-suave); font-size: 10px; }
+@media (max-height: 320px) { #au-pie { max-height: 38%; } }

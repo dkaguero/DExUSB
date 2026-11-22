@@ -100,3 +100,13 @@ Feria_Emp/
 | 8 | Páginas de Sites, textos legales, prueba de punta a punta, publicación | Feria lista |
 
 Cada fase termina con pruebas, y se pide aprobación antes de la siguiente.
+
+## Avance
+
+- **22 de noviembre de 2026, fase 1:** prueba de tamaño en Google Sites (widget de 0,81 MB con visor 360 y video): **aceptado y funcionando**.
+- **Adelantado de las fases 5 y 6, con datos de muestra:**
+  - `feria-360.html` (0,63 MB): 4 pabellones de muestra del original con 15 stands **vacíos** cada uno, con la forma de su plan (Platinum 1-5, Gold 6-10, Silver 11-15); pórtico CESEG, pasillos entre pabellones, directorio, ficha de espacio disponible (plan, precio, beneficios, «Reservar») y ficha de ejemplo con todo lo que mostrará un stand (logo, banner, descripción, video, galería, redes, web, WhatsApp, folleto, sala de entrevistas, vacantes con «Postular», «Compartir mi CV»). En el original los espacios vacíos se ven todos como Silver; aquí muestran la forma de su plan.
+  - `auditorio.html` (0,33 MB): sala desde las gradas con el video de YouTube de la charla en curso en la pantalla, cuenta regresiva de la próxima y agenda del día.
+  - Los botones que dependen de formularios o enlaces que aún no existen dicen «Disponible pronto». Los datos llegarán de la hoja pública en las fases 6 y 7.
+- Generar: `node Feria_Emp/front/tools/build.js` → `Feria_Emp/dist/`.
+

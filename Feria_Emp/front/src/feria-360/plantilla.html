@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feria de Empleo USB · Recorrido 360</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<style>
+/*@CSS@*/
+</style>
+</head>
+<body>
+<div id="fe-app">
+  <div id="fe-barra">
+    <span id="fe-titulo">Feria de Empleo USB</span>
+    <div id="fe-pabellones" role="group" aria-label="Pabellones"></div>
+    <button type="button" id="fe-abrir-directorio">Directorio</button>
+  </div>
+  <div id="fe-escena">
+    <div id="fe-visor"></div>
+    <div id="fe-cargando">Armando el pabellón…</div>
+    <div id="fe-directorio" hidden>
+      <button type="button" class="fe-dir-cerrar" aria-label="Cerrar el directorio">×</button>
+      <div class="fe-dir-cuerpo"></div>
+    </div>
+    <div id="fe-ficha" hidden aria-live="polite"></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+/*@JS@*/
+</script>
+</body>
+</html>
