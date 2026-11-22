@@ -5,7 +5,7 @@
   "use strict";
 
   // ID del archivo público: lo muestra instalar() del Apps Script. Vacío = datos de muestra.
-  FE.HOJA_PUBLICA = "";
+  FE.HOJA_PUBLICA = "1m4ZiAck0yV9DJeYnum_qEmZ3gOpRU4Uad5QVUzBasV8";
 
   // CSV con comillas, comas y saltos de línea dentro de un campo.
   function leerCSV(texto) {
