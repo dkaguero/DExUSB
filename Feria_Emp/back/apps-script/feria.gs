@@ -39,7 +39,7 @@ const PESTANAS = {
       ["correo_admin", "ceseg@usb.ve", "Recibe los avisos de solicitudes nuevas"],
       ["youtube_canal", "", "Canal de YouTube de la CESEG"],
       ["calendario_id", "", "Calendario «CESEG – Eventos» (fase 5)"],
-      ["id_datos_ceseg", "", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
+      ["id_datos_ceseg", "1eE7ja2kscREl-6MkUs2XAZqS-i64r44wb7OuaW00Zvo", "ID del archivo «Datos CESEG – edición»: las empresas fundadas por egresados pasan a su mapa (fase 4)"],
       ["id_censo", "1rde00EzCUdUByvFg1WZNOcAq4Ss1J8TaWTcX55qJHVQ", "ID de la hoja de respuestas del Censo de Egresados (fase 4)"],
       ["url_censo", "https://docs.google.com/forms/d/e/1FAIpQLSeWRBYT_m98uIP7xnXQVKWIvPpHWH0IUi7wWJss2DHt5VBIwA/viewform", "Formulario del censo, para la invitación a egresados USB"],
       ["id_hoja_publica", "", "Lo llena instalar()"],
@@ -1007,11 +1007,19 @@ function avisarCesta_(asunto, cuerpo) {
 // FASE 4: CONEXIONES CON EL CENSO Y CON EL MAPA «USBistas por el mundo»
 // =====================================================================
 
-/** Agrega a Configuración las claves nuevas que falten (sin tocar las existentes). */
+/**
+ * Agrega a Configuración las claves nuevas que falten y rellena con su valor
+ * inicial las que estén vacías. No cambia un valor que ya esté puesto.
+ */
 function asegurarConfig_() {
   const hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Configuracion");
-  const claves = hoja.getDataRange().getValues().map((f) => f[0]);
-  PESTANAS.Configuracion.inicial.forEach((f) => { if (claves.indexOf(f[0]) === -1) hoja.appendRow(f); });
+  const datos = hoja.getDataRange().getValues();
+  const claves = datos.map((f) => f[0]);
+  PESTANAS.Configuracion.inicial.forEach((f) => {
+    const i = claves.indexOf(f[0]);
+    if (i === -1) hoja.appendRow(f);
+    else if (datos[i][1] === "" && f[1] !== "") hoja.getRange(i + 1, 2).setValue(f[1]);
+  });
 }
 
 /** Menú «Conectar con el censo y el mapa»: prepara columnas y claves nuevas y cruza todo. */
