@@ -55,6 +55,7 @@
       calendario: null,
       youtubeCanal: null,
       registroEmpresa: null,
+      vacante: null,
       perfilPostulante: null,
       postular: null,
       compartirCv: null

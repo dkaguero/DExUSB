@@ -55,6 +55,13 @@ const AUDITORIO = {
 };
 if (fs.existsSync(path.join(SRC, AUDITORIO.plantilla))) WIDGETS.push(AUDITORIO);
 
+WIDGETS.push({
+  archivo: "bolsa-vacantes.html",
+  plantilla: "bolsa/plantilla.html",
+  css: ["bolsa/bolsa.css"],
+  js: () => [leer("comun/datos.js"), leer("comun/hoja.js"), leer("bolsa/bolsa.js")]
+});
+
 fs.mkdirSync(SALIDA, { recursive: true });
 for (const w of WIDGETS) {
   const html = leer(w.plantilla)
