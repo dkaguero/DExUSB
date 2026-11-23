@@ -68,6 +68,14 @@
     };
   }
 
+  // Rótulo «Asistir a una charla» junto al pórtico: abre la página Auditorio en
+  // otra pestaña (Sites no deja cambiar la página). Sin dirección, la ficha del pórtico.
+  function irAlAuditorio() {
+    var url = FE.DATOS.enlaces && FE.DATOS.enlaces.auditorio;
+    if (!url) { FE.ficha.host(); return; }
+    window.open(url, "_blank", "noopener");
+  }
+
   function hotspots(pab) {
     var E = FE.escena;
     var lista = [];
@@ -75,7 +83,7 @@
       if (slot.kind === "host") {
         var a = E.hostAnchors(slot);
         lista.push(hotspot(a.logos, { tipo: "host", etiqueta: "Pórtico CESEG", html: "<b>CESEG</b>", accion: FE.ficha.host }));
-        lista.push(hotspot(a.auditorium, { tipo: "chico", etiqueta: "Asistir a una charla", html: "Asistir a una charla", accion: FE.ficha.host }));
+        lista.push(hotspot(a.auditorium, { tipo: "chico", etiqueta: "Asistir a una charla", html: "Asistir a una charla", accion: irAlAuditorio }));
       } else if (slot.kind === "corridor") {
         var destino = slot.pavilion;
         lista.push(hotspot(E.corridorAnchor(slot), {
